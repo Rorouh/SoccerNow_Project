@@ -1,606 +1,688 @@
-[[1;34mINFO[m] Scanning for projects...
-[[1;34mINFO[m] 
-[[1;34mINFO[m] [1m-----------------------< [0;36mpt.ul.fc.css:soccernow[0;1m >-----------------------[m
-[[1;34mINFO[m] [1mBuilding Springboot Soccernow 1.0[m
-[[1;34mINFO[m] [1m--------------------------------[ jar ]---------------------------------[m
-[[1;34mINFO[m] 
-[[1;34mINFO[m] [1m>>> [0;32mspring-boot-maven-plugin:3.0.5:run[m [1m(default-cli)[0;1m > [0;1mtest-compile[m @ [36msoccernow[0;1m >>>[m
-[[1;34mINFO[m] 
-[[1;34mINFO[m] [1m--- [0;32mmaven-resources-plugin:3.3.0:resources[m [1m(default-resources)[m @ [36msoccernow[0;1m ---[m
-[[1;34mINFO[m] Copying 1 resource
-[[1;34mINFO[m] Copying 0 resource
-[[1;34mINFO[m] 
-[[1;34mINFO[m] [1m--- [0;32mmaven-compiler-plugin:3.10.1:compile[m [1m(default-compile)[m @ [36msoccernow[0;1m ---[m
-[[1;34mINFO[m] Nothing to compile - all classes are up to date
-[[1;34mINFO[m] 
-[[1;34mINFO[m] [1m--- [0;32mmaven-resources-plugin:3.3.0:testResources[m [1m(default-testResources)[m @ [36msoccernow[0;1m ---[m
-[[1;34mINFO[m] Copying 1 resource
-[[1;34mINFO[m] 
-[[1;34mINFO[m] [1m--- [0;32mmaven-compiler-plugin:3.10.1:testCompile[m [1m(default-testCompile)[m @ [36msoccernow[0;1m ---[m
-[[1;34mINFO[m] No sources to compile
-[[1;34mINFO[m] 
-[[1;34mINFO[m] [1m<<< [0;32mspring-boot-maven-plugin:3.0.5:run[m [1m(default-cli)[0;1m < [0;1mtest-compile[m @ [36msoccernow[0;1m <<<[m
-[[1;34mINFO[m] 
-[[1;34mINFO[m] 
-[[1;34mINFO[m] [1m--- [0;32mspring-boot-maven-plugin:3.0.5:run[m [1m(default-cli)[m @ [36msoccernow[0;1m ---[m
-[[1;34mINFO[m] Attaching agents: []
-
-  .   ____          _            __ _ _
- /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
- \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-  '  |____| .__|_| |_|_| |_\__, | / / / /
- =========|_|==============|___/=/_/_/_/
- :: Spring Boot ::                (v3.0.5)
-
-INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
-INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
-INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 63 ms. Found 4 JPA repository interfaces.
-INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
-INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2125 ms
-DEBUG com.zaxxer.hikari.HikariConfig - Driver class org.postgresql.Driver found in Thread context class loader jdk.internal.loader.ClassLoaders$AppClassLoader@30946e09
-DEBUG com.zaxxer.hikari.HikariConfig - HikariPool-1 - configuration:
-DEBUG com.zaxxer.hikari.HikariConfig - allowPoolSuspension.............false
-DEBUG com.zaxxer.hikari.HikariConfig - autoCommit......................true
-DEBUG com.zaxxer.hikari.HikariConfig - catalog.........................none
-DEBUG com.zaxxer.hikari.HikariConfig - connectionInitSql...............none
-DEBUG com.zaxxer.hikari.HikariConfig - connectionTestQuery.............none
-DEBUG com.zaxxer.hikari.HikariConfig - connectionTimeout...............20000
-DEBUG com.zaxxer.hikari.HikariConfig - dataSource......................none
-DEBUG com.zaxxer.hikari.HikariConfig - dataSourceClassName.............none
-DEBUG com.zaxxer.hikari.HikariConfig - dataSourceJNDI..................none
-DEBUG com.zaxxer.hikari.HikariConfig - dataSourceProperties............{password=<masked>}
-DEBUG com.zaxxer.hikari.HikariConfig - driverClassName................."org.postgresql.Driver"
-DEBUG com.zaxxer.hikari.HikariConfig - exceptionOverrideClassName......none
-DEBUG com.zaxxer.hikari.HikariConfig - healthCheckProperties...........{}
-DEBUG com.zaxxer.hikari.HikariConfig - healthCheckRegistry.............none
-DEBUG com.zaxxer.hikari.HikariConfig - idleTimeout.....................600000
-DEBUG com.zaxxer.hikari.HikariConfig - initializationFailTimeout.......1
-DEBUG com.zaxxer.hikari.HikariConfig - isolateInternalQueries..........false
-DEBUG com.zaxxer.hikari.HikariConfig - jdbcUrl.........................jdbc:postgresql://pgserver:5432/soccernowdb
-DEBUG com.zaxxer.hikari.HikariConfig - keepaliveTime...................0
-DEBUG com.zaxxer.hikari.HikariConfig - leakDetectionThreshold..........0
-DEBUG com.zaxxer.hikari.HikariConfig - maxLifetime.....................1800000
-DEBUG com.zaxxer.hikari.HikariConfig - maximumPoolSize.................5
-DEBUG com.zaxxer.hikari.HikariConfig - metricRegistry..................none
-DEBUG com.zaxxer.hikari.HikariConfig - metricsTrackerFactory...........none
-DEBUG com.zaxxer.hikari.HikariConfig - minimumIdle.....................5
-DEBUG com.zaxxer.hikari.HikariConfig - password........................<masked>
-DEBUG com.zaxxer.hikari.HikariConfig - poolName........................"HikariPool-1"
-DEBUG com.zaxxer.hikari.HikariConfig - readOnly........................false
-DEBUG com.zaxxer.hikari.HikariConfig - registerMbeans..................false
-DEBUG com.zaxxer.hikari.HikariConfig - scheduledExecutor...............none
-DEBUG com.zaxxer.hikari.HikariConfig - schema..........................none
-DEBUG com.zaxxer.hikari.HikariConfig - threadFactory...................internal
-DEBUG com.zaxxer.hikari.HikariConfig - transactionIsolation............default
-DEBUG com.zaxxer.hikari.HikariConfig - username........................"user"
-DEBUG com.zaxxer.hikari.HikariConfig - validationTimeout...............5000
-INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to create/setup connection: El intento de conexión falló.
-DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Cannot acquire connection from data source
-org.postgresql.util.PSQLException: El intento de conexión falló.
-	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:354)
-	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:54)
-	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:263)
-	at org.postgresql.Driver.makeConnection(Driver.java:443)
-	at org.postgresql.Driver.connect(Driver.java:297)
-	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:138)
-	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:359)
-	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:201)
-	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:470)
-	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:561)
-	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:100)
-	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:112)
-	at org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration.getConnectionUrl(H2ConsoleAutoConfiguration.java:94)
-	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
-	at java.base/java.util.stream.SortedOps$RefSortingSink.end(SortedOps.java:395)
-	at java.base/java.util.stream.Sink$ChainedReference.end(Sink.java:258)
-	at java.base/java.util.stream.Sink$ChainedReference.end(Sink.java:258)
-	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:510)
-	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
-	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:575)
-	at java.base/java.util.stream.AbstractPipeline.evaluateToArrayNode(AbstractPipeline.java:260)
-	at java.base/java.util.stream.ReferencePipeline.toArray(ReferencePipeline.java:616)
-	at java.base/java.util.stream.ReferencePipeline.toArray(ReferencePipeline.java:622)
-	at java.base/java.util.stream.ReferencePipeline.toList(ReferencePipeline.java:627)
-	at org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration.logDataSources(H2ConsoleAutoConfiguration.java:86)
-	at org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration.lambda$h2Console$0(H2ConsoleAutoConfiguration.java:69)
-	at org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration.withThreadContextClassLoader(H2ConsoleAutoConfiguration.java:78)
-	at org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration.h2Console(H2ConsoleAutoConfiguration.java:69)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:139)
-	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653)
-	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:645)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1332)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1162)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:560)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:520)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:326)
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:324)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:205)
-	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.getOrderedBeansOfType(ServletContextInitializerBeans.java:210)
-	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.getOrderedBeansOfType(ServletContextInitializerBeans.java:201)
-	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addServletContextInitializerBeans(ServletContextInitializerBeans.java:96)
-	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.<init>(ServletContextInitializerBeans.java:85)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.getServletContextInitializerBeans(ServletWebServerApplicationContext.java:261)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.selfInitialize(ServletWebServerApplicationContext.java:235)
-	at org.springframework.boot.web.embedded.tomcat.TomcatStarter.onStartup(TomcatStarter.java:52)
-	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4875)
-	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:183)
-	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1332)
-	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1322)
-	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
-	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
-	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:871)
-	at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:846)
-	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:183)
-	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1332)
-	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1322)
-	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
-	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
-	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:871)
-	at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:241)
-	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:183)
-	at org.apache.catalina.core.StandardService.startInternal(StandardService.java:428)
-	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:183)
-	at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:913)
-	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:183)
-	at org.apache.catalina.startup.Tomcat.start(Tomcat.java:485)
-	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.initialize(TomcatWebServer.java:123)
-	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.<init>(TomcatWebServer.java:104)
-	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getTomcatWebServer(TomcatServletWebServerFactory.java:488)
-	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getWebServer(TomcatServletWebServerFactory.java:210)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.createWebServer(ServletWebServerApplicationContext.java:183)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:161)
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:578)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:732)
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:434)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:310)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1304)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1293)
-	at pt.ul.fc.css.soccernow.SoccerNowApplication.main(SoccerNowApplication.java:14)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:49)
-Caused by: java.net.UnknownHostException: pgserver
-	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:572)
-	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
-	at java.base/java.net.Socket.connect(Socket.java:633)
-	at org.postgresql.core.PGStream.createSocket(PGStream.java:243)
-	at org.postgresql.core.PGStream.<init>(PGStream.java:98)
-	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:132)
-	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:258)
-	... 92 common frames omitted
-ERROR com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Exception during pool initialization.
-org.postgresql.util.PSQLException: El intento de conexión falló.
-	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:354)
-	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:54)
-	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:263)
-	at org.postgresql.Driver.makeConnection(Driver.java:443)
-	at org.postgresql.Driver.connect(Driver.java:297)
-	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:138)
-	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:359)
-	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:201)
-	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:470)
-	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:561)
-	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:100)
-	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:112)
-	at org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration.getConnectionUrl(H2ConsoleAutoConfiguration.java:94)
-	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
-	at java.base/java.util.stream.SortedOps$RefSortingSink.end(SortedOps.java:395)
-	at java.base/java.util.stream.Sink$ChainedReference.end(Sink.java:258)
-	at java.base/java.util.stream.Sink$ChainedReference.end(Sink.java:258)
-	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:510)
-	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
-	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:575)
-	at java.base/java.util.stream.AbstractPipeline.evaluateToArrayNode(AbstractPipeline.java:260)
-	at java.base/java.util.stream.ReferencePipeline.toArray(ReferencePipeline.java:616)
-	at java.base/java.util.stream.ReferencePipeline.toArray(ReferencePipeline.java:622)
-	at java.base/java.util.stream.ReferencePipeline.toList(ReferencePipeline.java:627)
-	at org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration.logDataSources(H2ConsoleAutoConfiguration.java:86)
-	at org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration.lambda$h2Console$0(H2ConsoleAutoConfiguration.java:69)
-	at org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration.withThreadContextClassLoader(H2ConsoleAutoConfiguration.java:78)
-	at org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration.h2Console(H2ConsoleAutoConfiguration.java:69)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:139)
-	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653)
-	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:645)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1332)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1162)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:560)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:520)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:326)
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:324)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:205)
-	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.getOrderedBeansOfType(ServletContextInitializerBeans.java:210)
-	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.getOrderedBeansOfType(ServletContextInitializerBeans.java:201)
-	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addServletContextInitializerBeans(ServletContextInitializerBeans.java:96)
-	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.<init>(ServletContextInitializerBeans.java:85)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.getServletContextInitializerBeans(ServletWebServerApplicationContext.java:261)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.selfInitialize(ServletWebServerApplicationContext.java:235)
-	at org.springframework.boot.web.embedded.tomcat.TomcatStarter.onStartup(TomcatStarter.java:52)
-	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4875)
-	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:183)
-	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1332)
-	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1322)
-	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
-	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
-	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:871)
-	at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:846)
-	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:183)
-	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1332)
-	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1322)
-	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
-	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
-	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:871)
-	at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:241)
-	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:183)
-	at org.apache.catalina.core.StandardService.startInternal(StandardService.java:428)
-	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:183)
-	at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:913)
-	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:183)
-	at org.apache.catalina.startup.Tomcat.start(Tomcat.java:485)
-	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.initialize(TomcatWebServer.java:123)
-	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.<init>(TomcatWebServer.java:104)
-	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getTomcatWebServer(TomcatServletWebServerFactory.java:488)
-	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getWebServer(TomcatServletWebServerFactory.java:210)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.createWebServer(ServletWebServerApplicationContext.java:183)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:161)
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:578)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:732)
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:434)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:310)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1304)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1293)
-	at pt.ul.fc.css.soccernow.SoccerNowApplication.main(SoccerNowApplication.java:14)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:49)
-Caused by: java.net.UnknownHostException: pgserver
-	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:572)
-	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
-	at java.base/java.net.Socket.connect(Socket.java:633)
-	at org.postgresql.core.PGStream.createSocket(PGStream.java:243)
-	at org.postgresql.core.PGStream.<init>(PGStream.java:98)
-	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:132)
-	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:258)
-	... 92 common frames omitted
-DEBUG com.zaxxer.hikari.HikariConfig - HikariPool-1 - configuration:
-DEBUG com.zaxxer.hikari.HikariConfig - allowPoolSuspension.............false
-DEBUG com.zaxxer.hikari.HikariConfig - autoCommit......................true
-DEBUG com.zaxxer.hikari.HikariConfig - catalog.........................none
-DEBUG com.zaxxer.hikari.HikariConfig - connectionInitSql...............none
-DEBUG com.zaxxer.hikari.HikariConfig - connectionTestQuery.............none
-DEBUG com.zaxxer.hikari.HikariConfig - connectionTimeout...............20000
-DEBUG com.zaxxer.hikari.HikariConfig - dataSource......................none
-DEBUG com.zaxxer.hikari.HikariConfig - dataSourceClassName.............none
-DEBUG com.zaxxer.hikari.HikariConfig - dataSourceJNDI..................none
-DEBUG com.zaxxer.hikari.HikariConfig - dataSourceProperties............{password=<masked>}
-DEBUG com.zaxxer.hikari.HikariConfig - driverClassName................."org.postgresql.Driver"
-DEBUG com.zaxxer.hikari.HikariConfig - exceptionOverrideClassName......none
-DEBUG com.zaxxer.hikari.HikariConfig - healthCheckProperties...........{}
-DEBUG com.zaxxer.hikari.HikariConfig - healthCheckRegistry.............none
-DEBUG com.zaxxer.hikari.HikariConfig - idleTimeout.....................600000
-DEBUG com.zaxxer.hikari.HikariConfig - initializationFailTimeout.......1
-DEBUG com.zaxxer.hikari.HikariConfig - isolateInternalQueries..........false
-DEBUG com.zaxxer.hikari.HikariConfig - jdbcUrl.........................jdbc:postgresql://pgserver:5432/soccernowdb
-DEBUG com.zaxxer.hikari.HikariConfig - keepaliveTime...................0
-DEBUG com.zaxxer.hikari.HikariConfig - leakDetectionThreshold..........0
-DEBUG com.zaxxer.hikari.HikariConfig - maxLifetime.....................1800000
-DEBUG com.zaxxer.hikari.HikariConfig - maximumPoolSize.................5
-DEBUG com.zaxxer.hikari.HikariConfig - metricRegistry..................none
-DEBUG com.zaxxer.hikari.HikariConfig - metricsTrackerFactory...........none
-DEBUG com.zaxxer.hikari.HikariConfig - minimumIdle.....................5
-DEBUG com.zaxxer.hikari.HikariConfig - password........................<masked>
-DEBUG com.zaxxer.hikari.HikariConfig - poolName........................"HikariPool-1"
-DEBUG com.zaxxer.hikari.HikariConfig - readOnly........................false
-DEBUG com.zaxxer.hikari.HikariConfig - registerMbeans..................false
-DEBUG com.zaxxer.hikari.HikariConfig - scheduledExecutor...............none
-DEBUG com.zaxxer.hikari.HikariConfig - schema..........................none
-DEBUG com.zaxxer.hikari.HikariConfig - threadFactory...................internal
-DEBUG com.zaxxer.hikari.HikariConfig - transactionIsolation............default
-DEBUG com.zaxxer.hikari.HikariConfig - username........................"user"
-DEBUG com.zaxxer.hikari.HikariConfig - validationTimeout...............5000
-INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to create/setup connection: El intento de conexión falló.
-DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Cannot acquire connection from data source
-org.postgresql.util.PSQLException: El intento de conexión falló.
-	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:354)
-	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:54)
-	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:263)
-	at org.postgresql.Driver.makeConnection(Driver.java:443)
-	at org.postgresql.Driver.connect(Driver.java:297)
-	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:138)
-	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:359)
-	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:201)
-	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:470)
-	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:561)
-	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:100)
-	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:112)
-	at org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl.getConnection(DatasourceConnectionProviderImpl.java:122)
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess.obtainConnection(JdbcEnvironmentInitiator.java:284)
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:177)
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:36)
-	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.initiateService(StandardServiceRegistryImpl.java:119)
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:255)
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:230)
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:207)
-	at org.hibernate.boot.model.relational.Database.<init>(Database.java:44)
-	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.getDatabase(InFlightMetadataCollectorImpl.java:218)
-	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.<init>(InFlightMetadataCollectorImpl.java:191)
-	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:138)
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:1348)
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1419)
-	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:66)
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:376)
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:409)
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396)
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:352)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1816)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1766)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:598)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:520)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:326)
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:324)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
-	at org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:1132)
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:907)
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:584)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:732)
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:434)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:310)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1304)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1293)
-	at pt.ul.fc.css.soccernow.SoccerNowApplication.main(SoccerNowApplication.java:14)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:49)
-Caused by: java.net.UnknownHostException: pgserver
-	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:572)
-	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
-	at java.base/java.net.Socket.connect(Socket.java:633)
-	at org.postgresql.core.PGStream.createSocket(PGStream.java:243)
-	at org.postgresql.core.PGStream.<init>(PGStream.java:98)
-	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:132)
-	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:258)
-	... 53 common frames omitted
-ERROR com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Exception during pool initialization.
-org.postgresql.util.PSQLException: El intento de conexión falló.
-	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:354)
-	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:54)
-	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:263)
-	at org.postgresql.Driver.makeConnection(Driver.java:443)
-	at org.postgresql.Driver.connect(Driver.java:297)
-	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:138)
-	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:359)
-	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:201)
-	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:470)
-	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:561)
-	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:100)
-	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:112)
-	at org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl.getConnection(DatasourceConnectionProviderImpl.java:122)
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess.obtainConnection(JdbcEnvironmentInitiator.java:284)
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:177)
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:36)
-	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.initiateService(StandardServiceRegistryImpl.java:119)
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:255)
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:230)
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:207)
-	at org.hibernate.boot.model.relational.Database.<init>(Database.java:44)
-	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.getDatabase(InFlightMetadataCollectorImpl.java:218)
-	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.<init>(InFlightMetadataCollectorImpl.java:191)
-	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:138)
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:1348)
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1419)
-	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:66)
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:376)
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:409)
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396)
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:352)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1816)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1766)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:598)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:520)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:326)
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:324)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
-	at org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:1132)
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:907)
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:584)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:732)
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:434)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:310)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1304)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1293)
-	at pt.ul.fc.css.soccernow.SoccerNowApplication.main(SoccerNowApplication.java:14)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:49)
-Caused by: java.net.UnknownHostException: pgserver
-	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:572)
-	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
-	at java.base/java.net.Socket.connect(Socket.java:633)
-	at org.postgresql.core.PGStream.createSocket(PGStream.java:243)
-	at org.postgresql.core.PGStream.<init>(PGStream.java:98)
-	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:132)
-	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:258)
-	... 53 common frames omitted
-ERROR o.s.o.j.LocalContainerEntityManagerFactoryBean - Failed to initialize JPA EntityManagerFactory: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is java.lang.IllegalStateException: PostInitCallback queue could not be processed...
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.User) `sqmMultiTableMutationStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.User) `sqmMultiTableInsertStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.Referee) `sqmMultiTableMutationStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.Referee) `sqmMultiTableInsertStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.Player) `sqmMultiTableMutationStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.Player) `sqmMultiTableInsertStrategy` interpretation
-
-WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is java.lang.IllegalStateException: PostInitCallback queue could not be processed...
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.User) `sqmMultiTableMutationStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.User) `sqmMultiTableInsertStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.Referee) `sqmMultiTableMutationStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.Referee) `sqmMultiTableInsertStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.Player) `sqmMultiTableMutationStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.Player) `sqmMultiTableInsertStrategy` interpretation
-
-INFO  o.s.b.a.l.ConditionEvaluationReportLogger - 
-
-Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
-ERROR o.s.boot.SpringApplication - Application run failed
-org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is java.lang.IllegalStateException: PostInitCallback queue could not be processed...
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.User) `sqmMultiTableMutationStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.User) `sqmMultiTableInsertStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.Referee) `sqmMultiTableMutationStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.Referee) `sqmMultiTableInsertStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.Player) `sqmMultiTableMutationStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.Player) `sqmMultiTableInsertStrategy` interpretation
-
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1770)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:598)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:520)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:326)
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:324)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
-	at org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:1132)
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:907)
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:584)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:732)
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:434)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:310)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1304)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1293)
-	at pt.ul.fc.css.soccernow.SoccerNowApplication.main(SoccerNowApplication.java:14)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:49)
-Caused by: jakarta.persistence.PersistenceException: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is java.lang.IllegalStateException: PostInitCallback queue could not be processed...
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.User) `sqmMultiTableMutationStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.User) `sqmMultiTableInsertStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.Referee) `sqmMultiTableMutationStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.Referee) `sqmMultiTableInsertStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.Player) `sqmMultiTableMutationStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.Player) `sqmMultiTableInsertStrategy` interpretation
-
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:421)
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396)
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:352)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1816)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1766)
-	... 21 common frames omitted
-Caused by: java.lang.IllegalStateException: PostInitCallback queue could not be processed...
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.User) `sqmMultiTableMutationStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.User) `sqmMultiTableInsertStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.Referee) `sqmMultiTableMutationStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.Referee) `sqmMultiTableInsertStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.Player) `sqmMultiTableMutationStrategy` interpretation
-        - PostInitCallbackEntry - Entity(pt.ul.fc.css.soccernow.domain.Player) `sqmMultiTableInsertStrategy` interpretation
-
-	at org.hibernate.metamodel.mapping.internal.MappingModelCreationProcess.executePostInitCallbacks(MappingModelCreationProcess.java:146)
-	at org.hibernate.metamodel.mapping.internal.MappingModelCreationProcess.execute(MappingModelCreationProcess.java:90)
-	at org.hibernate.metamodel.mapping.internal.MappingModelCreationProcess.process(MappingModelCreationProcess.java:39)
-	at org.hibernate.metamodel.model.domain.internal.MappingMetamodelImpl.finishInitialization(MappingMetamodelImpl.java:229)
-	at org.hibernate.metamodel.internal.RuntimeMetamodelsImpl.finishInitialization(RuntimeMetamodelsImpl.java:60)
-	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:311)
-	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:415)
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1423)
-	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:66)
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:376)
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:409)
-	... 25 common frames omitted
-	Suppressed: java.lang.UnsupportedOperationException: CteInsertStrategy can only be used with Dialects that support CTE that can take UPDATE or DELETE statements as well
-		at org.hibernate.query.sqm.mutation.internal.cte.CteInsertStrategy.<init>(CteInsertStrategy.java:123)
-		at org.hibernate.query.sqm.mutation.internal.cte.CteInsertStrategy.<init>(CteInsertStrategy.java:107)
-		at org.hibernate.dialect.PostgreSQLDialect.getFallbackSqmInsertStrategy(PostgreSQLDialect.java:828)
-		at org.hibernate.query.sqm.mutation.internal.SqmMutationStrategyHelper.resolveInsertStrategy(SqmMutationStrategyHelper.java:87)
-		at org.hibernate.persister.entity.AbstractEntityPersister.interpretSqmMultiTableInsertStrategy(AbstractEntityPersister.java:5987)
-		at org.hibernate.persister.entity.AbstractEntityPersister.lambda$prepareMappingModel$12(AbstractEntityPersister.java:5840)
-		at org.hibernate.metamodel.mapping.internal.MappingModelCreationProcess$PostInitCallbackEntry.process(MappingModelCreationProcess.java:210)
-		at org.hibernate.metamodel.mapping.internal.MappingModelCreationProcess.executePostInitCallbacks(MappingModelCreationProcess.java:108)
-		... 35 common frames omitted
-	Suppressed: java.lang.UnsupportedOperationException: CteMutationStrategy can only be used with Dialects that support CTE that can take UPDATE or DELETE statements as well
-		at org.hibernate.query.sqm.mutation.internal.cte.CteMutationStrategy.<init>(CteMutationStrategy.java:80)
-		at org.hibernate.query.sqm.mutation.internal.cte.CteMutationStrategy.<init>(CteMutationStrategy.java:64)
-		at org.hibernate.dialect.PostgreSQLDialect.getFallbackSqmMutationStrategy(PostgreSQLDialect.java:821)
-		at org.hibernate.query.sqm.mutation.internal.SqmMutationStrategyHelper.resolveStrategy(SqmMutationStrategyHelper.java:62)
-		at org.hibernate.persister.entity.AbstractEntityPersister.interpretSqmMultiTableStrategy(AbstractEntityPersister.java:5972)
-		at org.hibernate.persister.entity.AbstractEntityPersister.lambda$prepareMappingModel$11(AbstractEntityPersister.java:5807)
-		at org.hibernate.metamodel.mapping.internal.MappingModelCreationProcess$PostInitCallbackEntry.process(MappingModelCreationProcess.java:210)
-		at org.hibernate.metamodel.mapping.internal.MappingModelCreationProcess.executePostInitCallbacks(MappingModelCreationProcess.java:108)
-		... 35 common frames omitted
-	Suppressed: java.lang.UnsupportedOperationException: CteMutationStrategy can only be used with Dialects that support CTE that can take UPDATE or DELETE statements as well
-		at org.hibernate.query.sqm.mutation.internal.cte.CteMutationStrategy.<init>(CteMutationStrategy.java:80)
-		at org.hibernate.query.sqm.mutation.internal.cte.CteMutationStrategy.<init>(CteMutationStrategy.java:64)
-		at org.hibernate.dialect.PostgreSQLDialect.getFallbackSqmMutationStrategy(PostgreSQLDialect.java:821)
-		at org.hibernate.query.sqm.mutation.internal.SqmMutationStrategyHelper.resolveStrategy(SqmMutationStrategyHelper.java:62)
-		at org.hibernate.persister.entity.AbstractEntityPersister.interpretSqmMultiTableStrategy(AbstractEntityPersister.java:5972)
-		at org.hibernate.persister.entity.AbstractEntityPersister.lambda$prepareMappingModel$11(AbstractEntityPersister.java:5807)
-		at org.hibernate.metamodel.mapping.internal.MappingModelCreationProcess$PostInitCallbackEntry.process(MappingModelCreationProcess.java:210)
-		at org.hibernate.metamodel.mapping.internal.MappingModelCreationProcess.executePostInitCallbacks(MappingModelCreationProcess.java:108)
-		... 35 common frames omitted
-	Suppressed: java.lang.UnsupportedOperationException: CteMutationStrategy can only be used with Dialects that support CTE that can take UPDATE or DELETE statements as well
-		at org.hibernate.query.sqm.mutation.internal.cte.CteMutationStrategy.<init>(CteMutationStrategy.java:80)
-		at org.hibernate.query.sqm.mutation.internal.cte.CteMutationStrategy.<init>(CteMutationStrategy.java:64)
-		at org.hibernate.dialect.PostgreSQLDialect.getFallbackSqmMutationStrategy(PostgreSQLDialect.java:821)
-		at org.hibernate.query.sqm.mutation.internal.SqmMutationStrategyHelper.resolveStrategy(SqmMutationStrategyHelper.java:62)
-		at org.hibernate.persister.entity.AbstractEntityPersister.interpretSqmMultiTableStrategy(AbstractEntityPersister.java:5972)
-		at org.hibernate.persister.entity.AbstractEntityPersister.lambda$prepareMappingModel$11(AbstractEntityPersister.java:5807)
-		at org.hibernate.metamodel.mapping.internal.MappingModelCreationProcess$PostInitCallbackEntry.process(MappingModelCreationProcess.java:210)
-		at org.hibernate.metamodel.mapping.internal.MappingModelCreationProcess.executePostInitCallbacks(MappingModelCreationProcess.java:108)
-		... 35 common frames omitted
-	Suppressed: java.lang.UnsupportedOperationException: CteInsertStrategy can only be used with Dialects that support CTE that can take UPDATE or DELETE statements as well
-		at org.hibernate.query.sqm.mutation.internal.cte.CteInsertStrategy.<init>(CteInsertStrategy.java:123)
-		at org.hibernate.query.sqm.mutation.internal.cte.CteInsertStrategy.<init>(CteInsertStrategy.java:107)
-		at org.hibernate.dialect.PostgreSQLDialect.getFallbackSqmInsertStrategy(PostgreSQLDialect.java:828)
-		at org.hibernate.query.sqm.mutation.internal.SqmMutationStrategyHelper.resolveInsertStrategy(SqmMutationStrategyHelper.java:87)
-		at org.hibernate.persister.entity.AbstractEntityPersister.interpretSqmMultiTableInsertStrategy(AbstractEntityPersister.java:5987)
-		at org.hibernate.persister.entity.AbstractEntityPersister.lambda$prepareMappingModel$12(AbstractEntityPersister.java:5840)
-		at org.hibernate.metamodel.mapping.internal.MappingModelCreationProcess$PostInitCallbackEntry.process(MappingModelCreationProcess.java:210)
-		at org.hibernate.metamodel.mapping.internal.MappingModelCreationProcess.executePostInitCallbacks(MappingModelCreationProcess.java:108)
-		... 35 common frames omitted
-	Suppressed: java.lang.UnsupportedOperationException: CteInsertStrategy can only be used with Dialects that support CTE that can take UPDATE or DELETE statements as well
-		at org.hibernate.query.sqm.mutation.internal.cte.CteInsertStrategy.<init>(CteInsertStrategy.java:123)
-		at org.hibernate.query.sqm.mutation.internal.cte.CteInsertStrategy.<init>(CteInsertStrategy.java:107)
-		at org.hibernate.dialect.PostgreSQLDialect.getFallbackSqmInsertStrategy(PostgreSQLDialect.java:828)
-		at org.hibernate.query.sqm.mutation.internal.SqmMutationStrategyHelper.resolveInsertStrategy(SqmMutationStrategyHelper.java:87)
-		at org.hibernate.persister.entity.AbstractEntityPersister.interpretSqmMultiTableInsertStrategy(AbstractEntityPersister.java:5987)
-		at org.hibernate.persister.entity.AbstractEntityPersister.lambda$prepareMappingModel$12(AbstractEntityPersister.java:5840)
-		at org.hibernate.metamodel.mapping.internal.MappingModelCreationProcess$PostInitCallbackEntry.process(MappingModelCreationProcess.java:210)
-		at org.hibernate.metamodel.mapping.internal.MappingModelCreationProcess.executePostInitCallbacks(MappingModelCreationProcess.java:108)
-		... 35 common frames omitted
-[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
-[[1;34mINFO[m] [1;32mBUILD SUCCESS[m
-[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
-[[1;34mINFO[m] Total time:  17.948 s
-[[1;34mINFO[m] Finished at: 2025-04-27T18:52:23+01:00
-[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+Attaching to java_app
+[36mjava_app         |[0m 
+[36mjava_app         |[0m   .   ____          _            __ _ _
+[36mjava_app         |[0m  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+[36mjava_app         |[0m ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+[36mjava_app         |[0m  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+[36mjava_app         |[0m   '  |____| .__|_| |_|_| |_\__, | / / / /
+[36mjava_app         |[0m  =========|_|==============|___/=/_/_/_/
+[36mjava_app         |[0m  :: Spring Boot ::                (v3.0.5)
+[36mjava_app         |[0m 
+[36mjava_app         |[0m INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+[36mjava_app         |[0m INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 102 ms. Found 4 JPA repository interfaces.
+[36mjava_app         |[0m INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+[36mjava_app         |[0m INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2232 ms
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - Driver class org.postgresql.Driver found in Thread context class loader org.springframework.boot.loader.LaunchedURLClassLoader@16b98e56
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - HikariPool-1 - configuration:
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - allowPoolSuspension.............false
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - autoCommit......................true
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - catalog.........................none
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - connectionInitSql...............none
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - connectionTestQuery.............none
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - connectionTimeout...............20000
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - dataSource......................none
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - dataSourceClassName.............none
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - dataSourceJNDI..................none
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - dataSourceProperties............{password=<masked>}
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - driverClassName................."org.postgresql.Driver"
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - exceptionOverrideClassName......none
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - healthCheckProperties...........{}
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - healthCheckRegistry.............none
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - idleTimeout.....................600000
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - initializationFailTimeout.......1
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - isolateInternalQueries..........false
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - jdbcUrl.........................jdbc:postgresql://pgserver:5432/soccernowdb
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - keepaliveTime...................0
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - leakDetectionThreshold..........0
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - maxLifetime.....................1800000
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - maximumPoolSize.................5
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - metricRegistry..................none
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - metricsTrackerFactory...........none
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - minimumIdle.....................5
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - password........................<masked>
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - poolName........................"HikariPool-1"
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - readOnly........................false
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - registerMbeans..................false
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - scheduledExecutor...............none
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - schema..........................none
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - threadFactory...................internal
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - transactionIsolation............default
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - username........................"user"
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.HikariConfig - validationTimeout...............5000
+[36mjava_app         |[0m INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+[36mjava_app         |[0m INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1af05b03
+[36mjava_app         |[0m INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=1, active=0, idle=1, waiting=0)
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@6cfbb5be
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@23015c6a
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@6ae5501f
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@432ea325
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - After adding stats (total=5, active=0, idle=5, waiting=0)
+[36mjava_app         |[0m Hibernate: alter table if exists player drop constraint if exists FK24sdir3eydd9p2ykkyvugpvmu
+[36mjava_app         |[0m Hibernate: alter table if exists referee drop constraint if exists FKh7d15hfodhtvfg3id9cyfg1su
+[36mjava_app         |[0m Hibernate: alter table if exists team_players drop constraint if exists FKoh3nyypbfjy208372s2aq12ei
+[36mjava_app         |[0m Hibernate: alter table if exists team_players drop constraint if exists FKsaxd2ydjam5mwujaw9yvdhshi
+[36mjava_app         |[0m Hibernate: drop table if exists player cascade
+[36mjava_app         |[0m Hibernate: drop table if exists referee cascade
+[36mjava_app         |[0m Hibernate: drop table if exists team cascade
+[36mjava_app         |[0m Hibernate: drop table if exists team_players cascade
+[36mjava_app         |[0m Hibernate: drop table if exists user cascade
+[36mjava_app         |[0m Hibernate: create table player (preferred_position varchar(255), id bigint not null, primary key (id))
+[36mjava_app         |[0m Hibernate: create table referee (certified boolean not null, id bigint not null, primary key (id))
+[36mjava_app         |[0m Hibernate: create table team (id bigserial not null, name varchar(255), primary key (id))
+[36mjava_app         |[0m Hibernate: create table team_players (teams_id bigint not null, players_id bigint not null, primary key (teams_id, players_id))
+[36mjava_app         |[0m Hibernate: create table user (id bigserial not null, email varchar(255), name varchar(255), primary key (id))
+[36mjava_app         |[0m Hibernate: alter table if exists user add constraint UK_ob8kqyqqgmefl0aco34akdtpe unique (email)
+[36mjava_app         |[0m Hibernate: alter table if exists player add constraint FK24sdir3eydd9p2ykkyvugpvmu foreign key (id) references user
+[36mjava_app         |[0m Hibernate: alter table if exists referee add constraint FKh7d15hfodhtvfg3id9cyfg1su foreign key (id) references user
+[36mjava_app         |[0m Hibernate: alter table if exists team_players add constraint FKoh3nyypbfjy208372s2aq12ei foreign key (players_id) references player
+[36mjava_app         |[0m Hibernate: alter table if exists team_players add constraint FKsaxd2ydjam5mwujaw9yvdhshi foreign key (teams_id) references team
+[36mjava_app         |[0m INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+[36mjava_app         |[0m WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+[36mjava_app         |[0m WARN  o.s.b.a.t.ThymeleafAutoConfiguration$DefaultTemplateResolverConfiguration - Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+[36mjava_app         |[0m INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+[36mjava_app         |[0m do some sanity tests here
+[36mjava_app         |[0m INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+[36mjava_app         |[0m INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=5, active=0, idle=5, waiting=0)
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled (queueDepth=0).
+[36mjava_app         |[0m Hibernate: insert into user (email, name) values (?, ?)
+[36mjava_app         |[0m ERROR o.h.e.jdbc.spi.SqlExceptionHelper - ERROR: syntax error at or near "user"
+[36mjava_app         |[0m   Position: 13
+[36mjava_app         |[0m ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.dao.InvalidDataAccessResourceUsageException: could not execute statement; SQL [n/a]] with root cause
+[36mjava_app         |[0m org.postgresql.util.PSQLException: ERROR: syntax error at or near "user"
+[36mjava_app         |[0m   Position: 13
+[36mjava_app         |[0m 	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2713)
+[36mjava_app         |[0m 	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2401)
+[36mjava_app         |[0m 	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:368)
+[36mjava_app         |[0m 	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:498)
+[36mjava_app         |[0m 	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:415)
+[36mjava_app         |[0m 	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:190)
+[36mjava_app         |[0m 	at org.postgresql.jdbc.PgPreparedStatement.executeUpdate(PgPreparedStatement.java:152)
+[36mjava_app         |[0m 	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+[36mjava_app         |[0m 	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+[36mjava_app         |[0m 	at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:197)
+[36mjava_app         |[0m 	at org.hibernate.dialect.identity.GetGeneratedKeysDelegate.executeAndExtract(GetGeneratedKeysDelegate.java:57)
+[36mjava_app         |[0m 	at org.hibernate.id.insert.AbstractReturningDelegate.performInsert(AbstractReturningDelegate.java:42)
+[36mjava_app         |[0m 	at org.hibernate.persister.entity.AbstractEntityPersister.insert(AbstractEntityPersister.java:3342)
+[36mjava_app         |[0m 	at org.hibernate.persister.entity.AbstractEntityPersister.insert(AbstractEntityPersister.java:3980)
+[36mjava_app         |[0m 	at org.hibernate.action.internal.EntityIdentityInsertAction.execute(EntityIdentityInsertAction.java:80)
+[36mjava_app         |[0m 	at org.hibernate.engine.spi.ActionQueue.execute(ActionQueue.java:653)
+[36mjava_app         |[0m 	at org.hibernate.engine.spi.ActionQueue.addResolvedEntityInsertAction(ActionQueue.java:283)
+[36mjava_app         |[0m 	at org.hibernate.engine.spi.ActionQueue.addInsertAction(ActionQueue.java:264)
+[36mjava_app         |[0m 	at org.hibernate.engine.spi.ActionQueue.addAction(ActionQueue.java:322)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.AbstractSaveEventListener.addInsertAction(AbstractSaveEventListener.java:340)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.AbstractSaveEventListener.performSaveOrReplicate(AbstractSaveEventListener.java:286)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.AbstractSaveEventListener.performSave(AbstractSaveEventListener.java:192)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.AbstractSaveEventListener.saveWithGeneratedId(AbstractSaveEventListener.java:122)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.DefaultPersistEventListener.entityIsTransient(DefaultPersistEventListener.java:184)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.DefaultPersistEventListener.onPersist(DefaultPersistEventListener.java:129)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.DefaultPersistEventListener.onPersist(DefaultPersistEventListener.java:53)
+[36mjava_app         |[0m 	at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:107)
+[36mjava_app         |[0m 	at org.hibernate.internal.SessionImpl.firePersist(SessionImpl.java:737)
+[36mjava_app         |[0m 	at org.hibernate.internal.SessionImpl.persist(SessionImpl.java:721)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[36mjava_app         |[0m 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[36mjava_app         |[0m 	at org.springframework.orm.jpa.ExtendedEntityManagerCreator$ExtendedEntityManagerInvocationHandler.invoke(ExtendedEntityManagerCreator.java:360)
+[36mjava_app         |[0m 	at jdk.proxy2/jdk.proxy2.$Proxy109.persist(Unknown Source)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[36mjava_app         |[0m 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[36mjava_app         |[0m 	at org.springframework.orm.jpa.SharedEntityManagerCreator$SharedEntityManagerInvocationHandler.invoke(SharedEntityManagerCreator.java:311)
+[36mjava_app         |[0m 	at jdk.proxy2/jdk.proxy2.$Proxy109.persist(Unknown Source)
+[36mjava_app         |[0m 	at org.springframework.data.jpa.repository.support.SimpleJpaRepository.save(SimpleJpaRepository.java:613)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[36mjava_app         |[0m 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.RepositoryMethodInvoker$RepositoryFragmentMethodInvoker.lambda$new$0(RepositoryMethodInvoker.java:288)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:136)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:120)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.RepositoryComposition$RepositoryFragments.invoke(RepositoryComposition.java:516)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.RepositoryComposition.invoke(RepositoryComposition.java:285)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.RepositoryFactorySupport$ImplementationMethodExecutionInterceptor.invoke(RepositoryFactorySupport.java:628)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:168)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:143)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:77)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:123)
+[36mjava_app         |[0m 	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:391)
+[36mjava_app         |[0m 	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:137)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:163)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:218)
+[36mjava_app         |[0m 	at jdk.proxy2/jdk.proxy2.$Proxy115.save(Unknown Source)
+[36mjava_app         |[0m 	at pt.ul.fc.css.soccernow.service.UserService.createUser(UserService.java:35)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[36mjava_app         |[0m 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[36mjava_app         |[0m 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:343)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750)
+[36mjava_app         |[0m 	at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:123)
+[36mjava_app         |[0m 	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:391)
+[36mjava_app         |[0m 	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:702)
+[36mjava_app         |[0m 	at pt.ul.fc.css.soccernow.service.UserService$$SpringCGLIB$$0.createUser(<generated>)
+[36mjava_app         |[0m 	at pt.ul.fc.css.soccernow.controller.UserController.createUser(UserController.java:23)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[36mjava_app         |[0m 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[36mjava_app         |[0m 	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:207)
+[36mjava_app         |[0m 	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:152)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1011)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914)
+[36mjava_app         |[0m 	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:563)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+[36mjava_app         |[0m 	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:631)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+[36mjava_app         |[0m 	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.resource.ResourceUrlEncodingFilter.doFilter(ResourceUrlEncodingFilter.java:66)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+[36mjava_app         |[0m 	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+[36mjava_app         |[0m 	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+[36mjava_app         |[0m 	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+[36mjava_app         |[0m 	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+[36mjava_app         |[0m 	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+[36mjava_app         |[0m 	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+[36mjava_app         |[0m 	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:166)
+[36mjava_app         |[0m 	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+[36mjava_app         |[0m 	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:493)
+[36mjava_app         |[0m 	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+[36mjava_app         |[0m 	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+[36mjava_app         |[0m 	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+[36mjava_app         |[0m 	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341)
+[36mjava_app         |[0m 	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:390)
+[36mjava_app         |[0m 	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+[36mjava_app         |[0m 	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:894)
+[36mjava_app         |[0m 	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+[36mjava_app         |[0m 	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+[36mjava_app         |[0m 	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+[36mjava_app         |[0m 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+[36mjava_app         |[0m 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+[36mjava_app         |[0m 	at java.base/java.lang.Thread.run(Thread.java:840)
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=5, active=0, idle=5, waiting=0)
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled (queueDepth=0).
+[36mjava_app         |[0m Hibernate: insert into user (email, name) values (?, ?)
+[36mjava_app         |[0m ERROR o.h.e.jdbc.spi.SqlExceptionHelper - ERROR: syntax error at or near "user"
+[36mjava_app         |[0m   Position: 13
+[36mjava_app         |[0m ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.dao.InvalidDataAccessResourceUsageException: could not execute statement; SQL [n/a]] with root cause
+[36mjava_app         |[0m org.postgresql.util.PSQLException: ERROR: syntax error at or near "user"
+[36mjava_app         |[0m   Position: 13
+[36mjava_app         |[0m 	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2713)
+[36mjava_app         |[0m 	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2401)
+[36mjava_app         |[0m 	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:368)
+[36mjava_app         |[0m 	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:498)
+[36mjava_app         |[0m 	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:415)
+[36mjava_app         |[0m 	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:190)
+[36mjava_app         |[0m 	at org.postgresql.jdbc.PgPreparedStatement.executeUpdate(PgPreparedStatement.java:152)
+[36mjava_app         |[0m 	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+[36mjava_app         |[0m 	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+[36mjava_app         |[0m 	at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:197)
+[36mjava_app         |[0m 	at org.hibernate.dialect.identity.GetGeneratedKeysDelegate.executeAndExtract(GetGeneratedKeysDelegate.java:57)
+[36mjava_app         |[0m 	at org.hibernate.id.insert.AbstractReturningDelegate.performInsert(AbstractReturningDelegate.java:42)
+[36mjava_app         |[0m 	at org.hibernate.persister.entity.AbstractEntityPersister.insert(AbstractEntityPersister.java:3342)
+[36mjava_app         |[0m 	at org.hibernate.persister.entity.AbstractEntityPersister.insert(AbstractEntityPersister.java:3980)
+[36mjava_app         |[0m 	at org.hibernate.action.internal.EntityIdentityInsertAction.execute(EntityIdentityInsertAction.java:80)
+[36mjava_app         |[0m 	at org.hibernate.engine.spi.ActionQueue.execute(ActionQueue.java:653)
+[36mjava_app         |[0m 	at org.hibernate.engine.spi.ActionQueue.addResolvedEntityInsertAction(ActionQueue.java:283)
+[36mjava_app         |[0m 	at org.hibernate.engine.spi.ActionQueue.addInsertAction(ActionQueue.java:264)
+[36mjava_app         |[0m 	at org.hibernate.engine.spi.ActionQueue.addAction(ActionQueue.java:322)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.AbstractSaveEventListener.addInsertAction(AbstractSaveEventListener.java:340)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.AbstractSaveEventListener.performSaveOrReplicate(AbstractSaveEventListener.java:286)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.AbstractSaveEventListener.performSave(AbstractSaveEventListener.java:192)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.AbstractSaveEventListener.saveWithGeneratedId(AbstractSaveEventListener.java:122)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.DefaultPersistEventListener.entityIsTransient(DefaultPersistEventListener.java:184)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.DefaultPersistEventListener.onPersist(DefaultPersistEventListener.java:129)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.DefaultPersistEventListener.onPersist(DefaultPersistEventListener.java:53)
+[36mjava_app         |[0m 	at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:107)
+[36mjava_app         |[0m 	at org.hibernate.internal.SessionImpl.firePersist(SessionImpl.java:737)
+[36mjava_app         |[0m 	at org.hibernate.internal.SessionImpl.persist(SessionImpl.java:721)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[36mjava_app         |[0m 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[36mjava_app         |[0m 	at org.springframework.orm.jpa.ExtendedEntityManagerCreator$ExtendedEntityManagerInvocationHandler.invoke(ExtendedEntityManagerCreator.java:360)
+[36mjava_app         |[0m 	at jdk.proxy2/jdk.proxy2.$Proxy109.persist(Unknown Source)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[36mjava_app         |[0m 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[36mjava_app         |[0m 	at org.springframework.orm.jpa.SharedEntityManagerCreator$SharedEntityManagerInvocationHandler.invoke(SharedEntityManagerCreator.java:311)
+[36mjava_app         |[0m 	at jdk.proxy2/jdk.proxy2.$Proxy109.persist(Unknown Source)
+[36mjava_app         |[0m 	at org.springframework.data.jpa.repository.support.SimpleJpaRepository.save(SimpleJpaRepository.java:613)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[36mjava_app         |[0m 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.RepositoryMethodInvoker$RepositoryFragmentMethodInvoker.lambda$new$0(RepositoryMethodInvoker.java:288)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:136)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:120)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.RepositoryComposition$RepositoryFragments.invoke(RepositoryComposition.java:516)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.RepositoryComposition.invoke(RepositoryComposition.java:285)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.RepositoryFactorySupport$ImplementationMethodExecutionInterceptor.invoke(RepositoryFactorySupport.java:628)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:168)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:143)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:77)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:123)
+[36mjava_app         |[0m 	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:391)
+[36mjava_app         |[0m 	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:137)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:163)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:218)
+[36mjava_app         |[0m 	at jdk.proxy2/jdk.proxy2.$Proxy115.save(Unknown Source)
+[36mjava_app         |[0m 	at pt.ul.fc.css.soccernow.service.UserService.createUser(UserService.java:35)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[36mjava_app         |[0m 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[36mjava_app         |[0m 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:343)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750)
+[36mjava_app         |[0m 	at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:123)
+[36mjava_app         |[0m 	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:391)
+[36mjava_app         |[0m 	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:702)
+[36mjava_app         |[0m 	at pt.ul.fc.css.soccernow.service.UserService$$SpringCGLIB$$0.createUser(<generated>)
+[36mjava_app         |[0m 	at pt.ul.fc.css.soccernow.controller.UserController.createUser(UserController.java:23)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[36mjava_app         |[0m 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[36mjava_app         |[0m 	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:207)
+[36mjava_app         |[0m 	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:152)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1011)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914)
+[36mjava_app         |[0m 	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:563)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+[36mjava_app         |[0m 	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:631)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+[36mjava_app         |[0m 	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.resource.ResourceUrlEncodingFilter.doFilter(ResourceUrlEncodingFilter.java:66)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+[36mjava_app         |[0m 	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+[36mjava_app         |[0m 	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+[36mjava_app         |[0m 	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+[36mjava_app         |[0m 	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+[36mjava_app         |[0m 	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+[36mjava_app         |[0m 	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+[36mjava_app         |[0m 	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:166)
+[36mjava_app         |[0m 	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+[36mjava_app         |[0m 	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:493)
+[36mjava_app         |[0m 	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+[36mjava_app         |[0m 	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+[36mjava_app         |[0m 	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+[36mjava_app         |[0m 	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341)
+[36mjava_app         |[0m 	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:390)
+[36mjava_app         |[0m 	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+[36mjava_app         |[0m 	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:894)
+[36mjava_app         |[0m 	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+[36mjava_app         |[0m 	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+[36mjava_app         |[0m 	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+[36mjava_app         |[0m 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+[36mjava_app         |[0m 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+[36mjava_app         |[0m 	at java.base/java.lang.Thread.run(Thread.java:840)
+[36mjava_app         |[0m Hibernate: insert into user (email, name) values (?, ?)
+[36mjava_app         |[0m ERROR o.h.e.jdbc.spi.SqlExceptionHelper - ERROR: syntax error at or near "user"
+[36mjava_app         |[0m   Position: 13
+[36mjava_app         |[0m ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.dao.InvalidDataAccessResourceUsageException: could not execute statement; SQL [n/a]] with root cause
+[36mjava_app         |[0m org.postgresql.util.PSQLException: ERROR: syntax error at or near "user"
+[36mjava_app         |[0m   Position: 13
+[36mjava_app         |[0m 	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2713)
+[36mjava_app         |[0m 	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2401)
+[36mjava_app         |[0m 	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:368)
+[36mjava_app         |[0m 	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:498)
+[36mjava_app         |[0m 	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:415)
+[36mjava_app         |[0m 	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:190)
+[36mjava_app         |[0m 	at org.postgresql.jdbc.PgPreparedStatement.executeUpdate(PgPreparedStatement.java:152)
+[36mjava_app         |[0m 	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+[36mjava_app         |[0m 	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+[36mjava_app         |[0m 	at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:197)
+[36mjava_app         |[0m 	at org.hibernate.dialect.identity.GetGeneratedKeysDelegate.executeAndExtract(GetGeneratedKeysDelegate.java:57)
+[36mjava_app         |[0m 	at org.hibernate.id.insert.AbstractReturningDelegate.performInsert(AbstractReturningDelegate.java:42)
+[36mjava_app         |[0m 	at org.hibernate.persister.entity.AbstractEntityPersister.insert(AbstractEntityPersister.java:3342)
+[36mjava_app         |[0m 	at org.hibernate.persister.entity.AbstractEntityPersister.insert(AbstractEntityPersister.java:3980)
+[36mjava_app         |[0m 	at org.hibernate.action.internal.EntityIdentityInsertAction.execute(EntityIdentityInsertAction.java:80)
+[36mjava_app         |[0m 	at org.hibernate.engine.spi.ActionQueue.execute(ActionQueue.java:653)
+[36mjava_app         |[0m 	at org.hibernate.engine.spi.ActionQueue.addResolvedEntityInsertAction(ActionQueue.java:283)
+[36mjava_app         |[0m 	at org.hibernate.engine.spi.ActionQueue.addInsertAction(ActionQueue.java:264)
+[36mjava_app         |[0m 	at org.hibernate.engine.spi.ActionQueue.addAction(ActionQueue.java:322)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.AbstractSaveEventListener.addInsertAction(AbstractSaveEventListener.java:340)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.AbstractSaveEventListener.performSaveOrReplicate(AbstractSaveEventListener.java:286)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.AbstractSaveEventListener.performSave(AbstractSaveEventListener.java:192)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.AbstractSaveEventListener.saveWithGeneratedId(AbstractSaveEventListener.java:122)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.DefaultPersistEventListener.entityIsTransient(DefaultPersistEventListener.java:184)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.DefaultPersistEventListener.onPersist(DefaultPersistEventListener.java:129)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.DefaultPersistEventListener.onPersist(DefaultPersistEventListener.java:53)
+[36mjava_app         |[0m 	at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:107)
+[36mjava_app         |[0m 	at org.hibernate.internal.SessionImpl.firePersist(SessionImpl.java:737)
+[36mjava_app         |[0m 	at org.hibernate.internal.SessionImpl.persist(SessionImpl.java:721)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[36mjava_app         |[0m 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[36mjava_app         |[0m 	at org.springframework.orm.jpa.ExtendedEntityManagerCreator$ExtendedEntityManagerInvocationHandler.invoke(ExtendedEntityManagerCreator.java:360)
+[36mjava_app         |[0m 	at jdk.proxy2/jdk.proxy2.$Proxy109.persist(Unknown Source)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[36mjava_app         |[0m 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[36mjava_app         |[0m 	at org.springframework.orm.jpa.SharedEntityManagerCreator$SharedEntityManagerInvocationHandler.invoke(SharedEntityManagerCreator.java:311)
+[36mjava_app         |[0m 	at jdk.proxy2/jdk.proxy2.$Proxy109.persist(Unknown Source)
+[36mjava_app         |[0m 	at org.springframework.data.jpa.repository.support.SimpleJpaRepository.save(SimpleJpaRepository.java:613)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[36mjava_app         |[0m 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.RepositoryMethodInvoker$RepositoryFragmentMethodInvoker.lambda$new$0(RepositoryMethodInvoker.java:288)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:136)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:120)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.RepositoryComposition$RepositoryFragments.invoke(RepositoryComposition.java:516)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.RepositoryComposition.invoke(RepositoryComposition.java:285)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.RepositoryFactorySupport$ImplementationMethodExecutionInterceptor.invoke(RepositoryFactorySupport.java:628)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:168)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:143)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:77)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:123)
+[36mjava_app         |[0m 	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:391)
+[36mjava_app         |[0m 	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:137)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:163)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:218)
+[36mjava_app         |[0m 	at jdk.proxy2/jdk.proxy2.$Proxy115.save(Unknown Source)
+[36mjava_app         |[0m 	at pt.ul.fc.css.soccernow.service.UserService.createUser(UserService.java:35)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[36mjava_app         |[0m 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[36mjava_app         |[0m 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:343)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750)
+[36mjava_app         |[0m 	at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:123)
+[36mjava_app         |[0m 	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:391)
+[36mjava_app         |[0m 	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:702)
+[36mjava_app         |[0m 	at pt.ul.fc.css.soccernow.service.UserService$$SpringCGLIB$$0.createUser(<generated>)
+[36mjava_app         |[0m 	at pt.ul.fc.css.soccernow.controller.UserController.createUser(UserController.java:23)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[36mjava_app         |[0m 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[36mjava_app         |[0m 	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:207)
+[36mjava_app         |[0m 	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:152)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1011)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914)
+[36mjava_app         |[0m 	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:563)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+[36mjava_app         |[0m 	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:631)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+[36mjava_app         |[0m 	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.resource.ResourceUrlEncodingFilter.doFilter(ResourceUrlEncodingFilter.java:66)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+[36mjava_app         |[0m 	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+[36mjava_app         |[0m 	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+[36mjava_app         |[0m 	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+[36mjava_app         |[0m 	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+[36mjava_app         |[0m 	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+[36mjava_app         |[0m 	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+[36mjava_app         |[0m 	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:166)
+[36mjava_app         |[0m 	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+[36mjava_app         |[0m 	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:493)
+[36mjava_app         |[0m 	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+[36mjava_app         |[0m 	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+[36mjava_app         |[0m 	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+[36mjava_app         |[0m 	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341)
+[36mjava_app         |[0m 	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:390)
+[36mjava_app         |[0m 	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+[36mjava_app         |[0m 	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:894)
+[36mjava_app         |[0m 	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+[36mjava_app         |[0m 	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+[36mjava_app         |[0m 	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+[36mjava_app         |[0m 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+[36mjava_app         |[0m 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+[36mjava_app         |[0m 	at java.base/java.lang.Thread.run(Thread.java:840)
+[36mjava_app         |[0m Hibernate: insert into user (email, name) values (?, ?)
+[36mjava_app         |[0m ERROR o.h.e.jdbc.spi.SqlExceptionHelper - ERROR: syntax error at or near "user"
+[36mjava_app         |[0m   Position: 13
+[36mjava_app         |[0m ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.dao.InvalidDataAccessResourceUsageException: could not execute statement; SQL [n/a]] with root cause
+[36mjava_app         |[0m org.postgresql.util.PSQLException: ERROR: syntax error at or near "user"
+[36mjava_app         |[0m   Position: 13
+[36mjava_app         |[0m 	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2713)
+[36mjava_app         |[0m 	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2401)
+[36mjava_app         |[0m 	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:368)
+[36mjava_app         |[0m 	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:498)
+[36mjava_app         |[0m 	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:415)
+[36mjava_app         |[0m 	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:190)
+[36mjava_app         |[0m 	at org.postgresql.jdbc.PgPreparedStatement.executeUpdate(PgPreparedStatement.java:152)
+[36mjava_app         |[0m 	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+[36mjava_app         |[0m 	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+[36mjava_app         |[0m 	at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:197)
+[36mjava_app         |[0m 	at org.hibernate.dialect.identity.GetGeneratedKeysDelegate.executeAndExtract(GetGeneratedKeysDelegate.java:57)
+[36mjava_app         |[0m 	at org.hibernate.id.insert.AbstractReturningDelegate.performInsert(AbstractReturningDelegate.java:42)
+[36mjava_app         |[0m 	at org.hibernate.persister.entity.AbstractEntityPersister.insert(AbstractEntityPersister.java:3342)
+[36mjava_app         |[0m 	at org.hibernate.persister.entity.AbstractEntityPersister.insert(AbstractEntityPersister.java:3980)
+[36mjava_app         |[0m 	at org.hibernate.action.internal.EntityIdentityInsertAction.execute(EntityIdentityInsertAction.java:80)
+[36mjava_app         |[0m 	at org.hibernate.engine.spi.ActionQueue.execute(ActionQueue.java:653)
+[36mjava_app         |[0m 	at org.hibernate.engine.spi.ActionQueue.addResolvedEntityInsertAction(ActionQueue.java:283)
+[36mjava_app         |[0m 	at org.hibernate.engine.spi.ActionQueue.addInsertAction(ActionQueue.java:264)
+[36mjava_app         |[0m 	at org.hibernate.engine.spi.ActionQueue.addAction(ActionQueue.java:322)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.AbstractSaveEventListener.addInsertAction(AbstractSaveEventListener.java:340)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.AbstractSaveEventListener.performSaveOrReplicate(AbstractSaveEventListener.java:286)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.AbstractSaveEventListener.performSave(AbstractSaveEventListener.java:192)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.AbstractSaveEventListener.saveWithGeneratedId(AbstractSaveEventListener.java:122)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.DefaultPersistEventListener.entityIsTransient(DefaultPersistEventListener.java:184)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.DefaultPersistEventListener.onPersist(DefaultPersistEventListener.java:129)
+[36mjava_app         |[0m 	at org.hibernate.event.internal.DefaultPersistEventListener.onPersist(DefaultPersistEventListener.java:53)
+[36mjava_app         |[0m 	at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:107)
+[36mjava_app         |[0m 	at org.hibernate.internal.SessionImpl.firePersist(SessionImpl.java:737)
+[36mjava_app         |[0m 	at org.hibernate.internal.SessionImpl.persist(SessionImpl.java:721)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[36mjava_app         |[0m 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[36mjava_app         |[0m 	at org.springframework.orm.jpa.ExtendedEntityManagerCreator$ExtendedEntityManagerInvocationHandler.invoke(ExtendedEntityManagerCreator.java:360)
+[36mjava_app         |[0m 	at jdk.proxy2/jdk.proxy2.$Proxy109.persist(Unknown Source)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[36mjava_app         |[0m 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[36mjava_app         |[0m 	at org.springframework.orm.jpa.SharedEntityManagerCreator$SharedEntityManagerInvocationHandler.invoke(SharedEntityManagerCreator.java:311)
+[36mjava_app         |[0m 	at jdk.proxy2/jdk.proxy2.$Proxy109.persist(Unknown Source)
+[36mjava_app         |[0m 	at org.springframework.data.jpa.repository.support.SimpleJpaRepository.save(SimpleJpaRepository.java:613)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[36mjava_app         |[0m 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.RepositoryMethodInvoker$RepositoryFragmentMethodInvoker.lambda$new$0(RepositoryMethodInvoker.java:288)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:136)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:120)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.RepositoryComposition$RepositoryFragments.invoke(RepositoryComposition.java:516)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.RepositoryComposition.invoke(RepositoryComposition.java:285)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.RepositoryFactorySupport$ImplementationMethodExecutionInterceptor.invoke(RepositoryFactorySupport.java:628)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:168)
+[36mjava_app         |[0m 	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:143)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:77)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:123)
+[36mjava_app         |[0m 	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:391)
+[36mjava_app         |[0m 	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:137)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:163)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:218)
+[36mjava_app         |[0m 	at jdk.proxy2/jdk.proxy2.$Proxy115.save(Unknown Source)
+[36mjava_app         |[0m 	at pt.ul.fc.css.soccernow.service.UserService.createUser(UserService.java:35)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[36mjava_app         |[0m 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[36mjava_app         |[0m 	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:343)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750)
+[36mjava_app         |[0m 	at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:123)
+[36mjava_app         |[0m 	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:391)
+[36mjava_app         |[0m 	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750)
+[36mjava_app         |[0m 	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:702)
+[36mjava_app         |[0m 	at pt.ul.fc.css.soccernow.service.UserService$$SpringCGLIB$$0.createUser(<generated>)
+[36mjava_app         |[0m 	at pt.ul.fc.css.soccernow.controller.UserController.createUser(UserController.java:23)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[36mjava_app         |[0m 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[36mjava_app         |[0m 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[36mjava_app         |[0m 	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:207)
+[36mjava_app         |[0m 	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:152)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1011)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914)
+[36mjava_app         |[0m 	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:563)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+[36mjava_app         |[0m 	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:631)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+[36mjava_app         |[0m 	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+[36mjava_app         |[0m 	at org.springframework.web.servlet.resource.ResourceUrlEncodingFilter.doFilter(ResourceUrlEncodingFilter.java:66)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+[36mjava_app         |[0m 	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+[36mjava_app         |[0m 	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+[36mjava_app         |[0m 	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+[36mjava_app         |[0m 	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+[36mjava_app         |[0m 	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+[36mjava_app         |[0m 	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174)
+[36mjava_app         |[0m 	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149)
+[36mjava_app         |[0m 	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:166)
+[36mjava_app         |[0m 	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+[36mjava_app         |[0m 	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:493)
+[36mjava_app         |[0m 	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+[36mjava_app         |[0m 	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+[36mjava_app         |[0m 	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+[36mjava_app         |[0m 	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341)
+[36mjava_app         |[0m 	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:390)
+[36mjava_app         |[0m 	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+[36mjava_app         |[0m 	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:894)
+[36mjava_app         |[0m 	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+[36mjava_app         |[0m 	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+[36mjava_app         |[0m 	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+[36mjava_app         |[0m 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+[36mjava_app         |[0m 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+[36mjava_app         |[0m 	at java.base/java.lang.Thread.run(Thread.java:840)
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=5, active=0, idle=5, waiting=0)
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled (queueDepth=0).
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=5, active=0, idle=5, waiting=0)
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled (queueDepth=0).
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=5, active=0, idle=5, waiting=0)
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled (queueDepth=0).
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=5, active=0, idle=5, waiting=0)
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled (queueDepth=0).
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=5, active=0, idle=5, waiting=0)
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled (queueDepth=0).
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=5, active=0, idle=5, waiting=0)
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled (queueDepth=0).
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=5, active=0, idle=5, waiting=0)
+[36mjava_app         |[0m DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled (queueDepth=0).

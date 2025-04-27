@@ -3,6 +3,7 @@ package pt.ul.fc.css.soccernow.domain;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class User {
 
@@ -12,7 +13,7 @@ public abstract class User {
 
     private String name;
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
     // Getters y setters
