@@ -3,6 +3,8 @@
 # Esse ficheiro deve ser rescrito com base nas informações descritas no enunciado do projeto.
 
 ---
+Membros:
+
 André Santos - fc57538
 Erickson Cacondo - fc53653
 Miguel Sanchez - fc64675
