@@ -1,34 +1,28 @@
-HELP.md
+# macOS
+.DS_Store
+*.DS_Store
+__MACOSX/
+
+# Maven
 target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
- .cache/
+*.jar
+*.war
+*.ear
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
+# IDE files
+.idea/
+.vscode/
 *.iml
 *.ipr
+*.iws
+.classpath
+.project
+.settings/
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+# Logs
+logs/
+*.log
 
-### VS Code ###
-.vscode/
+# Other
+# Ignore credenciais e artefactos
+.env
