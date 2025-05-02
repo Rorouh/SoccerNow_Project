@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.util.Set;
 
 @Entity
+@Table(name = "teams")
 public class Team {
 
     @Id
@@ -13,7 +14,13 @@ public class Team {
     private String name;
 
     @ManyToMany
+    @JoinTable(
+            name = "team_players",
+            joinColumns = @JoinColumn(name = "team_id"),
+            inverseJoinColumns = @JoinColumn(name = "player_id")
+    )
     private Set<Player> players;
+
 
     // Getters y setters
     public Long getId() {
