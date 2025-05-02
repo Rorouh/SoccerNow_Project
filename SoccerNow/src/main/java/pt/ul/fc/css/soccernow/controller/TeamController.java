@@ -9,6 +9,7 @@ import pt.ul.fc.css.soccernow.service.TeamService;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/teams")
@@ -30,16 +31,14 @@ public class TeamController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Team> getTeamById(@PathVariable Long id) {
-        return teamService.getTeamById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        Optional<Team> team = teamService.getTeamById(id);
+        return team.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Team> updateTeam(@PathVariable Long id, @Valid @RequestBody TeamDTO teamDTO) {
-        return teamService.updateTeam(id, teamDTO)
-                .map(updatedTeam -> ResponseEntity.ok(updatedTeam))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        Optional<Team> updatedTeam = teamService.updateTeam(id, teamDTO);
+        return updatedTeam.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
@@ -51,11 +50,10 @@ public class TeamController {
         }
     }
 
-
-    @GetMapping("/search")
-    public ResponseEntity<List<Team>> searchTeams(@RequestParam String name) {
-        List<Team> teams = teamService.getTeamsByName(name);
-        return ResponseEntity.ok(teams);
+    @GetMapping("/search/{id}")
+    public ResponseEntity<Team> findTeam(@PathVariable Long id) {
+        Optional<Team> team = teamService.getTeamById(id);
+        return team.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping
