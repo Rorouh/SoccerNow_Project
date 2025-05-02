@@ -78,13 +78,30 @@ public class TeamService {
 
 
     @Transactional(readOnly = true)
-    public Optional<Team> getTeamByName(String name) {
-        return teamRepository.findByName(name).stream().findFirst();
+    public Optional<Team> getTeamById(Long id) {
+        return teamRepository.findById(id);
     }
 
 
     @Transactional(readOnly = true)
-    public List<Team> getAllTeams() {
+    public List<Team> getAllTeam() {
         return teamRepository.findAll();
     }
+
+    @Transactional
+    public Optional<Team> addPlayerToTeam(Long teamId, Long playerId) {
+        Optional<Team> teamOpt = teamRepository.findById(teamId);
+        Optional<Player> playerOpt = playerRepository.findById(playerId);
+
+        if (teamOpt.isEmpty() || playerOpt.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Team team = teamOpt.get();
+        Player player = playerOpt.get();
+
+        team.getPlayers().add(player);
+        return Optional.of(teamRepository.save(team));
+    }
+
 }
