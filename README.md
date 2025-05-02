@@ -3,6 +3,11 @@
 # Esse ficheiro deve ser rescrito com base nas informações descritas no enunciado do projeto.
 
 ---
+Membros:
+
+André Santos - fc57538   -> C2
+Erickson Cacondo - fc53653 -> C3
+Miguel Sanchez - fc64675 -> C1
 
 **Projeto Prático #1:**  
  - O projeto deve ser desenvolvido por grupos de **no máximo três alunos**.  
