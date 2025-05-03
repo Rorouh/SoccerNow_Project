@@ -1,3 +1,5 @@
+package pt.ul.fc.css.soccernow.service;
+
 import pt.ul.fc.css.soccernow.service.TeamService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

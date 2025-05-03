@@ -12,8 +12,10 @@ import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 import pt.ul.fc.css.soccernow.service.exceptions.NotFoundException;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class JogoService {
@@ -28,26 +30,33 @@ public class JogoService {
 
     @Transactional
     public Jogo criarJogo(Jogo jogo) {
-        // Validações de negócio podem ser adicionadas aqui
-        return jogoRepository.save(jogo);
+        // Reutiliza validações completas ao criar jogo
+        return criarJogo(
+            jogo.getDataHora(),
+            jogo.getLocal(),
+            jogo.isAmigavel(),
+            jogo.getHomeTeam().getId(),
+            jogo.getAwayTeam().getId(),
+            jogo.getReferees().stream().map(Referee::getId).collect(Collectors.toSet()),
+            jogo.getPrimaryReferee() != null ? jogo.getPrimaryReferee().getId() : null
+        );
     }
 
     @Transactional
     public Resultado registarResultado(Long jogoId, Resultado resultado) {
-        Optional<Jogo> jogoOpt = jogoRepository.findById(jogoId);
-        if (jogoOpt.isEmpty()) throw new IllegalArgumentException("Jogo não encontrado");
-        Jogo jogo = jogoOpt.get();
-        resultado.setJogo(jogo);
-        jogo.setResultado(resultado);
-        jogoRepository.save(jogo); // Garante persistência bidirecional
-        return resultadoRepository.save(resultado);
+        // Reutiliza validações completas ao registar resultado
+        return registarResultado(
+            jogoId,
+            resultado.getPlacar(),
+            resultado.getEquipaVitoriosa() != null ? resultado.getEquipaVitoriosa().getId() : null
+        );
     }
 
     public Optional<Jogo> obterJogo(Long id) {
         return jogoRepository.findById(id);
     }
 
-    // Novo caso de uso completo – criar jogo amigável ou de campeonato
+    // Cria jogo amigável ou de campeonato com validações de negócio
     @Transactional
     public Jogo criarJogo(LocalDateTime dataHora,
                           String local,
@@ -55,8 +64,10 @@ public class JogoService {
                           Long equipa1Id,
                           Long equipa2Id,
                           Set<Long> arbitroIds,
-                          Long primaryRefereeId) throws NotFoundException, ApplicationException {
+                          Long primaryRefereeId)
+            throws NotFoundException, ApplicationException {
 
+        // 1) Uma equipa não pode jogar contra si própria
         if (equipa1Id.equals(equipa2Id)) {
             throw new ApplicationException("As equipas têm de ser diferentes.");
         }
@@ -71,6 +82,7 @@ public class JogoService {
             throw new NotFoundException("Árbitro(s) não encontrado(s)");
         }
 
+        // 2) Em campeonato, todos árbitros devem ser certificados
         if (!amigavel) {
             boolean allCertified = referees.stream().allMatch(Referee::isCertified);
             if (!allCertified) {
@@ -94,11 +106,12 @@ public class JogoService {
         return jogoRepository.save(jogo);
     }
 
-    // Novo registar resultado
+    // Registra resultado com validações de negócio
     @Transactional
     public Resultado registarResultado(Long jogoId, String placar, Long equipaVitoriosaId)
             throws NotFoundException, ApplicationException {
 
+        // 1) cargar Jogo
         Jogo jogo = jogoRepository.findById(jogoId)
                 .orElseThrow(() -> new NotFoundException("Jogo com ID " + jogoId + " não encontrado."));
 
@@ -106,21 +119,51 @@ public class JogoService {
             throw new ApplicationException("Jogo já tem um resultado registado.");
         }
 
+        // 2) parsear marcador
+        String[] parts = placar.split("-");
+        if (parts.length != 2) {
+            throw new ApplicationException("Formato de placar inválido, use \"golosCasa-golosFora\".");
+        }
+        int gCasa = Integer.parseInt(parts[0].trim());
+        int gFora = Integer.parseInt(parts[1].trim());
+
+        // 3) crear objeto Resultado
         Resultado resultado = new Resultado();
         resultado.setPlacar(placar);
         resultado.setJogo(jogo);
 
         if (equipaVitoriosaId != null) {
+            // 4) cargar Team vencedora — primero NotFoundException
             Team vencedora = teamRepository.findById(equipaVitoriosaId)
-                    .orElseThrow(() -> new NotFoundException("Team vitoriosa com ID " + equipaVitoriosaId + " não encontrada."));
-            if (!Set.of(jogo.getHomeTeam().getId(), jogo.getAwayTeam().getId()).contains(equipaVitoriosaId)) {
+                .orElseThrow(() -> new NotFoundException(
+                    "Team vitoriosa com ID " + equipaVitoriosaId + " não encontrada."));
+
+            // 5) comprobar participación
+            Long homeId = jogo.getHomeTeam().getId();
+            Long awayId = jogo.getAwayTeam().getId();
+            if (!equipaVitoriosaId.equals(homeId) && !equipaVitoriosaId.equals(awayId)) {
                 throw new ApplicationException("Team vitoriosa indicada não participou neste jogo.");
             }
+
+            // 6) validar que marcó mais goles que el adversario
+            boolean ganhou;
+            if (equipaVitoriosaId.equals(homeId)) {
+                ganhou = gCasa > gFora;
+            } else {
+                ganhou = gFora > gCasa;
+            }
+            if (!ganhou) {
+                throw new ApplicationException("Autogolo não permitido: equipa vencedora não bate o adversário.");
+            }
+
             resultado.setEquipaVitoriosa(vencedora);
         }
 
+        // 7) persistir todo
         jogo.setResultado(resultado);
         jogoRepository.save(jogo);
         return resultadoRepository.save(resultado);
     }
+
+
 }
