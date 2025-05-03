@@ -191,6 +191,8 @@ public class JogoServiceTest {
         Team t1 = new Team("A"); t1.setId(1L);
         Team t2 = new Team("B"); t2.setId(2L);
         jogo.setEquipas(Set.of(t1, t2));
+        jogo.setHomeTeam(t1); // time da casa
+        jogo.setAwayTeam(t2); // time visitante
 
         when(jogoRepository.findById(jogoId)).thenReturn(Optional.of(jogo));
         when(teamRepository.findById(equipaVitoriosaId)).thenReturn(Optional.of(t1));
