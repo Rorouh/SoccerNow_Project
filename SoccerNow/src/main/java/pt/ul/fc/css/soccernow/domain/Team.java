@@ -21,11 +21,18 @@ public class Team {
     )
     private Set<Player> players;
 
+    public Team() {}
+
+    public Team(String name) {
+        this.name = name;
+    }
 
     // Getters y setters
     public Long getId() {
         return id;
     }
+
+    public void setId(Long id) { this.id = id; }
 
     public String getName() {
         return name;
