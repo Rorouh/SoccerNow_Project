@@ -75,6 +75,11 @@ public class TeamService {
     }
 
     @Transactional(readOnly = true)
+    public Optional<Team> getTeamByName(String name) {
+        return teamRepository.findByName(name);
+    }
+
+    @Transactional(readOnly = true)
     public List<Team> getAllTeams() {
         return teamRepository.findAll(); // Não há necessidade de Optional aqui.
     }

@@ -35,6 +35,14 @@ public class TeamController {
         return team.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/name")
+    public ResponseEntity<Team> getTeamByName(@RequestParam String name) {
+        Optional<Team> team = teamService.getTeamByName(name);
+        return team.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+
+
     @PutMapping("/{id}")
     public ResponseEntity<Team> updateTeam(@PathVariable Long id, @Valid @RequestBody TeamDTO teamDTO) {
         Optional<Team> updatedTeam = teamService.updateTeam(id, teamDTO);
