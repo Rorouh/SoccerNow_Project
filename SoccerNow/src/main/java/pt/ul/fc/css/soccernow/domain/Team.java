@@ -21,13 +21,19 @@ public class Team {
     )
     private Set<Player> players;
 
+    @OneToMany(mappedBy = "homeTeam")
+    private Set<Jogo> jogosComoVisitada;
+
+    @OneToMany(mappedBy = "awayTeam")
+    private Set<Jogo> jogosComoVisitante;
+
     public Team() {}
 
     public Team(String name) {
         this.name = name;
     }
 
-    // Getters y setters
+    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -48,5 +54,21 @@ public class Team {
 
     public void setPlayers(Set<Player> players) {
         this.players = players;
+    }
+
+    public Set<Jogo> getJogosComoVisitada() {
+        return jogosComoVisitada;
+    }
+
+    public void setJogosComoVisitada(Set<Jogo> jogosComoVisitada) {
+        this.jogosComoVisitada = jogosComoVisitada;
+    }
+
+    public Set<Jogo> getJogosComoVisitante() {
+        return jogosComoVisitante;
+    }
+
+    public void setJogosComoVisitante(Set<Jogo> jogosComoVisitante) {
+        this.jogosComoVisitante = jogosComoVisitante;
     }
 }

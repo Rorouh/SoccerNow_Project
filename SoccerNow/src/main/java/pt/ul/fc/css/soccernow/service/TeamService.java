@@ -56,18 +56,25 @@ public class TeamService {
 
     @Transactional
     public boolean deleteTeam(Long id) {
-        Optional<Team> optionalTeam = teamRepository.findById(id);
-        if (optionalTeam.isEmpty()) return false;
+        Optional<Team> teamOpt = teamRepository.findById(id);
 
-        Team team = optionalTeam.get();
+        if (teamOpt.isEmpty()) {
+            return false;
+        }
 
-        /*boolean hasMatches = matchRepository.hasMatches(team);
-        if (hasMatches) return false;*/
+        Team team = teamOpt.get();
+
+
+        if ((team.getJogosComoVisitada() != null && !team.getJogosComoVisitada().isEmpty()) ||
+                (team.getJogosComoVisitante() != null && !team.getJogosComoVisitante().isEmpty())) {
+            throw new IllegalStateException("Não é possível remover a equipa: existem jogos associados.");
+        }
+
+        team.getPlayers().clear();
 
         teamRepository.delete(team);
         return true;
     }
-
 
     @Transactional(readOnly = true)
     public Optional<Team> getTeamById(Long id) {
@@ -81,7 +88,7 @@ public class TeamService {
 
     @Transactional(readOnly = true)
     public List<Team> getAllTeams() {
-        return teamRepository.findAll(); // Não há necessidade de Optional aqui.
+        return teamRepository.findAll();
     }
 
 
