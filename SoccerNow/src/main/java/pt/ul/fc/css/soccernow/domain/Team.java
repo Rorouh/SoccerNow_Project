@@ -1,6 +1,7 @@
 package pt.ul.fc.css.soccernow.domain;
 
 import jakarta.persistence.*;
+
 import java.util.Set;
 
 @Entity
@@ -68,7 +69,13 @@ public class Team {
         return jogosComoVisitante;
     }
 
+    
     public void setJogosComoVisitante(Set<Jogo> jogosComoVisitante) {
         this.jogosComoVisitante = jogosComoVisitante;
     }
+
+    //SI quisiera acceder a los campeonatos que esta un equipo inscrito desde equipo, utilizariamos esto:
+    //@ManyToMany(mappedBy = "participantes")
+    //private Set<Campeonato> campeonatos = new HashSet<>();
+
 }

@@ -3,6 +3,8 @@ package pt.ul.fc.css.soccernow.controller;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import pt.ul.fc.css.soccernow.domain.Player;
 import pt.ul.fc.css.soccernow.domain.Team;
 import pt.ul.fc.css.soccernow.dto.TeamDTO;
 import pt.ul.fc.css.soccernow.service.TeamService;
@@ -88,4 +90,35 @@ public class TeamController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+
+    @GetMapping("/teams")
+    public ResponseEntity<List<TeamDTO>> listTeams(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "minPlayers", required = false) Integer minPlayers,
+            @RequestParam(value = "minWins", required = false) Long minWins,
+            @RequestParam(value = "noPlayerInPosition", required = false) Player.PreferredPosition pos) {
+
+        List<Team> results;
+
+        if (name != null) {
+            results = teamService.findByName(name);
+        } else if (minPlayers != null) {
+            results = teamService.findByMinPlayers(minPlayers);
+        } else if (minWins != null) {
+            results = teamService.findByMinWins(minWins);
+        } else if (pos != null) {
+            results = teamService.findWithNoPlayerInPosition(pos);
+        } else {
+            results = teamService.getAllTeams();
+        }
+
+        List<TeamDTO> dtos = results.stream()
+                .map(t -> new TeamDTO(t.getId(), t.getName(),
+                                    t.getPlayers().stream().map(Player::getId).collect(Collectors.toSet())))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(dtos);
+    }
+
 }

@@ -111,4 +111,21 @@ public class PlayerService {
         return playerRepository.findByNameContainingIgnoreCase(name);
     }
     // -------------------------------------------------------
+
+    public List<Player> findByPosition(Player.PreferredPosition pos) {
+        return playerRepository.findByPreferredPosition(pos);
+    }
+
+    public List<Player> findByMinGames(long minGames) {
+        return playerRepository.findPlayersWithMinGames(minGames);
+    }
+
+    public List<Player> findByMinGoals(long minGoals) {
+        return playerRepository.findPlayersWithMinGoals(minGoals);
+    }
+
+    public List<Player> findByMinRedCards(long minRedCards) {
+        return playerRepository.findPlayersWithMinRedCards(minRedCards);
+    }
+
 }

@@ -165,5 +165,59 @@ public class JogoService {
         return resultadoRepository.save(resultado);
     }
 
+    @Transactional
+    public void cancelarJogo(Long jogoId) throws NotFoundException, ApplicationException {
+        Jogo jogo = jogoRepository.findById(jogoId)
+                .orElseThrow(() -> new NotFoundException("Jogo com ID " + jogoId + " não encontrado."));
 
+        if (jogo.getResultado() != null) {
+            throw new ApplicationException("Não se pode cancelar um jogo que já tem resultado registrado.");
+        }
+        if (jogo.isCancelado()) {
+            throw new ApplicationException("Jogo já está cancelado.");
+        }
+
+        jogo.setCancelado(true);
+        jogoRepository.save(jogo);
+    }
+    
+
+
+    public List<Jogo> findPlayedGames() {
+        return jogoRepository.findByResultadoIsNotNull();
+    }
+
+    public List<Jogo> findCancelledGames() {
+        return jogoRepository.findByCanceladoTrue();
+    }
+
+    public List<Jogo> findPendingGames() {
+        return jogoRepository.findPendingGames();
+    }
+
+    public List<Jogo> findByLocation(String location) {
+        return jogoRepository.findByLocationContainingIgnoreCase(location);
+    }
+
+    public List<Jogo> findByTimeSlot(String slot) {
+        switch (slot.toLowerCase()) {
+            case "mañana", "manhã", "morning":
+                return jogoRepository.findByHourBetween(6, 11);
+            case "tarde", "afternoon":
+                return jogoRepository.findByHourBetween(12, 17);
+            case "noche", "noite", "night":
+                return jogoRepository.findByHourBetween(18, 23);
+            default:
+                throw new ApplicationException("TimeSlot inválido. Valores válidos: mañAna/tarde/noche.");
+        }
+    }
+
+    public List<Jogo> findByMinGoals(int minGoals) {
+        return jogoRepository.findGamesWithMinGoals(minGoals);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Jogo> findAllJogos() {
+        return jogoRepository.findAll();
+    }
 }

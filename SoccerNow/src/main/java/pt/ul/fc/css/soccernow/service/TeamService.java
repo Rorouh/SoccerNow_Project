@@ -94,4 +94,21 @@ public class TeamService {
         team.getPlayers().add(player);
         return Optional.of(teamRepository.save(team));
     }
+    
+    public List<Team> findByName(String name) {
+        return teamRepository.findByNameContainingIgnoreCase(name);
+    }
+
+    public List<Team> findByMinPlayers(int minPlayers) {
+        return teamRepository.findByMinPlayers(minPlayers);
+    }
+
+    public List<Team> findByMinWins(long minWins) {
+        return teamRepository.findTeamsWithMinWins(minWins);
+    }
+
+    public List<Team> findWithNoPlayerInPosition(Player.PreferredPosition pos) {
+        return teamRepository.findTeamsWithNoPlayerInPosition(pos);
+    }
+
 }

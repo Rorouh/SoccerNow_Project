@@ -1,3 +1,4 @@
+// src/main/java/pt/ul/fc/css/soccernow/domain/Jogo.java
 package pt.ul.fc.css.soccernow.domain;
 
 import jakarta.persistence.*;
@@ -43,6 +44,11 @@ public class Jogo {
     @OneToOne(mappedBy = "jogo", cascade = CascadeType.ALL)
     private Resultado resultado;
 
+    /** --------------------- NUEVO CAMPO --------------------- */
+    @Column(nullable = false)
+    private boolean cancelado = false;
+    /** -------------------------------------------------------- */
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public LocalDateTime getDateTime() { return dateTime; }
@@ -72,7 +78,15 @@ public class Jogo {
     public Resultado getResultado() { return resultado; }
     public void setResultado(Resultado resultado) { this.resultado = resultado; }
 
-    // Alias para compatibilidade com testes
+    // Getter y setter del nuevo campo cancelado:
+    public boolean isCancelado() {
+        return cancelado;
+    }
+    public void setCancelado(boolean cancelado) {
+        this.cancelado = cancelado;
+    }
+
+    // Alias para compatibilidad con tests
     public LocalDateTime getDataHora() { return dateTime; }
     public void setDataHora(LocalDateTime dataHora) { this.dateTime = dataHora; }
     public String getLocal() { return location; }
