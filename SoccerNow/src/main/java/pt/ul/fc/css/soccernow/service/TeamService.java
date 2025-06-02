@@ -2,7 +2,7 @@ package pt.ul.fc.css.soccernow.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pt.ul.fc.css.soccernow.domain.Player;
+import pt.ul.fc.css.soccernow.domain.Player;       // ← Import necesario
 import pt.ul.fc.css.soccernow.domain.Team;
 import pt.ul.fc.css.soccernow.dto.TeamDTO;
 import pt.ul.fc.css.soccernow.repository.PlayerRepository;
@@ -27,51 +27,41 @@ public class TeamService {
     @Transactional
     public Team createTeam(TeamDTO dto) {
         Set<Player> players = new HashSet<>();
-
         for (Long playerId : dto.getPlayerIds()) {
             playerRepository.findById(playerId).ifPresent(players::add);
         }
-
         Team team = new Team();
         team.setName(dto.getName());
         team.setPlayers(players);
-
         return teamRepository.save(team);
     }
 
     @Transactional
     public Optional<Team> updateTeam(Long id, TeamDTO dto) {
-        return teamRepository.findById(id).map(existing -> {
-            existing.setName(dto.getName());
-
-            Set<Player> players = new HashSet<>();
-            for (Long playerId : dto.getPlayerIds()) {
-                playerRepository.findById(playerId).ifPresent(players::add);
-            }
-            existing.setPlayers(players);
-
-            return teamRepository.save(existing);
-        });
+        return teamRepository.findById(id)
+            .map(existing -> {
+                existing.setName(dto.getName());
+                Set<Player> players = new HashSet<>();
+                for (Long playerId : dto.getPlayerIds()) {
+                    playerRepository.findById(playerId).ifPresent(players::add);
+                }
+                existing.setPlayers(players);
+                return teamRepository.save(existing);
+            });
     }
 
     @Transactional
     public boolean deleteTeam(Long id) {
         Optional<Team> teamOpt = teamRepository.findById(id);
-
         if (teamOpt.isEmpty()) {
             return false;
         }
-
         Team team = teamOpt.get();
-
-
         if ((team.getJogosComoVisitada() != null && !team.getJogosComoVisitada().isEmpty()) ||
-                (team.getJogosComoVisitante() != null && !team.getJogosComoVisitante().isEmpty())) {
-            throw new IllegalStateException("Não é possível remover a equipa: existem jogos associados.");
+            (team.getJogosComoVisitante() != null && !team.getJogosComoVisitante().isEmpty())) {
+            throw new IllegalStateException("No es posible eliminar un equipo con juegos asociados.");
         }
-
         team.getPlayers().clear();
-
         teamRepository.delete(team);
         return true;
     }
@@ -91,7 +81,7 @@ public class TeamService {
         return teamRepository.findAll();
     }
 
-
+    // Este método es requerido por TeamServiceTest.java
     @Transactional
     public Optional<Team> addPlayerToTeam(Long teamId, Long playerId) {
         Optional<Team> teamOpt = teamRepository.findById(teamId);
@@ -99,12 +89,9 @@ public class TeamService {
         if (teamOpt.isEmpty() || playerOpt.isEmpty()) {
             return Optional.empty();
         }
-
         Team team = teamOpt.get();
         Player player = playerOpt.get();
-
         team.getPlayers().add(player);
         return Optional.of(teamRepository.save(team));
     }
-
 }

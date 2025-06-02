@@ -8,6 +8,13 @@ import java.util.List;
 
 @Repository
 public interface PlayerRepository extends JpaRepository<Player, Long> {
-    // Busca todos los jugadores cuyo nombre contenga 'name', ignorando mayúsculas/minúsculas
+    /**
+     * Busca todos los jugadores cuyo nombre contenga 'name', ignorando mayúsculas/minúsculas
+     */
     List<Player> findByNameContainingIgnoreCase(String name);
+        /**
+     * Comprueba si existe un jugador con ese email.
+     * Spring Data JPA generará la consulta automáticamente.
+     */
+    boolean existsByEmail(String email);
 }

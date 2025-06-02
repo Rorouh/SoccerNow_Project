@@ -6,20 +6,28 @@ import java.util.Set;
 @Entity
 public class Player extends User {
 
+    @Column(nullable = false)
     private String preferredPosition;
 
     @ManyToMany(mappedBy = "players")
     private Set<Team> teams;
 
-    // Getters y setters
-    public String getPreferredPosition() {
-        return preferredPosition;
+    public Player() {}
+
+    public Player(String name, String email, String password, PreferredPosition preferredPosition) {
+        super(name, email, password, "PLAYER", preferredPosition);
     }
 
-    public void setPreferredPosition(String preferredPosition) {
-        this.preferredPosition = preferredPosition;
+    @Override
+    public PreferredPosition getPreferredPosition() {
+        return super.getPreferredPosition();
     }
 
+    @Override
+    public void setPreferredPosition(PreferredPosition preferredPosition) {
+        super.setPreferredPosition(preferredPosition);
+    }
+    
     public Set<Team> getTeams() {
         return teams;
     }

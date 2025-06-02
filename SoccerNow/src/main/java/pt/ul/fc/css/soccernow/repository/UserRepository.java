@@ -1,9 +1,14 @@
 package pt.ul.fc.css.soccernow.repository;
 
-import pt.ul.fc.css.soccernow.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import pt.ul.fc.css.soccernow.domain.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    /**
+     * Spring Data JPA generará automáticamente esta consulta para comprobar si ya existe un usuario
+     * con ese email.
+     */
+    boolean existsByEmail(String email);
 }

@@ -9,7 +9,7 @@ import pt.ul.fc.css.soccernow.service.TeamService;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/teams")
@@ -22,51 +22,70 @@ public class TeamController {
     }
 
     @PostMapping
-    public ResponseEntity<Team> createTeam(@Valid @RequestBody TeamDTO teamDTO) {
-        Team team = teamService.createTeam(teamDTO);
+    public ResponseEntity<TeamDTO> create(@Valid @RequestBody TeamDTO dto) {
+        Team saved = teamService.createTeam(dto);
+        TeamDTO out = new TeamDTO(
+            saved.getId(),
+            saved.getName(),
+            saved.getPlayers().stream().map(p -> p.getId()).collect(Collectors.toSet())
+        );
         return ResponseEntity
-                .created(URI.create("/api/teams/" + team.getId()))
-                .body(team);
+            .created(URI.create("/api/teams/" + saved.getId()))
+            .body(out);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Team> getTeamById(@PathVariable Long id) {
-        Optional<Team> team = teamService.getTeamById(id);
-        return team.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/name")
-    public ResponseEntity<Team> getTeamByName(@RequestParam String name) {
-        Optional<Team> team = teamService.getTeamByName(name);
-        return team.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Team> updateTeam(@PathVariable Long id, @Valid @RequestBody TeamDTO teamDTO) {
-        Optional<Team> updatedTeam = teamService.updateTeam(id, teamDTO);
-        return updatedTeam.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTeam(@PathVariable Long id) {
-        if (teamService.deleteTeam(id)) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.status(400).build();
-        }
-    }
-
-    @GetMapping("/search/{id}")
-    public ResponseEntity<Team> findTeam(@PathVariable Long id) {
-        Optional<Team> team = teamService.getTeamById(id);
-        return team.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<TeamDTO> getById(@PathVariable Long id) {
+        return teamService.getTeamById(id)
+            .map(team -> new TeamDTO(
+                team.getId(),
+                team.getName(),
+                team.getPlayers().stream().map(p -> p.getId()).collect(Collectors.toSet())
+            ))
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
-    public ResponseEntity<List<Team>> getAllTeams() {
-        List<Team> teams = teamService.getAllTeams();
-        return ResponseEntity.ok(teams);
+    public ResponseEntity<List<TeamDTO>> list(@RequestParam(required = false) String name) {
+        List<Team> teams = (name == null || name.isBlank())
+            ? teamService.getAllTeams()
+            : teamService.getTeamByName(name)
+                         .map(List::of)
+                         .orElse(List.of());
+        List<TeamDTO> dtos = teams.stream()
+            .map(team -> new TeamDTO(
+                team.getId(),
+                team.getName(),
+                team.getPlayers().stream().map(p -> p.getId()).collect(Collectors.toSet())
+            ))
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TeamDTO> update(
+            @PathVariable Long id,
+            @Valid @RequestBody TeamDTO dto) {
+
+        return teamService.updateTeam(id, dto)
+            .map(team -> new TeamDTO(
+                team.getId(),
+                team.getName(),
+                team.getPlayers().stream().map(p -> p.getId()).collect(Collectors.toSet())
+            ))
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        try {
+            return teamService.deleteTeam(id)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
+        } catch (IllegalStateException ex) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

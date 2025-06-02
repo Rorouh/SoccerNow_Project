@@ -1,30 +1,67 @@
 package pt.ul.fc.css.soccernow.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class User {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "El nombre no puede estar vacío")
+    @Column(nullable = false)
     private String name;
 
+    @NotBlank(message = "El email no puede estar vacío")
+    @Email(message = "Debe ser un email válido")
     @Column(nullable = false, unique = true)
     private String email;
 
-    // Campo opcional apenas para facilitar testes – pode ser mapeado conforme necessidade
+    @NotBlank(message = "La contraseña no puede estar vacía")
+    @Column(nullable = false)
     private String password;
 
-    // Getters y setters
+    /** En la BD guardamos el role como texto (“PLAYER” o “REFEREE”). */
+    @Column(nullable = false)
+    private String role;
+
+
+    /**
+     * Sólo será obligatorio si role = "PLAYER".
+     * Si role = "REFEREE", puedes guardarlo nulo o ignorarlo.
+     */
+    public enum PreferredPosition {
+        PORTERO,
+        DEFENSA,
+        CENTROCAMPISTA,
+        DELANTERO
+    } 
+    private PreferredPosition preferredPosition;
+
+    public User() { }
+
+    public User(String name, String email, String password, String role, PreferredPosition preferredPosition) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.preferredPosition = preferredPosition;
+    }
+
+    // --- Getters y setters ---
+
     public Long getId() {
         return id;
     }
 
-    // Setter adicionado apenas para facilitar testes unitários (não deve ser usado em produção)
+    // NOTA: normalmente no expondríamos setId(Long) en producción,
+    // pero lo dejamos público para facilitar pruebas unitarias si hiciera falta:
     public void setId(Long id) {
         this.id = id;
     }
@@ -45,16 +82,27 @@ public abstract class User {
         this.email = email;
     }
 
-    // Construtores auxiliares para facilitar criação em testes
-    public User() {}
-
-    public User(String name, String email) {
-        this.name = name;
-        this.email = email;
+    public String getPassword() {
+        return password;
     }
 
-    public User(String name, String email, String password) {
-        this(name, email);
+    public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public PreferredPosition getPreferredPosition() {
+        return preferredPosition;
+    }
+
+    public void setPreferredPosition(PreferredPosition preferredPosition) {
+        this.preferredPosition = preferredPosition;
     }
 }

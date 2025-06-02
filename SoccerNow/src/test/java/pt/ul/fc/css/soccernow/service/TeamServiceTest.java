@@ -1,18 +1,19 @@
+// src/test/java/pt/ul/fc/css/soccernow/service/TeamServiceTest.java
 package pt.ul.fc.css.soccernow.service;
 
-import pt.ul.fc.css.soccernow.service.TeamService;
+import pt.ul.fc.css.soccernow.domain.Jogo;
+import pt.ul.fc.css.soccernow.domain.Player;
+import pt.ul.fc.css.soccernow.domain.Team;
+import pt.ul.fc.css.soccernow.domain.User.PreferredPosition;
+import pt.ul.fc.css.soccernow.dto.TeamDTO;
+import pt.ul.fc.css.soccernow.repository.PlayerRepository;
+import pt.ul.fc.css.soccernow.repository.TeamRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pt.ul.fc.css.soccernow.domain.Jogo;
-import pt.ul.fc.css.soccernow.domain.Player;
-import pt.ul.fc.css.soccernow.domain.Team;
-import pt.ul.fc.css.soccernow.dto.TeamDTO;
-import pt.ul.fc.css.soccernow.repository.PlayerRepository;
-import pt.ul.fc.css.soccernow.repository.TeamRepository;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -46,7 +47,8 @@ class TeamServiceTest {
 
         player = new Player();
         player.setId(1L);
-        player.setPreferredPosition("Forward");
+        // Cambiamos esto:
+        player.setPreferredPosition(PreferredPosition.DELANTERO);
 
         team.setPlayers(new HashSet<>());
         team.getPlayers().add(player);
@@ -58,9 +60,7 @@ class TeamServiceTest {
         teamDTO.setName("New Team");
         teamDTO.setPlayerIds(Set.of(1L));
 
-
         when(playerRepository.findById(1L)).thenReturn(Optional.of(player));
-
 
         Team newTeam = new Team();
         newTeam.setId(2L);
@@ -70,14 +70,12 @@ class TeamServiceTest {
 
         when(teamRepository.save(any(Team.class))).thenReturn(newTeam);
 
-
         Team createdTeam = teamService.createTeam(teamDTO);
 
         assertNotNull(createdTeam);
         assertEquals("New Team", createdTeam.getName());
         assertEquals(1, createdTeam.getPlayers().size());
     }
-
 
     @Test
     void testUpdateTeam() {
@@ -114,7 +112,6 @@ class TeamServiceTest {
     void testDeleteTeamWithoutGames() {
         Long id = 1L;
 
-
         team.setJogosComoVisitada(new HashSet<>());
         team.setJogosComoVisitante(new HashSet<>());
 
@@ -139,10 +136,8 @@ class TeamServiceTest {
 
     @Test
     void testGetAllTeams() {
-
         List<Team> teams = new ArrayList<>();
         teams.add(team);
-
 
         when(teamRepository.findAll()).thenReturn(teams);
 

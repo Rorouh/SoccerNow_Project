@@ -21,6 +21,7 @@ services:
     image: myapp:latest
     build:
       context: .
+      network: host
     container_name: java_app
     restart: unless-stopped
     depends_on:
