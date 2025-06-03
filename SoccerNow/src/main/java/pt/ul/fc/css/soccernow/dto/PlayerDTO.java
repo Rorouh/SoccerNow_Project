@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class PlayerDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -24,7 +27,12 @@ public class PlayerDTO {
     @NotBlank(message = "La posición preferida no puede estar vacía")
     private String preferredPosition;
 
-    public PlayerDTO() { }
+
+    private int goals;
+
+    private int cards;
+
+    //public PlayerDTO() { }
 
     /** Constructor completo (incluye id) para respuestas */
     public PlayerDTO(Long id, String name, String email, String password, String preferredPosition) {
@@ -33,6 +41,8 @@ public class PlayerDTO {
         this.email = email;
         this.password = password;
         this.preferredPosition = preferredPosition;
+        this.goals = goals;
+        this.cards = cards;
     }
 
     /** Constructor sin id (para crear) */
@@ -41,7 +51,7 @@ public class PlayerDTO {
     }
 
     // --- Getters y setters ---
-    public Long getId() {
+   /** public Long getId() {
         return id;
     }
     public void setId(Long id) {
@@ -75,4 +85,5 @@ public class PlayerDTO {
     public void setPreferredPosition(String preferredPosition) {
         this.preferredPosition = preferredPosition;
     }
+    **/
 }

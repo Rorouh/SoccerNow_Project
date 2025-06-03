@@ -6,6 +6,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserDTO {
 
     /**
@@ -80,7 +84,7 @@ public class UserDTO {
     }
 
     // --- Getters y setters ---
-
+/**
     public Long getId() {
         return id;
     }
@@ -129,4 +133,6 @@ public class UserDTO {
     public void setCertified(Boolean certified) {
         this.certified = certified;
     }
+ **/
+
 }

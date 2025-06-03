@@ -32,6 +32,7 @@ public class PlayerController {
      * Crea un jugador. El DTO viene con preferredPosition como String, 
      * lo convertimos a User.PreferredPosition internamente.
      */
+   /**
     @PostMapping
     public ResponseEntity<PlayerDTO> createPlayer(@Valid @RequestBody PlayerDTO dto) {
         try {
@@ -54,7 +55,7 @@ public class PlayerController {
             return ResponseEntity.badRequest().build();
         }
     }
-
+**/
     /**
      * GET /api/players/{id}
      * Devuelve un jugador por id, si existe.
@@ -117,6 +118,7 @@ public class PlayerController {
         }
     }
 
+    /**
     @GetMapping("/players")
     public ResponseEntity<List<PlayerDTO>> listPlayers(
             @RequestParam(value = "position", required = false) Player.PreferredPosition position,
@@ -141,6 +143,24 @@ public class PlayerController {
         List<PlayerDTO> dtos = results.stream()
                 .map(p -> new PlayerDTO(p.getId(), p.getName(), p.getEmail(), p.getPassword(),
                                     p.getPreferredPosition().name()))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(dtos);
+    }
+**/
+    @GetMapping("/by-name/{name}")
+    public ResponseEntity<List<PlayerDTO>> findPlayersByName(@PathVariable String name) {
+        List<Player> players = playerService.findPlayersByName(name);
+
+        List<PlayerDTO> dtos = players.stream()
+                .map(p -> new PlayerDTO(
+                        p.getId(),
+                        p.getName(),
+                        p.getEmail(),
+                        p.getPassword(),
+                        p.getPreferredPosition().name(),
+                        p.getGoals(),
+                        p.getCards()))
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(dtos);

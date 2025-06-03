@@ -49,6 +49,8 @@ public class PlayerService {
         // En User el campo "role" también se guarda, pero PlayerService asume role = "PLAYER"
         jugador.setRole("PLAYER");
         jugador.setPreferredPosition(enumPos);
+        jugador.setGoals(dto.getGoals());
+        jugador.setCards(dto.getCards());
 
         // 5) Guardar en BD
         return playerRepository.save(jugador);
@@ -73,6 +75,8 @@ public class PlayerService {
                 existing.setPassword(dto.getPassword());
             }
 
+
+
             // 2) preferredPosition: si viene, convertir a enum y asignar
             if (dto.getPreferredPosition() != null) {
                 User.PreferredPosition enumPos;
@@ -83,6 +87,9 @@ public class PlayerService {
                 }
                 existing.setPreferredPosition(enumPos);
             }
+
+            existing.setGoals(dto.getGoals());
+            existing.setCards(dto.getCards());
 
             // 3) Guardar cambios
             return playerRepository.save(existing);
