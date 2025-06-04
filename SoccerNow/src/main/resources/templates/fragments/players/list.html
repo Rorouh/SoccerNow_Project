@@ -1,0 +1,60 @@
+<!-- src/main/resources/templates/players/list.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Jugadores</title>
+</head>
+<body>
+<h1>Jugadores</h1>
+
+<form th:action="@{/web/players}" method="get">
+    <label>Nombre:</label>
+    <input type="text" name="nameFilter" th:value="${param.nameFilter}" />
+
+    <label>Posición:</label>
+    <select name="positionFilter">
+        <option value="">--Todas--</option>
+        <option th:each="pos : ${positions}"
+                th:value="${pos.name()}"
+                th:text="${pos.name()}"
+                th:selected="${param.positionFilter == pos.name()}">
+        </option>
+    </select>
+
+    <button type="submit">Filtrar</button>
+</form>
+
+<a th:href="@{/web/players/create}">Crear Jugador</a>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Posición</th>
+        <th>Goles</th>
+        <th>Tarjetas</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="p : ${players}">
+        <td th:text="${p.id}">1</td>
+        <td th:text="${p.name}">Nombre</td>
+        <td th:text="${p.email}">email@dominio.com</td>
+        <td th:text="${p.preferredPosition}">DELANTERO</td>
+        <td th:text="${p.goals}">0</td>
+        <td th:text="${p.cards}">0</td>
+        <td>
+            <a th:href="@{|/web/players/edit/${p.id}|}">Editar</a>
+            &nbsp;|&nbsp;
+            <a th:href="@{|/web/players/delete/${p.id}|}"
+               onclick="return confirm('¿Eliminar este jugador?');">Eliminar</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

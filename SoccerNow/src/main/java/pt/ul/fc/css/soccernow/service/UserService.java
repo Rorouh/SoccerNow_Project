@@ -12,6 +12,7 @@ import pt.ul.fc.css.soccernow.repository.UserRepository;
 import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 
 import java.util.Optional;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -119,5 +120,9 @@ public class UserService {
         }
         userRepository.delete(opt.get());
         return true;
+    }
+    @Transactional(readOnly = true)
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 }
