@@ -8,6 +8,9 @@ import pt.ul.fc.css.soccernow.repository.RefereeRepository;
 import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class RefereeService {
@@ -48,4 +51,12 @@ public class RefereeService {
 
     // (Opcional) si luego agregas tarjetas a Referee, podrías añadir aquí:
     // public List<Referee> findByMinCards(long minCards) { ... }
+
+    public Optional<Referee> getRefereeById(Long id) {
+        return refereeRepository.findById(id);
+    }
+
+    public Set<Referee> findAllByIds(Set<Long> ids) {
+        return refereeRepository.findAllById(ids).stream().collect(Collectors.toSet());
+    }
 }

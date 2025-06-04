@@ -1,0 +1,48 @@
+<!-- src/main/resources/templates/teams/list.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="fragments/header :: head(~{::body})">
+    <title>Lista de Equipos</title>
+  </head>
+  <body>
+    <div th:replace="fragments/header :: content"></div>
+
+    <h2>Gestión de Equipos</h2>
+
+    <!-- Link para crear nuevo equipo -->
+    <a th:href="@{/web/teams/create}">Crear Nuevo Equipo</a>
+
+    <div th:if="${error}" style="color:red; margin-top:10px;">
+      <p th:text="${error}"></p>
+    </div>
+
+    <table border="1" cellpadding="5" cellspacing="0" style="margin-top:15px; width:100%;">
+      <thead>
+        <tr style="background:#ddd;">
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Jugadores (IDs)</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="t : ${teams}">
+          <td th:text="${t.id}"></td>
+          <td th:text="${t.name}"></td>
+          <td>
+            <span th:each="pid : ${t.playerIds}" th:text="${pid} + ' '"></span>
+          </td>
+          <td>
+            <a th:href="@{'/web/teams/edit/' + ${t.id}}">Editar</a> |
+            <a th:href="@{'/web/teams/delete/' + ${t.id}}"
+               th:onclick="|return confirm('¿Eliminar equipo ID ' + ${t.id} + '?');|">
+              Eliminar
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div th:replace="fragments/footer :: footer"></div>
+  </body>
+</html>
