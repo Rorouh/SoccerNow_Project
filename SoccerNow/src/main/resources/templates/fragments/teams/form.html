@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head(~{::body})">
+    <title th:text="${teamDTO.id != null} ? 'Editar Equipo' : 'Crear Equipo'">Formulario Equipo</title>
+</head>
+<body>
+<div th:replace="fragments/header :: content"></div>
+
+<h2 th:text="${teamDTO.id != null} ? 'Editar Equipo' : 'Crear Nuevo Equipo'"></h2>
+
+<div th:if="${error}" style="color:red; margin-bottom: 1em;">
+    <p th:text="${error}"></p>
+</div>
+
+<form th:action="@{${teamDTO.id != null} ? '/web/teams/update/' + ${teamDTO.id} : '/web/teams/save'}"
+      th:object="${teamDTO}" method="post">
+
+    <div>
+        <label for="name">Nombre:</label>
+        <input type="text" id="name" th:field="*{name}" required/>
+    </div>
+
+    <div style="margin-top: 1em;">
+        <label>Jugadores:</label>
+        <div>
+            <div th:each="player : ${allPlayers}">
+                <input type="checkbox" th:id="'player-' + ${player.id}"
+                       th:name="playerIds"
+                       th:value="${player.id}"
+                       th:checked="${teamDTO.playerIds != null} ? ${teamDTO.playerIds.contains(player.id)} : false"/>
+                <label th:for="'player-' + ${player.id}" th:text="${player.name} + ' (ID: ' + ${player.id} + ')'"></label>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 1em;">
+        <button type="submit" th:text="${teamDTO.id != null} ? 'Actualizar' : 'Crear'"></button>
+        <a th:href="@{/web/teams}" style="margin-left: 1em;">Cancelar</a>
+    </div>
+
+</form>
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>
