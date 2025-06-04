@@ -1,101 +1,122 @@
 package pt.ul.fc.css.soccernow.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 import pt.ul.fc.css.soccernow.domain.Jogo;
-import pt.ul.fc.css.soccernow.domain.Referee;
 import pt.ul.fc.css.soccernow.domain.Resultado;
-import pt.ul.fc.css.soccernow.dto.JogoDTO;
 import pt.ul.fc.css.soccernow.service.JogoService;
 import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 import pt.ul.fc.css.soccernow.service.exceptions.NotFoundException;
 
-import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Optional;
 
-@RestController
-@RequestMapping("/api/jogos")
-public class JogoController {
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest(JogoController.class)
+public class JogoControllerTest {
 
     @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
     private JogoService jogoService;
 
-    @PostMapping
-    public ResponseEntity<Jogo> criarJogo(@RequestBody Jogo jogo) {
-        Jogo criado = jogoService.criarJogo(jogo);
-        return ResponseEntity.created(URI.create("/api/jogos/" + criado.getId())).body(criado);
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Test
+    void criarJogo_DeveRetornarCreated() throws Exception {
+        Jogo jogo = new Jogo();
+        jogo.setId(1L);
+        jogo.setLocation("Lisboa");
+        jogo.setDateTime(LocalDateTime.now());
+
+        Mockito.when(jogoService.criarJogo(any(Jogo.class))).thenReturn(jogo);
+
+        mockMvc.perform(post("/api/jogos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(jogo)))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "/api/jogos/1"))
+                .andExpect(jsonPath("$.id").value(1));
     }
 
-    @PostMapping("/{id}/resultado")
-    public ResponseEntity<Resultado> registarResultado(@PathVariable Long id, @RequestBody Resultado resultado) {
-        Resultado res = jogoService.registarResultado(id, resultado);
-        return ResponseEntity.ok(res);
+    @Test
+    void registarResultado_DeveRetornarOK() throws Exception {
+        Resultado resultado = new Resultado();
+        resultado.setGolosCasa(2);
+        resultado.setGolosFora(1);
+
+        Mockito.when(jogoService.registarResultado(eq(1L), any(Resultado.class))).thenReturn(resultado);
+
+        mockMvc.perform(post("/api/jogos/1/resultado")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(resultado)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.golosCasa").value(2));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Jogo> obterJogo(@PathVariable Long id) {
-        return jogoService.obterJogo(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @Test
+    void obterJogo_DeveRetornarJogoSeExistir() throws Exception {
+        Jogo jogo = new Jogo();
+        jogo.setId(1L);
+        jogo.setLocation("Lisboa");
+        jogo.setDateTime(LocalDateTime.now());
+
+        Mockito.when(jogoService.obterJogo(1L)).thenReturn(Optional.of(jogo));
+
+        mockMvc.perform(get("/api/jogos/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L));
     }
 
-    @PutMapping("/{id}/cancelar")
-    public ResponseEntity<Void> cancelarJogo(@PathVariable Long id) {
-        try {
-            jogoService.cancelarJogo(id);
-            return ResponseEntity.noContent().build();
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (ApplicationException e) {
-            return ResponseEntity.badRequest().build();
-        }
+    @Test
+    void obterJogo_DeveRetornarNotFoundSeNaoExistir() throws Exception {
+        Mockito.when(jogoService.obterJogo(999L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/jogos/999"))
+                .andExpect(status().isNotFound());
     }
 
-    @GetMapping("/jogos")
-    public ResponseEntity<List<JogoDTO>> listJogos(
-            @RequestParam(value = "status", required = false) String status,
-            @RequestParam(value = "location", required = false) String location,
-            @RequestParam(value = "timeSlot", required = false) String timeSlot,
-            @RequestParam(value = "minGoals", required = false) Integer minGoals) {
+    @Test
+    void cancelarJogo_DeveRetornarNoContentSeSucesso() throws Exception {
+        mockMvc.perform(put("/api/jogos/1/cancelar"))
+                .andExpect(status().isNoContent());
+    }
 
-        List<Jogo> results;
+    @Test
+    void cancelarJogo_DeveRetornarNotFound() throws Exception {
+        Mockito.doThrow(new NotFoundException("Not found")).when(jogoService).cancelarJogo(999L);
 
-        if ("played".equalsIgnoreCase(status)) {
-            results = jogoService.findPlayedGames();
-        } else if ("cancelled".equalsIgnoreCase(status)) {
-            results = jogoService.findCancelledGames();
-        } else if ("pending".equalsIgnoreCase(status)) {
-            results = jogoService.findPendingGames();
-        } else if (location != null) {
-            results = jogoService.findByLocation(location);
-        } else if (timeSlot != null) {
-            results = jogoService.findByTimeSlot(timeSlot);
-        } else if (minGoals != null) {
-            results = jogoService.findByMinGoals(minGoals);
-        } else {
-            results = jogoService.findAllJogos();
-        }
+        mockMvc.perform(put("/api/jogos/999/cancelar"))
+                .andExpect(status().isNotFound());
+    }
 
-        List<JogoDTO> dtos = results.stream()
-                .map(j -> {
-                    JogoDTO d = new JogoDTO();
-                    d.setId(j.getId());
-                    d.setDateTime(j.getDateTime());
-                    d.setLocation(j.getLocation());
-                    d.setAmigavel(j.isAmigavel());
-                    d.setHomeScore(j.getHomeScore());
-                    d.setAwayScore(j.getAwayScore());
-                    d.setHomeTeamId(j.getHomeTeam().getId());
-                    d.setAwayTeamId(j.getAwayTeam().getId());
-                    d.setCampeonatoId(j.getCampeonato() != null ? j.getCampeonato().getId() : null);
-                    d.setArbitroIds(j.getReferees().stream().map(Referee::getId).collect(Collectors.toSet()));
-                    d.setPrimaryRefereeId(j.getPrimaryReferee() != null ? j.getPrimaryReferee().getId() : null);
-                    return d;
-                })
-                .collect(Collectors.toList());
+    @Test
+    void cancelarJogo_DeveRetornarBadRequest() throws Exception {
+        Mockito.doThrow(new ApplicationException("Já tem resultado")).when(jogoService).cancelarJogo(5L);
 
-        return ResponseEntity.ok(dtos);
+        mockMvc.perform(put("/api/jogos/5/cancelar"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void listJogos_DeveRetornarListaVazia() throws Exception {
+        Mockito.when(jogoService.findAllJogos()).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/api/jogos/jogos"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0));
     }
 }

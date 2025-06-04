@@ -1,4 +1,5 @@
 package pt.ul.fc.css.soccernow.dto;
+
 import pt.ul.fc.css.soccernow.domain.User;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,16 +7,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class UserDTO {
 
-    /**
-     * Cuando creas un usuario, no tienes que enviarlo (lo genera la base de datos).
-     * Pero al devolverlo (GET /api/users/{id}) sí aparecerá en el JSON de salida.
-     */
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
@@ -37,24 +30,15 @@ public class UserDTO {
     @NotNull(message = "El rol no puede ser nulo")
     private Role role;
 
-
-    /**
-     * Será obligatorio si role = PLAYER. Si role = REFEREE, se ignora.
-     * Ahora usamos el enum anidado dentro de User:
-     *    User.PreferredPosition
-     */
     private User.PreferredPosition preferredPosition;
 
-    /**
-     * Será obligatorio si el role = REFEREE. Si role = PLAYER, no es necesario enviarlo.
-     */
     private Boolean certified;
 
-    public UserDTO() { }
 
-    /**
-     * Constructor completo (incluyendo id) para respuestas
-     */
+    public UserDTO() {
+    }
+
+
     public UserDTO(Long id,
                    String name,
                    String email,
@@ -71,9 +55,7 @@ public class UserDTO {
         this.certified = certified;
     }
 
-    /**
-     * Constructor sin id (para creación)
-     */
+
     public UserDTO(String name,
                    String email,
                    String password,
@@ -83,11 +65,11 @@ public class UserDTO {
         this(null, name, email, password, role, preferredPosition, certified);
     }
 
-    // --- Getters y setters ---
-/**
+    // Getters e Setters
     public Long getId() {
         return id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -95,6 +77,7 @@ public class UserDTO {
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -102,6 +85,7 @@ public class UserDTO {
     public String getEmail() {
         return email;
     }
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -109,6 +93,7 @@ public class UserDTO {
     public String getPassword() {
         return password;
     }
+
     public void setPassword(String password) {
         this.password = password;
     }
@@ -116,6 +101,7 @@ public class UserDTO {
     public Role getRole() {
         return role;
     }
+
     public void setRole(Role role) {
         this.role = role;
     }
@@ -123,6 +109,7 @@ public class UserDTO {
     public User.PreferredPosition getPreferredPosition() {
         return preferredPosition;
     }
+
     public void setPreferredPosition(User.PreferredPosition preferredPosition) {
         this.preferredPosition = preferredPosition;
     }
@@ -130,9 +117,8 @@ public class UserDTO {
     public Boolean getCertified() {
         return certified;
     }
+
     public void setCertified(Boolean certified) {
         this.certified = certified;
     }
- **/
-
 }

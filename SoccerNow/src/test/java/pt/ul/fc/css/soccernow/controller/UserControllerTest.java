@@ -10,10 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pt.ul.fc.css.soccernow.domain.Player;
 import pt.ul.fc.css.soccernow.domain.Referee;
-import pt.ul.fc.css.soccernow.domain.User;
 import pt.ul.fc.css.soccernow.dto.UserDTO;
 import pt.ul.fc.css.soccernow.service.UserService;
-import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 
 import java.util.Optional;
 
@@ -36,8 +34,8 @@ class UserControllerTest {
 
     @Test
     void testCreatePlayer() throws Exception {
-        UserDTO dto = new UserDTO("João", "joao@example.com", "pass", UserDTO.Role.PLAYER, User.PreferredPosition.FORWARD, null);
-        Player created = new Player("João", "joao@example.com", "pass", User.PreferredPosition.FORWARD);
+        UserDTO dto = new UserDTO("João", "joao@example.com", "pass", UserDTO.Role.PLAYER, Player.PreferredPosition.DELANTERO, null);
+        Player created = new Player("João", "joao@example.com", "pass", Player.PreferredPosition.DELANTERO);
         created.setId(1L);
 
         when(userService.createUser(any(UserDTO.class))).thenReturn(created);
@@ -70,7 +68,7 @@ class UserControllerTest {
 
     @Test
     void testGetUserById_Player() throws Exception {
-        Player p = new Player("Carlos", "carlos@example.com", "pass", User.PreferredPosition.DEFENDER);
+        Player p = new Player("Carlos", "carlos@example.com", "pass", Player.PreferredPosition.DEFENSA);
         p.setId(3L);
 
         when(userService.getUserById(3L)).thenReturn(Optional.of(p));
@@ -79,7 +77,7 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(3L))
                 .andExpect(jsonPath("$.role").value("PLAYER"))
-                .andExpect(jsonPath("$.preferredPosition").value("DEFENDER"));
+                .andExpect(jsonPath("$.preferredPosition").value("DEFENSA"));
     }
 
     @Test
@@ -106,8 +104,8 @@ class UserControllerTest {
 
     @Test
     void testUpdateUser() throws Exception {
-        UserDTO dto = new UserDTO("Carlos Atualizado", "carlos@example.com", "nova", UserDTO.Role.PLAYER, User.PreferredPosition.MIDFIELDER, null);
-        Player updated = new Player("Carlos Atualizado", "carlos@example.com", "nova", User.PreferredPosition.MIDFIELDER);
+        UserDTO dto = new UserDTO("Carlos Atualizado", "carlos@example.com", "nova", UserDTO.Role.PLAYER, Player.PreferredPosition.CENTROCAMPISTA, null);
+        Player updated = new Player("Carlos Atualizado", "carlos@example.com", "nova", Player.PreferredPosition.CENTROCAMPISTA);
         updated.setId(3L);
 
         when(userService.updateUser(Mockito.eq(3L), any(UserDTO.class))).thenReturn(Optional.of(updated));
@@ -117,12 +115,12 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Carlos Atualizado"))
-                .andExpect(jsonPath("$.preferredPosition").value("MIDFIELDER"));
+                .andExpect(jsonPath("$.preferredPosition").value("CENTROCAMPISTA"));
     }
 
     @Test
     void testUpdateUser_NotFound() throws Exception {
-        UserDTO dto = new UserDTO("Inexistente", "no@email.com", "pass", UserDTO.Role.PLAYER, User.PreferredPosition.DEFENDER, null);
+        UserDTO dto = new UserDTO("Inexistente", "no@email.com", "pass", UserDTO.Role.PLAYER, Player.PreferredPosition.DEFENSA, null);
         when(userService.updateUser(Mockito.eq(99L), any(UserDTO.class))).thenReturn(Optional.empty());
 
         mockMvc.perform(put("/api/users/99")

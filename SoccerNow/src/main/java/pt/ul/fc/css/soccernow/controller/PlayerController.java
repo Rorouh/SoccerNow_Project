@@ -118,7 +118,7 @@ public class PlayerController {
         }
     }
 
-    /**
+
     @GetMapping("/players")
     public ResponseEntity<List<PlayerDTO>> listPlayers(
             @RequestParam(value = "position", required = false) Player.PreferredPosition position,
@@ -147,7 +147,7 @@ public class PlayerController {
 
         return ResponseEntity.ok(dtos);
     }
-**/
+
     @GetMapping("/by-name/{name}")
     public ResponseEntity<List<PlayerDTO>> findPlayersByName(@PathVariable String name) {
         List<Player> players = playerService.findPlayersByName(name);

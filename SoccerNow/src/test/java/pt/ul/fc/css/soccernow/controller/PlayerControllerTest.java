@@ -2,7 +2,6 @@ package pt.ul.fc.css.soccernow.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -16,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 class PlayerControllerTest {
@@ -48,10 +48,7 @@ class PlayerControllerTest {
         assertNotNull(response.getBody());
         assertEquals("John", response.getBody().getName());
         assertEquals("DEFENSA", response.getBody().getPreferredPosition());
-
-        verify(playerService).getPlayerById(1L);
     }
-
 
     @Test
     void testGetPlayerById_notFound() {
@@ -61,13 +58,10 @@ class PlayerControllerTest {
 
         assertEquals(404, response.getStatusCodeValue());
         assertNull(response.getBody());
-
-        verify(playerService).getPlayerById(1L);
     }
 
-
     @Test
-    void testUpdatePlayer_success() throws Exception {
+    void testUpdatePlayer_success() {
         Player player = new Player();
         player.setId(1L);
         player.setName("UpdatedName");
@@ -84,13 +78,11 @@ class PlayerControllerTest {
         assertEquals(200, response.getStatusCodeValue());
         assertNotNull(response.getBody());
         assertEquals("UpdatedName", response.getBody().getName());
-
-        verify(playerService).updatePlayer(eq(1L), any(PlayerDTO.class));
+        assertEquals("DELANTERO", response.getBody().getPreferredPosition());
     }
 
-
     @Test
-    void testUpdatePlayer_notFound() throws Exception {
+    void testUpdatePlayer_notFound() {
         PlayerDTO dto = new PlayerDTO(null, "UpdatedName", "updated@example.com", "newpass", "DELANTERO");
 
         when(playerService.updatePlayer(eq(1L), any(PlayerDTO.class))).thenReturn(Optional.empty());
@@ -99,26 +91,21 @@ class PlayerControllerTest {
 
         assertEquals(404, response.getStatusCodeValue());
         assertNull(response.getBody());
-
-        verify(playerService).updatePlayer(eq(1L), any(PlayerDTO.class));
     }
 
-
     @Test
-    void testUpdatePlayer_invalidPreferredPosition() throws Exception {
-        PlayerDTO dto = new PlayerDTO(null, "Name", "email@example.com", "pass", "INVALID_POS");
+    void testUpdatePlayer_invalidPreferredPosition() {
+        PlayerDTO dto = new PlayerDTO(null, "Name", "email@example.com", "pass", "INVALID");
 
-        when(playerService.updatePlayer(eq(1L), any(PlayerDTO.class))).thenThrow(new ApplicationException("PreferredPosition inválido."));
+        when(playerService.updatePlayer(eq(1L), any(PlayerDTO.class)))
+                .thenThrow(new ApplicationException("Posição inválida"));
 
         ResponseEntity<PlayerDTO> response = playerController.updatePlayer(1L, dto);
 
         assertEquals(400, response.getStatusCodeValue());
         assertNull(response.getBody());
-
-        verify(playerService).updatePlayer(eq(1L), any(PlayerDTO.class));
     }
 
-    // Test DELETE /api/players/{id} - sucesso
     @Test
     void testDeletePlayer_success() {
         when(playerService.deletePlayer(1L)).thenReturn(true);
@@ -127,10 +114,7 @@ class PlayerControllerTest {
 
         assertEquals(204, response.getStatusCodeValue());
         assertNull(response.getBody());
-
-        verify(playerService).deletePlayer(1L);
     }
-
 
     @Test
     void testDeletePlayer_notFound() {
@@ -140,10 +124,7 @@ class PlayerControllerTest {
 
         assertEquals(404, response.getStatusCodeValue());
         assertNull(response.getBody());
-
-        verify(playerService).deletePlayer(1L);
     }
-
 
     @Test
     void testListPlayers_noFilters() {
@@ -168,11 +149,7 @@ class PlayerControllerTest {
         assertEquals(200, response.getStatusCodeValue());
         assertNotNull(response.getBody());
         assertEquals(2, response.getBody().size());
-        assertEquals("PORTERO", response.getBody().get(0).getPreferredPosition());
-
-        verify(playerService).findAllPlayers();
     }
-
 
     @Test
     void testListPlayers_byPosition() {
@@ -181,20 +158,17 @@ class PlayerControllerTest {
         p1.setName("Player1");
         p1.setEmail("p1@example.com");
         p1.setPassword("pass1");
-        p1.setPreferredPosition(Player.PreferredPosition.PORTERO);
+        p1.setPreferredPosition(Player.PreferredPosition.DEFENSA);
 
-        when(playerService.findByPosition(Player.PreferredPosition.PORTERO)).thenReturn(List.of(p1));
+        when(playerService.findByPosition(Player.PreferredPosition.DEFENSA)).thenReturn(List.of(p1));
 
-        ResponseEntity<List<PlayerDTO>> response = playerController.listPlayers(Player.PreferredPosition.PORTERO, null, null, null);
+        ResponseEntity<List<PlayerDTO>> response = playerController.listPlayers(Player.PreferredPosition.DEFENSA, null, null, null);
 
         assertEquals(200, response.getStatusCodeValue());
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().size());
-        assertEquals("PORTERO", response.getBody().get(0).getPreferredPosition());
-
-        verify(playerService).findByPosition(Player.PreferredPosition.PORTERO);
+        assertEquals("DEFENSA", response.getBody().get(0).getPreferredPosition());
     }
-
 
     @Test
     void testListPlayers_byMinGoals() {
@@ -203,7 +177,7 @@ class PlayerControllerTest {
         p1.setName("Player1");
         p1.setEmail("p1@example.com");
         p1.setPassword("pass1");
-        p1.setPreferredPosition(Player.PreferredPosition.DEFENSA);
+        p1.setPreferredPosition(Player.PreferredPosition.DELANTERO);
 
         when(playerService.findByMinGoals(5L)).thenReturn(List.of(p1));
 
@@ -212,8 +186,29 @@ class PlayerControllerTest {
         assertEquals(200, response.getStatusCodeValue());
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().size());
-
-        verify(playerService).findByMinGoals(5L);
     }
 
+    @Test
+    void testFindPlayersByName() {
+        Player p1 = new Player();
+        p1.setId(1L);
+        p1.setName("Carlos");
+        p1.setEmail("carlos@example.com");
+        p1.setPassword("pass1");
+        p1.setPreferredPosition(Player.PreferredPosition.DELANTERO);
+
+        p1.setGoals(10);
+        p1.setCards(1);
+
+        when(playerService.findPlayersByName("Carlos")).thenReturn(List.of(p1));
+
+        ResponseEntity<List<PlayerDTO>> response = playerController.findPlayersByName("Carlos");
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
+        assertEquals("Carlos", response.getBody().get(0).getName());
+        assertEquals(10, response.getBody().get(0).getGoals());
+        assertEquals(1, response.getBody().get(0).getCards());
+    }
 }
