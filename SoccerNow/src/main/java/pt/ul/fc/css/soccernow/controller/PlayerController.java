@@ -21,6 +21,32 @@ import java.util.List;
 @RequestMapping("/api/players")
 public class PlayerController {
 
+    // ...
+
+    /**
+     * GET /api/players/filter
+     * Filtros avançados: nome, posição, minGoals, minCards
+     */
+    @GetMapping("/filter")
+    public ResponseEntity<List<PlayerDTO>> filterPlayers(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "preferredPosition", required = false) String preferredPosition,
+            @RequestParam(value = "minGoals", required = false) Integer minGoals,
+            @RequestParam(value = "minCards", required = false) Integer minCards
+    ) {
+        List<Player> results = playerService.filterPlayers(name, preferredPosition, minGoals, minCards);
+        List<PlayerDTO> dtos = results.stream()
+                .map(player -> new PlayerDTO(
+                        player.getId(),
+                        player.getName(),
+                        player.getEmail(),
+                        player.getPassword(),
+                        player.getPreferredPosition().name()
+                ))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
+
     private final PlayerService playerService;
 
     public PlayerController(PlayerService playerService) {

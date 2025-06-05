@@ -20,6 +20,30 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/jogos")
 public class JogoController {
+
+    /**
+     * GET /api/jogos/filter
+     * Filtros avançados: realizados, aRealizar, minGoals, location, timeSlot
+     */
+    @GetMapping("/filter")
+    public ResponseEntity<List<JogoDTO>> filterJogos(
+            @RequestParam(value = "realizados", required = false) Boolean realizados,
+            @RequestParam(value = "aRealizar", required = false) Boolean aRealizar,
+            @RequestParam(value = "minGoals", required = false) Integer minGoals,
+            @RequestParam(value = "location", required = false) String location,
+            @RequestParam(value = "timeSlot", required = false) String timeSlot
+    ) {
+        List<Jogo> results = jogoService.filterJogos(realizados, aRealizar, minGoals, location, timeSlot);
+        List<JogoDTO> dtos = results.stream()
+                .map(j -> new JogoDTO(
+                        j.getId(),
+                        j.getDataHora(),
+                        j.getLocal()
+                        // Adicione outros campos necessários do DTO
+                ))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
     @Autowired
     private JogoService jogoService;
 

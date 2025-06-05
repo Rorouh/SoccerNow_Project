@@ -51,4 +51,12 @@ public class Resultado {
 
     public int getGolosFora() { return golosFora; }
     public void setGolosFora(int golosFora) { this.golosFora = golosFora; }
+
+    /**
+     * Retorna true se o resultado do jogo foi empate.
+     */
+    public boolean isEmpate() {
+        return equipaVitoriosa == null && golosCasa == golosFora;
+    }
 }
+

@@ -220,4 +220,50 @@ public class JogoService {
     public List<Jogo> findAllJogos() {
         return jogoRepository.findAll();
     }
+
+    /**
+     * Filtro avançado de jogos: realizados, aRealizar, minGoals, location, timeSlot
+     */
+    @Transactional(readOnly = true)
+    public List<Jogo> filterJogos(Boolean realizados, Boolean aRealizar, Integer minGoals, String location, String timeSlot) {
+        List<Jogo> all = jogoRepository.findAll();
+        return all.stream()
+            .filter(j -> realizados == null || (realizados && j.getResultado() != null) || (aRealizar != null && aRealizar && j.getResultado() == null))
+            .filter(j -> minGoals == null || (j.getResultado() != null && j.getResultado().getPlacar() != null && somaGols(j.getResultado().getPlacar()) >= minGoals))
+            .filter(j -> location == null || (j.getLocal() != null && j.getLocal().toLowerCase().contains(location.toLowerCase())))
+            .filter(j -> timeSlot == null || pertenceAoTurno(j.getDataHora(), timeSlot))
+            .toList();
+    }
+
+    // Função auxiliar para somar gols do placar (ex: "3-2" -> 5)
+    private int somaGols(String placar) {
+        if (placar == null || !placar.contains("-")) return 0;
+        try {
+            String[] parts = placar.split("-");
+            return Integer.parseInt(parts[0].trim()) + Integer.parseInt(parts[1].trim());
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    // Função auxiliar para verificar turno (manhã, tarde, noite)
+    private boolean pertenceAoTurno(java.time.LocalDateTime dataHora, String turno) {
+        if (dataHora == null || turno == null) return false;
+        int hora = dataHora.getHour();
+        switch (turno.toLowerCase()) {
+            case "manha":
+            case "manhã":
+            case "morning":
+                return hora >= 6 && hora < 12;
+            case "tarde":
+            case "afternoon":
+                return hora >= 12 && hora < 18;
+            case "noite":
+            case "noche":
+            case "night":
+                return hora >= 18 || hora < 6;
+            default:
+                return false;
+        }
+    }
 }

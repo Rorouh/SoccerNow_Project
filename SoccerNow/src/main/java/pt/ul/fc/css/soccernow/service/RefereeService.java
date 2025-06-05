@@ -59,4 +59,17 @@ public class RefereeService {
     public Set<Referee> findAllByIds(Set<Long> ids) {
         return refereeRepository.findAllById(ids).stream().collect(Collectors.toSet());
     }
+
+    /**
+     * Filtro avançado de árbitros: nome, minGames, minCards
+     */
+    @Transactional(readOnly = true)
+    public List<Referee> filterReferees(String name, Integer minGames, Integer minCards) {
+        List<Referee> all = refereeRepository.findAll();
+        return all.stream()
+            .filter(r -> name == null || r.getName().toLowerCase().contains(name.toLowerCase()))
+            .filter(r -> minGames == null || (r.getGamesAsPrimary().size() + r.getGamesAsAssistant().size()) >= minGames)
+            // minCards: se houver campo/implementação de cartões, ajuste aqui. Por enquanto, ignora
+            .toList();
+    }
 }

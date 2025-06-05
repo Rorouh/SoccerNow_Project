@@ -5,8 +5,19 @@ import java.util.Set;
 
 public class JogoDTO {
     private Long id;
+
+    // Construtor padrão necessário para frameworks
+    public JogoDTO() {}
+
     private LocalDateTime dateTime;
     private String location;
+
+    // Construtor compacto para filtros
+    public JogoDTO(Long id, LocalDateTime dateTime, String location) {
+        this.id = id;
+        this.dateTime = dateTime;
+        this.location = location;
+    }
     private boolean amigavel;
     private Integer homeScore;
     private Integer awayScore;

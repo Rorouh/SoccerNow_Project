@@ -17,6 +17,31 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/teams")
 public class TeamController {
 
+    /**
+     * GET /api/teams/filter
+     * Filtros avançados: nome, minPlayers, minWins, minDraws, minLosses, minAchievements, missingPosition
+     */
+    @GetMapping("/filter")
+    public ResponseEntity<List<TeamDTO>> filterTeams(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "minPlayers", required = false) Integer minPlayers,
+            @RequestParam(value = "minWins", required = false) Integer minWins,
+            @RequestParam(value = "minDraws", required = false) Integer minDraws,
+            @RequestParam(value = "minLosses", required = false) Integer minLosses,
+            @RequestParam(value = "minAchievements", required = false) Integer minAchievements,
+            @RequestParam(value = "missingPosition", required = false) String missingPosition
+    ) {
+        List<Team> results = teamService.filterTeams(name, minPlayers, minWins, minDraws, minLosses, minAchievements, missingPosition);
+        List<TeamDTO> dtos = results.stream()
+                .map(t -> new TeamDTO(
+                        t.getId(),
+                        t.getName()
+                        // Adicione outros campos necessários do DTO
+                ))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
+
     private final TeamService teamService;
 
     public TeamController(TeamService teamService) {

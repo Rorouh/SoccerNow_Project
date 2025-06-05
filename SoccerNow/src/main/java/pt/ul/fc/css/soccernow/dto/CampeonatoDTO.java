@@ -10,6 +10,15 @@ public class CampeonatoDTO {
     // Solo de lectura en respuestas
     private Long id;
 
+    // Construtor compacto para filtros
+    public CampeonatoDTO(Long id, String nome) {
+        this.id = id;
+        this.nome = nome;
+        this.modalidade = null;
+        this.formato = null;
+        this.participanteIds = null;
+    }
+
     @NotBlank(message = "El nombre del campeonato no puede estar vacío")
     private String nome;
 

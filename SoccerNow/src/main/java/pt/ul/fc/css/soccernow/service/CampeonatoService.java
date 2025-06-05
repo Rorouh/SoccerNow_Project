@@ -127,4 +127,17 @@ public class CampeonatoService {
         return campeonatoRepository.findAll();
     }
 
-}   
+    /**
+     * Filtro avançado de campeonatos: nome, team, minGamesPlayed, minGamesPending
+     */
+    @Transactional(readOnly = true)
+    public List<Campeonato> filterCampeonatos(String nome, String team, Integer minGamesPlayed, Integer minGamesPending) {
+        List<Campeonato> all = campeonatoRepository.findAll();
+        return all.stream()
+            .filter(c -> nome == null || c.getNome().toLowerCase().contains(nome.toLowerCase()))
+            .filter(c -> team == null || (c.getParticipantes() != null && c.getParticipantes().stream().anyMatch(t -> t.getName().toLowerCase().contains(team.toLowerCase()))))
+            .filter(c -> minGamesPlayed == null || (c.getJogos() != null && c.getJogos().stream().filter(j -> j.getResultado() != null).count() >= minGamesPlayed))
+            .filter(c -> minGamesPending == null || (c.getJogos() != null && c.getJogos().stream().filter(j -> j.getResultado() == null).count() >= minGamesPending))
+            .toList();
+    }
+}

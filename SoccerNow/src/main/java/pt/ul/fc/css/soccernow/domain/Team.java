@@ -75,7 +75,85 @@ public class Team {
     }
 
     //SI quisiera acceder a los campeonatos que esta un equipo inscrito desde equipo, utilizariamos esto:
-    //@ManyToMany(mappedBy = "participantes")
-    //private Set<Campeonato> campeonatos = new HashSet<>();
+//@ManyToMany(mappedBy = "participantes")
+//private Set<Campeonato> campeonatos = new HashSet<>();
 
+    /**
+     * Calcula o número de vitórias do time (considerando jogos como mandante e visitante)
+     */
+    public int getWins() {
+        int wins = 0;
+        if (jogosComoVisitada != null) {
+            for (Jogo jogo : jogosComoVisitada) {
+                if (jogo.getResultado() != null && jogo.getResultado().getEquipaVitoriosa() != null &&
+                    this.equals(jogo.getResultado().getEquipaVitoriosa())) {
+                    wins++;
+                }
+            }
+        }
+        if (jogosComoVisitante != null) {
+            for (Jogo jogo : jogosComoVisitante) {
+                if (jogo.getResultado() != null && jogo.getResultado().getEquipaVitoriosa() != null &&
+                    this.equals(jogo.getResultado().getEquipaVitoriosa())) {
+                    wins++;
+                }
+            }
+        }
+        return wins;
+    }
+
+    /**
+     * Calcula o número de empates do time
+     */
+    public int getDraws() {
+        int draws = 0;
+        if (jogosComoVisitada != null) {
+            for (Jogo jogo : jogosComoVisitada) {
+                if (jogo.getResultado() != null && jogo.getResultado().isEmpate()) {
+                    draws++;
+                }
+            }
+        }
+        if (jogosComoVisitante != null) {
+            for (Jogo jogo : jogosComoVisitante) {
+                if (jogo.getResultado() != null && jogo.getResultado().isEmpate()) {
+                    draws++;
+                }
+            }
+        }
+        return draws;
+    }
+
+    /**
+     * Calcula o número de derrotas do time
+     */
+    public int getLosses() {
+        int losses = 0;
+        if (jogosComoVisitada != null) {
+            for (Jogo jogo : jogosComoVisitada) {
+                if (jogo.getResultado() != null && jogo.getResultado().getEquipaVitoriosa() != null &&
+                    !this.equals(jogo.getResultado().getEquipaVitoriosa())) {
+                    losses++;
+                }
+            }
+        }
+        if (jogosComoVisitante != null) {
+            for (Jogo jogo : jogosComoVisitante) {
+                if (jogo.getResultado() != null && jogo.getResultado().getEquipaVitoriosa() != null &&
+                    !this.equals(jogo.getResultado().getEquipaVitoriosa())) {
+                    losses++;
+                }
+            }
+        }
+        return losses;
+    }
+
+    /**
+     * Retorna a quantidade de conquistas (exemplo: pódios em campeonatos)
+     * Ajuste conforme sua modelagem de conquistas.
+     */
+    public int getAchievements() {
+        // TODO: Ajuste conforme sua modelagem real de conquistas
+        return 0;
+    }
 }

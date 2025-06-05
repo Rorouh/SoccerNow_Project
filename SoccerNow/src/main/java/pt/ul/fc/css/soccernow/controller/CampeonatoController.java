@@ -19,6 +19,28 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/campeonatos")
 public class CampeonatoController {
 
+    /**
+     * GET /api/campeonatos/filter
+     * Filtros avançados: nome, team, minGamesPlayed, minGamesPending
+     */
+    @GetMapping("/filter")
+    public ResponseEntity<List<CampeonatoDTO>> filterCampeonatos(
+            @RequestParam(value = "nome", required = false) String nome,
+            @RequestParam(value = "team", required = false) String team,
+            @RequestParam(value = "minGamesPlayed", required = false) Integer minGamesPlayed,
+            @RequestParam(value = "minGamesPending", required = false) Integer minGamesPending
+    ) {
+        List<Campeonato> results = campeonatoService.filterCampeonatos(nome, team, minGamesPlayed, minGamesPending);
+        List<CampeonatoDTO> dtos = results.stream()
+                .map(c -> new CampeonatoDTO(
+                        c.getId(),
+                        c.getNome()
+                        // Adicione outros campos necessários do DTO
+                ))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
+
     private final CampeonatoService campeonatoService;
 
     public CampeonatoController(CampeonatoService campeonatoService) {

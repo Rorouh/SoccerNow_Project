@@ -110,5 +110,21 @@ public class TeamService {
     public List<Team> findWithNoPlayerInPosition(Player.PreferredPosition pos) {
         return teamRepository.findTeamsWithNoPlayerInPosition(pos);
     }
-
+    /**
+     * Filtro avançado de equipas: nome, minPlayers, minWins, minDraws, minLosses, minAchievements, missingPosition
+     */
+    @Transactional(readOnly = true)
+    public List<Team> filterTeams(String name, Integer minPlayers, Integer minWins, Integer minDraws, Integer minLosses, Integer minAchievements, String missingPosition) {
+        List<Team> all = teamRepository.findAll();
+        return all.stream()
+            .filter(t -> name == null || t.getName().toLowerCase().contains(name.toLowerCase()))
+            .filter(t -> minPlayers == null || (t.getPlayers() != null && t.getPlayers().size() >= minPlayers))
+            // Métodos getWins(), getDraws(), getLosses(), getAchievements() agora retornam int
+            .filter(t -> minWins == null || t.getWins() >= minWins)
+            .filter(t -> minDraws == null || t.getDraws() >= minDraws)
+            .filter(t -> minLosses == null || t.getLosses() >= minLosses)
+            .filter(t -> minAchievements == null || t.getAchievements() >= minAchievements)
+            .filter(t -> missingPosition == null || t.getPlayers().stream().noneMatch(p -> p.getPreferredPosition().name().equalsIgnoreCase(missingPosition)))
+            .toList();
+    }
 }

@@ -16,7 +16,14 @@ public class TeamDTO {
 
     public TeamDTO() { }
 
-    // Para respuestas (con id)
+    // Para respostas (com id e nome apenas)
+    public TeamDTO(Long id, String name) {
+        this.id = id;
+        this.name = name;
+        this.playerIds = null;
+    }
+
+    // Para respostas (con id)
     public TeamDTO(Long id, String name, Set<Long> playerIds) {
         this.id = id;
         this.name = name;

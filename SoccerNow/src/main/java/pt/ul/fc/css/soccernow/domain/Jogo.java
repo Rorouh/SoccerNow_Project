@@ -94,6 +94,7 @@ public class Jogo {
 
     // Helper para equipas
     @Transient
+    @com.fasterxml.jackson.annotation.JsonIgnore
     public Set<Team> getEquipas() {
         return Set.of(homeTeam, awayTeam);
     }

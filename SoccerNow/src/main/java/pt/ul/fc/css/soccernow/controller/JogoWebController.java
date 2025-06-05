@@ -57,7 +57,7 @@ public class JogoWebController {
     public String showCreateForm(Model model) {
         model.addAttribute("jogoDTO", new JogoDTO());
         model.addAttribute("teams", teamService.getAllTeams());
-        model.addAttribute("arbitros", refereeService.getAllReferees());
+        model.addAttribute("arbitros", refereeService.findAllReferees());
         return "jogos/form";  // templates/jogos/form.html
     }
 
@@ -98,7 +98,7 @@ public class JogoWebController {
         } catch (ApplicationException | NotFoundException ex) {
             model.addAttribute("error", ex.getMessage());
             model.addAttribute("teams", teamService.getAllTeams());
-            model.addAttribute("arbitros", refereeService.getAllReferees());
+            model.addAttribute("arbitros", refereeService.findAllReferees());
             return "jogos/form";
         }
     }
@@ -114,7 +114,7 @@ public class JogoWebController {
         JogoDTO dto = toDTO(jogo);
         model.addAttribute("jogoDTO", dto);
         model.addAttribute("teams", teamService.getAllTeams());
-        model.addAttribute("arbitros", refereeService.getAllReferees());
+        model.addAttribute("arbitros", refereeService.findAllReferees());
         return "jogos/form";
     }
 
@@ -157,7 +157,7 @@ public class JogoWebController {
         } catch (ApplicationException | NotFoundException ex) {
             model.addAttribute("error", ex.getMessage());
             model.addAttribute("teams", teamService.getAllTeams());
-            model.addAttribute("arbitros", refereeService.getAllReferees());
+            model.addAttribute("arbitros", refereeService.findAllReferees());
             return "jogos/form";
         }
     }

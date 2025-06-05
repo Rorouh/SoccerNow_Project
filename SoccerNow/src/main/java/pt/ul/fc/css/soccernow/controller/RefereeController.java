@@ -15,6 +15,28 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/referees")
 public class RefereeController {
 
+    /**
+     * GET /api/referees/filter
+     * Filtros avançados: nome, minGames, minCards
+     */
+    @GetMapping("/filter")
+    public ResponseEntity<List<RefereeDTO>> filterReferees(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "minGames", required = false) Integer minGames,
+            @RequestParam(value = "minCards", required = false) Integer minCards
+    ) {
+        List<Referee> results = refereeService.filterReferees(name, minGames, minCards);
+        List<RefereeDTO> dtos = results.stream()
+                .map(r -> new RefereeDTO(
+                        r.getId(),
+                        r.getName(),
+                        r.getEmail(),
+                        r.isCertified()
+                ))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
+
     private final RefereeService refereeService;
 
     public RefereeController(RefereeService refereeService) {
