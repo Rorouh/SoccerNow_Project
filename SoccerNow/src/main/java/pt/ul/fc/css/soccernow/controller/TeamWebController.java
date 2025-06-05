@@ -37,24 +37,25 @@ public class TeamWebController {
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "minPlayers", required = false) Integer minPlayers,
             @RequestParam(value = "minWins", required = false) Integer minWins,
+            @RequestParam(value = "minDraws", required = false) Integer minDraws,
+            @RequestParam(value = "minLosses", required = false) Integer minLosses,
+            @RequestParam(value = "minAchievements", required = false) Integer minAchievements,
+            @RequestParam(value = "missingPosition", required = false) String missingPosition,
             @RequestParam(value = "noPosition", required = false) String noPosition,
             Model model) {
 
         List<Team> teams;
 
-        if (name != null && !name.isBlank()) {
-            teams = teamService.findByName(name);
-        } else if (minPlayers != null) {
-            teams = teamService.findByMinPlayers(minPlayers);
-        } else if (minWins != null) {
-            teams = teamService.findByMinWins(minWins);
+        // Se algum filtro avançado for usado, aplica filtro avançado
+        if (name != null || minPlayers != null || minWins != null || minDraws != null || minLosses != null || minAchievements != null || (missingPosition != null && !missingPosition.isBlank())) {
+            teams = teamService.filterTeams(name, minPlayers, minWins, minDraws, minLosses, minAchievements, missingPosition);
         } else if (noPosition != null && !noPosition.isBlank()) {
             Player.PreferredPosition posEnum;
             try {
                 posEnum = Player.PreferredPosition.valueOf(noPosition);
                 teams = teamService.findWithNoPlayerInPosition(posEnum);
             } catch (IllegalArgumentException ex) {
-                model.addAttribute("error", "Posición inválida. Valores: PORTERO, DEFENSA, CENTROCAMPISTA, DELANTERO.");
+                model.addAttribute("error", "Posição inválida. Valores: PORTERO, DEFENSA, CENTROCAMPISTA, DELANTERO.");
                 teams = teamService.getAllTeams();
                 model.addAttribute("positions", Player.PreferredPosition.values());
                 model.addAttribute("teams", teams);
@@ -166,5 +167,32 @@ public class TeamWebController {
                                   @PathVariable Long playerId) {
         teamService.addPlayerToTeam(teamId, playerId);
         return "redirect:/web/teams";
+    }
+
+    /**
+     * GET /web/teams/filter
+     * Filtros avançados: nome, minPlayers, minWins, minDraws, minLosses, minAchievements, missingPosition
+     */
+    @GetMapping("/filter")
+    public String filterTeams(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "minPlayers", required = false) Integer minPlayers,
+            @RequestParam(value = "minWins", required = false) Integer minWins,
+            @RequestParam(value = "minDraws", required = false) Integer minDraws,
+            @RequestParam(value = "minLosses", required = false) Integer minLosses,
+            @RequestParam(value = "minAchievements", required = false) Integer minAchievements,
+            @RequestParam(value = "missingPosition", required = false) String missingPosition,
+            Model model) {
+        List<Team> teams = teamService.filterTeams(name, minPlayers, minWins, minDraws, minLosses, minAchievements, missingPosition);
+        List<TeamDTO> dtos = teams.stream()
+                .map(t -> new TeamDTO(
+                        t.getId(),
+                        t.getName(),
+                        t.getPlayers().stream().map(Player::getId).collect(Collectors.toSet())
+                ))
+                .collect(Collectors.toList());
+        model.addAttribute("teams", dtos);
+        model.addAttribute("positions", Player.PreferredPosition.values());
+        return "teams/list";
     }
 }

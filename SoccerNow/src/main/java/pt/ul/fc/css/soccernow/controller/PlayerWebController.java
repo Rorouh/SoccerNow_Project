@@ -38,30 +38,8 @@ public class PlayerWebController {
             @RequestParam(value = "minCards", required = false) Integer minCards,
             Model model) {
 
-        List<Player> players;
-
-        if (name != null && !name.isBlank()) {
-            players = playerService.findPlayersByName(name);
-        } else if (position != null && !position.isBlank()) {
-            // Convertir posición a enum
-            User.PreferredPosition posEnum;
-            try {
-                posEnum = User.PreferredPosition.valueOf(position);
-            } catch (IllegalArgumentException ex) {
-                model.addAttribute("error", "Posición inválida. Valores válidos: PORTERO, DEFENSA, CENTROCAMPISTA, DELANTERO.");
-                players = playerService.findAllPlayers();
-                model.addAttribute("positions", User.PreferredPosition.values());
-                model.addAttribute("players", players);
-                return "players/list";
-            }
-            players = playerService.findByPosition(posEnum);
-        } else if (minGoals != null) {
-            players = playerService.findByMinGoals(minGoals);
-        } else if (minCards != null) {
-            players = playerService.findByMinRedCards(minCards);
-        } else {
-            players = playerService.findAllPlayers();
-        }
+        // Filtro avançado: permite combinar todos os filtros ao mesmo tempo
+        List<Player> players = playerService.filterPlayers(name, position, minGoals, minCards);
 
         List<PlayerDTO> dtos = players.stream()
                 .map(p -> new PlayerDTO(
@@ -69,13 +47,15 @@ public class PlayerWebController {
                         p.getName(),
                         p.getEmail(),
                         p.getPassword(),
-                        p.getPreferredPosition().name()
+                        p.getPreferredPosition() != null ? p.getPreferredPosition().name() : null,
+                        p.getGoals(),
+                        p.getCards()
                 ))
                 .collect(Collectors.toList());
 
         model.addAttribute("players", dtos);
         model.addAttribute("positions", User.PreferredPosition.values());
-        return "players/list";  // templates/players/list.html
+        return "players/list";
     }
 
     /**
