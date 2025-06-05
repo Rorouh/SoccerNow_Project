@@ -4,12 +4,9 @@
 <VBox xmlns:fx="http://javafx.com/fxml" fx:controller="pt.ul.fc.css.soccernowfx.controller.MenuController" spacing="15" alignment="CENTER" style="-fx-padding: 40;">
     <Label text="SoccerNow - Menu Principal" style="-fx-font-size: 22; -fx-font-weight: bold;" />
     <Button text="Gerir Utilizadores" onAction="#handleManageUsers" minWidth="250" />
-<<<<<<< HEAD
     <Button text="Criar Conta" onAction="#handleRegisterUser" minWidth="250" />
     <Button text="Criar Equipa" onAction="#handleCreateTeam" minWidth="250" />
     <Button text="Criar Campeonato" onAction="#handleCreateChampionship" minWidth="250" />
-=======
->>>>>>> 52a6f9c (Entrega fase1: implementação, testes, docker e documentação)
     <Button text="Gerir Equipas" onAction="#handleManageTeams" minWidth="250" />
     <Button text="Gerir Campeonatos" onAction="#handleManageChampionships" minWidth="250" />
     <Button text="Gerir Jogos" onAction="#handleManageGames" minWidth="250" />

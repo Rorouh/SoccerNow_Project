@@ -12,10 +12,7 @@ public class ChampionshipManageController {
     @FXML private TextField teamsField;
     @FXML private TextField refereesField;
     @FXML private Label infoLabel;
-<<<<<<< HEAD
-    @FXML private Button backButton;
-=======
->>>>>>> 52a6f9c (Entrega fase1: implementação, testes, docker e documentação)
+
 
     @FXML
     private void handleSearch() {
@@ -115,13 +112,12 @@ public class ChampionshipManageController {
             .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Erro: " + e.getMessage())); return null; });
     }
 
-<<<<<<< HEAD
     // Navegação para o menu principal
     @FXML
     private void handleBack() {
         try {
             javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("/fxml/menu.fxml"));
-            javafx.stage.Stage stage = (javafx.stage.Stage) backButton.getScene().getWindow();
+            javafx.stage.Stage stage = (javafx.stage.Stage) infoLabel.getScene().getWindow();
             stage.setScene(new javafx.scene.Scene(root));
         } catch (Exception e) {
             infoLabel.setStyle("-fx-text-fill: red;");
@@ -130,13 +126,8 @@ public class ChampionshipManageController {
     }
 
     // Utilitário simples para extrair valor de campo JSON (sem dependência externa)
-    private String extractJson(String json, String campo) {
-        String search = "\"" + campo + "\":";
-=======
-    // Utilitário simples para extrair valor de campo JSON (sem dependência externa)
     private String extractJson(String json, String field) {
         String search = "\"" + field + "\":";
->>>>>>> 52a6f9c (Entrega fase1: implementação, testes, docker e documentação)
         int idx = json.indexOf(search);
         if (idx == -1) return "";
         int start = json.indexOf('"', idx + search.length());

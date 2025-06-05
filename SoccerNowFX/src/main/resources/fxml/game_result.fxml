@@ -13,8 +13,5 @@
     <TextField fx:id="cardsField" GridPane.rowIndex="4" GridPane.columnIndex="1" promptText="ex: user@email.com:amarelo" />
     <Button text="Registar Resultado" onAction="#handleRegister" GridPane.rowIndex="5" GridPane.columnIndex="1" />
     <Label fx:id="infoLabel" textFill="blue" GridPane.rowIndex="6" GridPane.columnSpan="2" />
-<<<<<<< HEAD
     <Button text="Voltar ao Menu" onAction="#handleBack" GridPane.rowIndex="7" GridPane.columnIndex="1" />
-=======
->>>>>>> 52a6f9c (Entrega fase1: implementação, testes, docker e documentação)
 </GridPane>

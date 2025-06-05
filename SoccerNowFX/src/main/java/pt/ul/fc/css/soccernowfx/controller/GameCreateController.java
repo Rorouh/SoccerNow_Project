@@ -7,7 +7,7 @@ import java.net.http.*;
 import java.net.URI;
 
 public class GameCreateController {
-<<<<<<< HEAD
+
 
     @FXML
     public void initialize() {
@@ -26,8 +26,7 @@ public class GameCreateController {
             infoLabel.setText("Erro ao voltar ao menu: " + e.getMessage());
         }
     }
-=======
->>>>>>> 52a6f9c (Entrega fase1: implementação, testes, docker e documentação)
+
     @FXML private DatePicker dateField;
     @FXML private TextField timeField;
     @FXML private TextField locationField;
@@ -36,12 +35,11 @@ public class GameCreateController {
     @FXML private TextField refereesField;
     @FXML private ChoiceBox<String> typeChoice;
     @FXML private TextField championshipField;
-<<<<<<< HEAD
+
     @FXML private TextField goalkeeper1Field;
     @FXML private TextField goalkeeper2Field;
     @FXML private TextField mainRefereeField;
-=======
->>>>>>> 52a6f9c (Entrega fase1: implementação, testes, docker e documentação)
+
     @FXML private Label infoLabel;
 
     @FXML
@@ -54,7 +52,7 @@ public class GameCreateController {
         String arbitros = refereesField.getText();
         String tipo = typeChoice.getValue();
         String campeonato = championshipField.getText();
-<<<<<<< HEAD
+
         String goalkeeper1 = goalkeeper1Field.getText();
         String goalkeeper2 = goalkeeper2Field.getText();
         String mainReferee = mainRefereeField.getText();
@@ -119,14 +117,11 @@ public class GameCreateController {
             }
         }
         // Monta JSON incluindo guarda-redes e árbitro principal
-        String json = String.format("{\"data\":\"%s\",\"hora\":\"%s\",\"local\":\"%s\",\"equipa1\":\"%s\",\"equipa2\":\"%s\",\"arbitros\":\"%s\",\"tipo\":\"%s\",\"campeonato\":\"%s\",\"goalkeeper1\":\"%s\",\"goalkeeper2\":\"%s\",\"mainReferee\":\"%s\"}",
-                data, hora, local, equipa1, equipa2, arbitros, tipo, campeonato, goalkeeper1, goalkeeper2, mainReferee);
-=======
+
         if (data.isBlank() || hora.isBlank() || local.isBlank() || equipa1.isBlank() || equipa2.isBlank() || arbitros.isBlank() || tipo == null) {
             infoLabel.setText("Preencha todos os campos obrigatórios.");
             return;
         }
-        String[] arbitrosArr = arbitros.split(",");
         StringBuilder sb = new StringBuilder();
         sb.append("{\"data\":\"").append(data).append("\",")
           .append("\"hora\":\"").append(hora).append("\",")
@@ -144,7 +139,7 @@ public class GameCreateController {
         }
         sb.append("}");
         String json = sb.toString();
->>>>>>> 52a6f9c (Entrega fase1: implementação, testes, docker e documentação)
+
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/api/games"))

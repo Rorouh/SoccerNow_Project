@@ -14,10 +14,6 @@
     <TextField fx:id="refereesField" GridPane.rowIndex="5" GridPane.columnIndex="1" />
     <Button text="Atualizar" onAction="#handleUpdate" GridPane.rowIndex="6" GridPane.columnIndex="1" />
     <Button text="Remover" onAction="#handleRemove" GridPane.rowIndex="7" GridPane.columnIndex="1" />
-<<<<<<< HEAD
     <Button fx:id="backButton" text="Voltar ao Menu" onAction="#handleBack" GridPane.rowIndex="8" GridPane.columnIndex="1" />
     <Label fx:id="infoLabel" textFill="blue" GridPane.rowIndex="9" GridPane.columnSpan="2" />
-=======
-    <Label fx:id="infoLabel" textFill="blue" GridPane.rowIndex="8" GridPane.columnSpan="2" />
->>>>>>> 52a6f9c (Entrega fase1: implementação, testes, docker e documentação)
 </GridPane>

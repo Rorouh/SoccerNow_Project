@@ -8,10 +8,6 @@
     <Label text="Senha:" GridPane.rowIndex="2" />
     <PasswordField fx:id="passwordField" GridPane.rowIndex="2" GridPane.columnIndex="1" />
     <Button text="Entrar" onAction="#handleLogin" GridPane.rowIndex="3" GridPane.columnIndex="1" />
-<<<<<<< HEAD
-
-=======
     <Hyperlink text="Criar conta" onAction="#handleShowRegister" GridPane.rowIndex="4" GridPane.columnIndex="1" />
->>>>>>> 52a6f9c (Entrega fase1: implementação, testes, docker e documentação)
     <Label fx:id="errorLabel" textFill="red" GridPane.rowIndex="5" GridPane.columnSpan="2" />
 </GridPane>

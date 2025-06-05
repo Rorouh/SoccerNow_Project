@@ -15,7 +15,7 @@ public class TeamCreateController {
     @FXML private TextField nameField;
     @FXML private TextField playersField;
     @FXML private Label infoLabel;
-<<<<<<< HEAD
+
     @FXML private Button backButton;
     @FXML private ListView<String> emailListView;
 
@@ -25,18 +25,14 @@ public class TeamCreateController {
         infoLabel.setText("");
         playersField.setStyle("");
         if (emailListView != null) emailListView.getItems().clear();
-=======
 
-    @FXML
-    private void handleCreate() {
->>>>>>> 52a6f9c (Entrega fase1: implementação, testes, docker e documentação)
         String nome = nameField.getText();
         String jogadores = playersField.getText();
         if (nome.isBlank()) {
             infoLabel.setText("Nome da equipa obrigatório.");
             return;
         }
-<<<<<<< HEAD
+
         // Validação de jogadores
         String[] jogadoresArr = jogadores.isBlank() ? new String[0] : jogadores.split(",");
         if (jogadoresArr.length == 0) {
@@ -81,15 +77,9 @@ public class TeamCreateController {
         }
         playersField.setStyle("");
         infoLabel.setStyle("-fx-text-fill: green;");
-        // Monta JSON: {"name":"...","playerEmails":["email1","email2",...]}
-        StringBuilder sb = new StringBuilder();
-        sb.append("{\"name\":\"").append(nome).append("\",\"playerEmails\":[");
-=======
         // Monta JSON: {"nome":"...","jogadores":["email1","email2",...]}
-        String[] jogadoresArr = jogadores.isBlank() ? new String[0] : jogadores.split(",");
         StringBuilder sb = new StringBuilder();
         sb.append("{\"nome\":\"").append(nome).append("\",\"jogadores\":[");
->>>>>>> 52a6f9c (Entrega fase1: implementação, testes, docker e documentação)
         for (int i = 0; i < jogadoresArr.length; i++) {
             sb.append("\"").append(jogadoresArr[i].trim()).append("\"");
             if (i < jogadoresArr.length - 1) sb.append(",");
@@ -105,7 +95,6 @@ public class TeamCreateController {
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
             .thenAccept(response -> Platform.runLater(() -> {
                 if (response.statusCode() == 201 || response.statusCode() == 200) {
-<<<<<<< HEAD
                     infoLabel.setStyle("-fx-text-fill: green;");
                     infoLabel.setText("Equipa criada com sucesso!");
                 } else {
@@ -113,33 +102,17 @@ public class TeamCreateController {
                     infoLabel.setText("Erro ao criar equipa: " + response.body());
                 }
             }))
-            .exceptionally(e -> { Platform.runLater(() -> { infoLabel.setStyle("-fx-text-fill: red;"); infoLabel.setText("Erro: " + e.getMessage()); }); return null; });
-=======
-                    infoLabel.setText("Equipa criada com sucesso!");
-                } else {
-                    infoLabel.setText("Erro ao criar equipa: " + response.body());
-                }
-            }))
             .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Erro: " + e.getMessage())); return null; });
->>>>>>> 52a6f9c (Entrega fase1: implementação, testes, docker e documentação)
     }
 
     @FXML
     private void handleBack() {
         try {
-<<<<<<< HEAD
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/menu.fxml"));
-            Stage stage = (Stage) infoLabel.getScene().getWindow();
-            stage.setScene(new Scene(root));
-        } catch (Exception e) {
-            infoLabel.setText("Erro ao voltar ao menu: " + e.getMessage());
-=======
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/login.fxml"));
             Stage stage = (Stage) infoLabel.getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (Exception e) {
             infoLabel.setText("Erro ao voltar: " + e.getMessage());
->>>>>>> 52a6f9c (Entrega fase1: implementação, testes, docker e documentação)
         }
     }
 }
