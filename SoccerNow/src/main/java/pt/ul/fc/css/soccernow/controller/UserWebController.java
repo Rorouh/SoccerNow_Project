@@ -32,14 +32,14 @@ public class UserWebController {
                 .map(this::toDTO)
                 .collect(Collectors.toList());
         model.addAttribute("users", dtos);
-        return "usuarios/list";
+        return "users/list";
     }
 
     /** GET /web/users/create → muestra formulario vacío para crear usuario */
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         model.addAttribute("userDTO", new UserDTO());
-        return "usuarios/form";
+        return "users/form";
     }
 
     /** POST /web/users/save → guarda nuevo usuario */
@@ -51,7 +51,7 @@ public class UserWebController {
             return "redirect:/web/users";
         } catch (ApplicationException ex) {
             model.addAttribute("error", ex.getMessage());
-            return "usuarios/form";
+            return "users/form";
         }
     }
 
@@ -65,7 +65,7 @@ public class UserWebController {
         User u = opt.get();
         UserDTO dto = toDTO(u);
         model.addAttribute("userDTO", dto);
-        return "usuarios/form";
+        return "users/form";
     }
 
     /** POST /web/users/update/{id} → actualiza usuario */
@@ -79,7 +79,7 @@ public class UserWebController {
             return "redirect:/web/users";
         } catch (ApplicationException ex) {
             model.addAttribute("error", ex.getMessage());
-            return "usuarios/form";
+            return "users/form";
         }
     }
 

@@ -1,0 +1,1117 @@
+// src/main/java/pt/ul/fc/css/soccernow/controller/UsuarioWebController.java
+package pt.ul.fc.css.soccernow.controller;
+
+import jakarta.validation.Valid;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import pt.ul.fc.css.soccernow.domain.User;
+import pt.ul.fc.css.soccernow.dto.UserDTO;
+import pt.ul.fc.css.soccernow.service.UserService;
+import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Controller
+@RequestMapping("/web/users")
+public class UserWebController {
+
+    private final UserService userService;
+
+    public UserWebController(UserService userService) {
+        this.userService = userService;
+    }
+
+    /** GET /web/users → lista todos los usuarios */
+    @GetMapping
+    public String listUsers(Model model) {
+        List<User> usuarios = userService.getAllUsers(); // suponer que agregaste método getAllUsers()
+        List<UserDTO> dtos = usuarios.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+        model.addAttribute("users", dtos);
+        return "usuarios/list";
+    }
+
+    /** GET /web/users/create → muestra formulario vacío para crear usuario */
+    @GetMapping("/create")
+    public String showCreateForm(Model model) {
+        model.addAttribute("userDTO", new UserDTO());
+        return "usuarios/form";
+    }
+
+    /** POST /web/users/save → guarda nuevo usuario */
+    @PostMapping("/save")
+    public String saveUser(@Valid @ModelAttribute("userDTO") UserDTO dto,
+                           Model model) {
+        try {
+            userService.createUser(dto);
+            return "redirect:/web/users";
+        } catch (ApplicationException ex) {
+            model.addAttribute("error", ex.getMessage());
+            return "usuarios/form";
+        }
+    }
+
+    /** GET /web/users/edit/{id} → formulario para editar usuario existente */
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        Optional<User> opt = userService.getUserById(id);
+        if (opt.isEmpty()) {
+            return "redirect:/web/users";
+        }
+        User u = opt.get();
+        UserDTO dto = toDTO(u);
+        model.addAttribute("userDTO", dto);
+        return "usuarios/form";
+    }
+
+    /** POST /web/users/update/{id} → actualiza usuario */
+    @PostMapping("/update/{id}")
+    public String updateUser(@PathVariable Long id,
+                             @ModelAttribute("userDTO") UserDTO dto,
+                             Model model) {
+        try {
+            userService.updateUser(id, dto)
+                       .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+            return "redirect:/web/users";
+        } catch (ApplicationException ex) {
+            model.addAttribute("error", ex.getMessage());
+            return "usuarios/form";
+        }
+    }
+
+    /** GET /web/users/delete/{id} → elimina usuario */
+    @GetMapping("/delete/{id}")
+    public String deleteUser(@PathVariable Long id, Model model) {
+        boolean eliminado = userService.deleteUser(id);
+        if (!eliminado) {
+            model.addAttribute("error", "No se encontró usuario con ID=" + id);
+        }
+        return "redirect:/web/users";
+    }
+
+    /** Helper para convertir entidad → DTO */
+    private UserDTO toDTO(User u) {
+        // Si es Player:
+        if (u instanceof pt.ul.fc.css.soccernow.domain.Player p) {
+            return new UserDTO(
+                    p.getId(),
+                    p.getName(),
+                    p.getEmail(),
+                    p.getPassword(),
+                    UserDTO.Role.PLAYER,
+                    p.getPreferredPosition(),
+                    null
+            );
+        } else {
+            pt.ul.fc.css.soccernow.domain.Referee r = (pt.ul.fc.css.soccernow.domain.Referee) u;
+            return new UserDTO(
+                    r.getId(),
+                    r.getName(),
+                    r.getEmail(),
+                    r.getPassword(),
+                    UserDTO.Role.REFEREE,
+                    null,
+                    r.isCertified()
+            );
+        }
+    }
+}
+// src/main/java/pt/ul/fc/css/soccernow/controller/PlayerWebController.java
+package pt.ul.fc.css.soccernow.controller;
+
+import jakarta.validation.Valid;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import pt.ul.fc.css.soccernow.domain.User;
+import pt.ul.fc.css.soccernow.domain.Player;
+import pt.ul.fc.css.soccernow.dto.PlayerDTO;
+import pt.ul.fc.css.soccernow.service.PlayerService;
+import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Controller
+@RequestMapping("/web/players")
+public class PlayerWebController {
+
+    private final PlayerService playerService;
+
+    public PlayerWebController(PlayerService playerService) {
+        this.playerService = playerService;
+    }
+
+    /**
+     * GET /web/players
+     * Lista todos los jugadores. Si viene parámetro "name", filtra por nombre.
+     * Si viene "position", filtra por posición.
+     * Si viene "minGoals" o "minCards", filtra respectivamente.
+     */
+    @GetMapping
+    public String listPlayers(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "position", required = false) String position,
+            @RequestParam(value = "minGoals", required = false) Integer minGoals,
+            @RequestParam(value = "minCards", required = false) Integer minCards,
+            Model model) {
+
+        // Filtro avançado: permite combinar todos os filtros ao mesmo tempo
+        List<Player> players = playerService.filterPlayers(name, position, minGoals, minCards);
+
+        List<PlayerDTO> dtos = players.stream()
+                .map(p -> new PlayerDTO(
+                        p.getId(),
+                        p.getName(),
+                        p.getEmail(),
+                        p.getPassword(),
+                        p.getPreferredPosition() != null ? p.getPreferredPosition().name() : null,
+                        p.getGoals(),
+                        p.getCards()
+                ))
+                .collect(Collectors.toList());
+
+        model.addAttribute("players", dtos);
+        model.addAttribute("positions", User.PreferredPosition.values());
+        return "players/list";
+    }
+
+    /**
+     * GET /web/players/create
+     * Muestra formulario para crear un jugador.
+     */
+    @GetMapping("/create")
+    public String showCreateForm(Model model) {
+        model.addAttribute("playerDTO", new PlayerDTO());
+        model.addAttribute("positions", User.PreferredPosition.values());
+        return "players/form";  // templates/players/form.html
+    }
+
+    /**
+     * POST /web/players/save
+     * Crea un jugador. Luego redirige a la lista.
+     */
+    @PostMapping("/save")
+    public String savePlayer(@Valid @ModelAttribute("playerDTO") PlayerDTO dto,
+                             Model model) {
+        try {
+            playerService.createPlayer(dto);
+            return "redirect:/web/players";
+        } catch (ApplicationException ex) {
+            model.addAttribute("error", ex.getMessage());
+            model.addAttribute("positions", User.PreferredPosition.values());
+            return "players/form";
+        }
+    }
+
+    /**
+     * GET /web/players/edit/{id}
+     * Muestra formulario con datos para editar un jugador.
+     */
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        var opt = playerService.getPlayerById(id);
+        if (opt.isEmpty()) {
+            return "redirect:/web/players";
+        }
+        Player p = opt.get();
+        PlayerDTO dto = new PlayerDTO(
+                p.getId(),
+                p.getName(),
+                p.getEmail(),
+                p.getPassword(),
+                p.getPreferredPosition().name()
+        );
+        dto.setGoals(p.getGoals());
+        dto.setCards(p.getCards());
+
+        model.addAttribute("playerDTO", dto);
+        model.addAttribute("positions", User.PreferredPosition.values());
+        return "players/form";
+    }
+
+    /**
+     * POST /web/players/update/{id}
+     * Actualiza un jugador existente.
+     */
+    @PostMapping("/update/{id}")
+    public String updatePlayer(@PathVariable Long id,
+                               @ModelAttribute("playerDTO") PlayerDTO dto,
+                               Model model) {
+        try {
+            var opt = playerService.updatePlayer(id, dto);
+            if (opt.isEmpty()) {
+                return "redirect:/web/players";
+            }
+            return "redirect:/web/players";
+        } catch (ApplicationException ex) {
+            model.addAttribute("error", ex.getMessage());
+            model.addAttribute("positions", User.PreferredPosition.values());
+            return "players/form";
+        }
+    }
+
+    /**
+     * GET /web/players/delete/{id}
+     * Elimina un jugador.
+     */
+    @GetMapping("/delete/{id}")
+    public String deletePlayer(@PathVariable Long id) {
+        playerService.deletePlayer(id);
+        return "redirect:/web/players";
+    }
+}
+// src/main/java/pt/ul/fc/css/soccernow/controller/TeamWebController.java
+package pt.ul.fc.css.soccernow.controller;
+
+import jakarta.validation.Valid;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import pt.ul.fc.css.soccernow.domain.Player;
+import pt.ul.fc.css.soccernow.domain.Team;
+import pt.ul.fc.css.soccernow.dto.TeamDTO;
+import pt.ul.fc.css.soccernow.service.TeamService;
+import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Controller
+@RequestMapping("/web/teams")
+public class TeamWebController {
+
+    private final TeamService teamService;
+
+    public TeamWebController(TeamService teamService) {
+        this.teamService = teamService;
+    }
+
+    /**
+     * GET /web/teams
+     * Lista todos los equipos. Si viene “name”, filtra por nombre.
+     * Si viene “minPlayers”, filtra por mínimo de jugadores.
+     * Si viene “minWins”, filtra por ganador de X partidos.
+     * Si viene “noPosition”, filtra equipos que no tienen jugador con cierta posición.
+     */
+    @GetMapping
+    public String listTeams(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "minPlayers", required = false) Integer minPlayers,
+            @RequestParam(value = "minWins", required = false) Integer minWins,
+            @RequestParam(value = "minDraws", required = false) Integer minDraws,
+            @RequestParam(value = "minLosses", required = false) Integer minLosses,
+            @RequestParam(value = "minAchievements", required = false) Integer minAchievements,
+            @RequestParam(value = "missingPosition", required = false) String missingPosition,
+            @RequestParam(value = "noPosition", required = false) String noPosition,
+            Model model) {
+
+        List<Team> teams;
+
+        // Se algum filtro avançado for usado, aplica filtro avançado
+        if (name != null || minPlayers != null || minWins != null || minDraws != null || minLosses != null || minAchievements != null || (missingPosition != null && !missingPosition.isBlank())) {
+            teams = teamService.filterTeams(name, minPlayers, minWins, minDraws, minLosses, minAchievements, missingPosition);
+        } else if (noPosition != null && !noPosition.isBlank()) {
+            Player.PreferredPosition posEnum;
+            try {
+                posEnum = Player.PreferredPosition.valueOf(noPosition);
+                teams = teamService.findWithNoPlayerInPosition(posEnum);
+            } catch (IllegalArgumentException ex) {
+                model.addAttribute("error", "Posição inválida. Valores: PORTERO, DEFENSA, CENTROCAMPISTA, DELANTERO.");
+                teams = teamService.getAllTeams();
+                model.addAttribute("positions", Player.PreferredPosition.values());
+                model.addAttribute("teams", teams);
+                return "teams/list";
+            }
+        } else {
+            teams = teamService.getAllTeams();
+        }
+
+        List<TeamDTO> dtos = teams.stream()
+                .map(t -> new TeamDTO(
+                        t.getId(),
+                        t.getName(),
+                        t.getPlayers().stream().map(Player::getId).collect(Collectors.toSet())
+                ))
+                .collect(Collectors.toList());
+
+        model.addAttribute("teams", dtos);
+        model.addAttribute("positions", Player.PreferredPosition.values());
+        return "teams/list";  // templates/teams/list.html
+    }
+
+    /**
+     * GET /web/teams/create
+     * Muestra formulario para crear un equipo.
+     */
+    @GetMapping("/create")
+    public String showCreateForm(Model model) {
+        model.addAttribute("teamDTO", new TeamDTO());
+        // Para el formulario, necesitaremos cargar todos los jugadores disponibles.
+        // Suponemos que hay método findAllPlayers() en PlayerService. Si no existe, añádelo:
+        // List<Player> all = playerService.findAllPlayers();
+        // model.addAttribute("allPlayers", all);
+        return "teams/form";  // templates/teams/form.html
+    }
+
+    /**
+     * POST /web/teams/save
+     * Crea un equipo. Luego redirige a lista.
+     */
+    @PostMapping("/save")
+    public String saveTeam(@Valid @ModelAttribute("teamDTO") TeamDTO dto,
+                           Model model) {
+        try {
+            teamService.createTeam(dto);
+            return "redirect:/web/teams";
+        } catch (ApplicationException ex) {
+            model.addAttribute("error", ex.getMessage());
+            return "teams/form";
+        }
+    }
+
+    /**
+     * GET /web/teams/edit/{id}
+     * Muestra formulario para editar equipo.
+     */
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        var opt = teamService.getTeamById(id);
+        if (opt.isEmpty()) {
+            return "redirect:/web/teams";
+        }
+        Team t = opt.get();
+        TeamDTO dto = new TeamDTO(
+                t.getId(),
+                t.getName(),
+                t.getPlayers().stream().map(Player::getId).collect(Collectors.toSet())
+        );
+        model.addAttribute("teamDTO", dto);
+        return "teams/form";
+    }
+
+    /**
+     * POST /web/teams/update/{id}
+     * Actualiza los datos del equipo.
+     */
+    @PostMapping("/update/{id}")
+    public String updateTeam(@PathVariable Long id,
+                             @ModelAttribute("teamDTO") TeamDTO dto,
+                             Model model) {
+        try {
+            var opt = teamService.updateTeam(id, dto);
+            if (opt.isEmpty()) {
+                return "redirect:/web/teams";
+            }
+            return "redirect:/web/teams";
+        } catch (ApplicationException ex) {
+            model.addAttribute("error", ex.getMessage());
+            return "teams/form";
+        }
+    }
+
+    /**
+     * GET /web/teams/delete/{id}
+     * Elimina un equipo.
+     */
+    @GetMapping("/delete/{id}")
+    public String deleteTeam(@PathVariable Long id) {
+        teamService.deleteTeam(id);
+        return "redirect:/web/teams";
+    }
+
+    /**
+     * GET /web/teams/addPlayer/{teamId}
+     * Ejemplo de caso de uso de “añadir jugador a equipo” si lo necesitas.
+     */
+    @GetMapping("/addPlayer/{teamId}/{playerId}")
+    public String addPlayerToTeam(@PathVariable Long teamId,
+                                  @PathVariable Long playerId) {
+        teamService.addPlayerToTeam(teamId, playerId);
+        return "redirect:/web/teams";
+    }
+
+    /**
+     * GET /web/teams/filter
+     * Filtros avançados: nome, minPlayers, minWins, minDraws, minLosses, minAchievements, missingPosition
+     */
+    @GetMapping("/filter")
+    public String filterTeams(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "minPlayers", required = false) Integer minPlayers,
+            @RequestParam(value = "minWins", required = false) Integer minWins,
+            @RequestParam(value = "minDraws", required = false) Integer minDraws,
+            @RequestParam(value = "minLosses", required = false) Integer minLosses,
+            @RequestParam(value = "minAchievements", required = false) Integer minAchievements,
+            @RequestParam(value = "missingPosition", required = false) String missingPosition,
+            Model model) {
+        List<Team> teams = teamService.filterTeams(name, minPlayers, minWins, minDraws, minLosses, minAchievements, missingPosition);
+        List<TeamDTO> dtos = teams.stream()
+                .map(t -> new TeamDTO(
+                        t.getId(),
+                        t.getName(),
+                        t.getPlayers().stream().map(Player::getId).collect(Collectors.toSet())
+                ))
+                .collect(Collectors.toList());
+        model.addAttribute("teams", dtos);
+        model.addAttribute("positions", Player.PreferredPosition.values());
+        return "teams/list";
+    }
+}
+// src/main/java/pt/ul/fc/css/soccernow/controller/JogoWebController.java
+package pt.ul.fc.css.soccernow.controller;
+
+import jakarta.validation.Valid;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import pt.ul.fc.css.soccernow.domain.Jogo;
+import pt.ul.fc.css.soccernow.domain.Referee;
+import pt.ul.fc.css.soccernow.domain.Team;
+import pt.ul.fc.css.soccernow.dto.JogoDTO;
+import pt.ul.fc.css.soccernow.service.JogoService;
+import pt.ul.fc.css.soccernow.service.TeamService;
+import pt.ul.fc.css.soccernow.service.RefereeService;
+import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
+import pt.ul.fc.css.soccernow.service.exceptions.NotFoundException;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Controller
+@RequestMapping("/web/jogos")
+public class JogoWebController {
+
+    private final JogoService jogoService;
+    private final TeamService teamService;
+    private final RefereeService refereeService;
+
+    public JogoWebController(JogoService jogoService,
+                             TeamService teamService,
+                             RefereeService refereeService) {
+        this.jogoService = jogoService;
+        this.teamService = teamService;
+        this.refereeService = refereeService;
+    }
+
+    /**
+     * GET /web/jogos
+     * Muestra la lista completa de juegos (sin filtros).
+     */
+    @GetMapping
+    public String listJogos(Model model) {
+        List<Jogo> jogos = jogoService.findAllJogos();
+        List<JogoDTO> dtos = jogos.stream().map(this::toDTO).collect(Collectors.toList());
+        model.addAttribute("jogos", dtos);
+        return "jogos/list";  // templates/jogos/list.html
+    }
+
+    /**
+     * GET /web/jogos/create
+     * Muestra formulario vacío para crear un juego.
+     * Pone en el modelo la lista de equipos y árbitros.
+     */
+    @GetMapping("/create")
+    public String showCreateForm(Model model) {
+        model.addAttribute("jogoDTO", new JogoDTO());
+        model.addAttribute("teams", teamService.getAllTeams());
+        model.addAttribute("arbitros", refereeService.findAllReferees());
+        return "jogos/form";  // templates/jogos/form.html
+    }
+
+    /**
+     * POST /web/jogos/save
+     * Recibe el JogoDTO del formulario y crea el juego.
+     */
+    @PostMapping("/save")
+    public String saveJogo(@ModelAttribute("jogoDTO") JogoDTO dto, Model model) {
+        try {
+            // Construir objeto Jogo para enviar a servicio
+            Jogo jogo = new Jogo();
+            jogo.setDataHora(dto.getDateTime());
+            jogo.setLocal(dto.getLocation());
+            jogo.setAmigavel(dto.isAmigavel());
+
+            // Cargar equipos y árbitros:
+            Team home = teamService.getTeamById(dto.getHomeTeamId())
+                    .orElseThrow(() -> new NotFoundException("Equipo local no encontrado"));
+            Team away = teamService.getTeamById(dto.getAwayTeamId())
+                    .orElseThrow(() -> new NotFoundException("Equipo visitante no encontrado"));
+            jogo.setHomeTeam(home);
+            jogo.setAwayTeam(away);
+
+            Set<Referee> arbitros = refereeService.findAllByIds(dto.getArbitroIds());
+            jogo.setReferees(arbitros);
+
+            if (dto.getPrimaryRefereeId() != null) {
+                Referee primary = refereeService.getRefereeById(dto.getPrimaryRefereeId())
+                        .orElseThrow(() -> new NotFoundException("Árbitro principal no encontrado"));
+                jogo.setPrimaryReferee(primary);
+            }
+
+            // Llamada a servicio:
+            jogoService.criarJogo(jogo);
+            return "redirect:/web/jogos";
+
+        } catch (ApplicationException | NotFoundException ex) {
+            model.addAttribute("error", ex.getMessage());
+            model.addAttribute("teams", teamService.getAllTeams());
+            model.addAttribute("arbitros", refereeService.findAllReferees());
+            return "jogos/form";
+        }
+    }
+
+    /**
+     * GET /web/jogos/edit/{id}
+     * Muestra formulario con datos del juego para editar (excepto resultado).
+     */
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        Jogo jogo = jogoService.obterJogo(id)
+                .orElseThrow(() -> new IllegalArgumentException("Juego no encontrado: " + id));
+        JogoDTO dto = toDTO(jogo);
+        model.addAttribute("jogoDTO", dto);
+        model.addAttribute("teams", teamService.getAllTeams());
+        model.addAttribute("arbitros", refereeService.findAllReferees());
+        return "jogos/form";
+    }
+
+    /**
+     * POST /web/jogos/update/{id}
+     * Actualiza un juego existente (solo campos mutables).
+     */
+    @PostMapping("/update/{id}")
+    public String updateJogo(@PathVariable Long id,
+                             @ModelAttribute("jogoDTO") JogoDTO dto,
+                             Model model) {
+        try {
+            Jogo existing = jogoService.obterJogo(id)
+                    .orElseThrow(() -> new NotFoundException("Juego no encontrado: " + id));
+
+            // Solo permitimos cambiar fecha, local, amigable, equipos, árbitros
+            if (dto.getDateTime() != null) existing.setDataHora(dto.getDateTime());
+            if (dto.getLocation() != null && !dto.getLocation().isBlank()) existing.setLocal(dto.getLocation());
+            existing.setAmigavel(dto.isAmigavel());
+
+            Team home = teamService.getTeamById(dto.getHomeTeamId())
+                    .orElseThrow(() -> new NotFoundException("Equipo local no encontrado"));
+            Team away = teamService.getTeamById(dto.getAwayTeamId())
+                    .orElseThrow(() -> new NotFoundException("Equipo visitante no encontrado"));
+            existing.setHomeTeam(home);
+            existing.setAwayTeam(away);
+
+            Set<Referee> arbitros = refereeService.findAllByIds(dto.getArbitroIds());
+            existing.setReferees(arbitros);
+
+            if (dto.getPrimaryRefereeId() != null) {
+                Referee primary = refereeService.getRefereeById(dto.getPrimaryRefereeId())
+                        .orElseThrow(() -> new NotFoundException("Árbitro principal no encontrado"));
+                existing.setPrimaryReferee(primary);
+            }
+
+            jogoService.criarJogo(existing); // reutilizamos lógica de validaciones
+            return "redirect:/web/jogos";
+
+        } catch (ApplicationException | NotFoundException ex) {
+            model.addAttribute("error", ex.getMessage());
+            model.addAttribute("teams", teamService.getAllTeams());
+            model.addAttribute("arbitros", refereeService.findAllReferees());
+            return "jogos/form";
+        }
+    }
+
+    /**
+     * GET /web/jogos/delete/{id}
+     * Elimina un juego si no tiene resultado. Redirige a la lista.
+     */
+    @GetMapping("/delete/{id}")
+    public String deleteJogo(@PathVariable Long id, Model model) {
+        try {
+            jogoService.cancelarJogo(id);
+            return "redirect:/web/jogos";
+        } catch (ApplicationException | NotFoundException ex) {
+            model.addAttribute("error", ex.getMessage());
+            List<Jogo> jogos = jogoService.findAllJogos();
+            model.addAttribute("jogos", jogos.stream().map(this::toDTO).collect(Collectors.toList()));
+            return "jogos/list";
+        }
+    }
+
+    /**
+     * GET /web/jogos/filters
+     * Lista juegos aplicando filtros: status (played, pending, cancelled), location, minGoals, timeSlot.
+     * Parámetros opcionales: status, location, minGoals, timeSlot.
+     */
+    @GetMapping("/filters")
+    public String filterJogos(
+            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "location", required = false) String location,
+            @RequestParam(value = "minGoals", required = false) Integer minGoals,
+            @RequestParam(value = "timeSlot", required = false) String timeSlot,
+            Model model
+    ) {
+        List<Jogo> results;
+
+        if (status != null) {
+            switch (status.toLowerCase()) {
+                case "played":
+                    results = jogoService.findPlayedGames();
+                    break;
+                case "pending":
+                    results = jogoService.findPendingGames();
+                    break;
+                case "cancelled":
+                    results = jogoService.findCancelledGames();
+                    break;
+                default:
+                    results = jogoService.findAllJogos();
+            }
+        } else if (location != null && !location.isBlank()) {
+            results = jogoService.findByLocation(location);
+        } else if (minGoals != null) {
+            results = jogoService.findByMinGoals(minGoals);
+        } else if (timeSlot != null && !timeSlot.isBlank()) {
+            results = jogoService.findByTimeSlot(timeSlot);
+        } else {
+            results = jogoService.findAllJogos();
+        }
+
+        List<JogoDTO> dtos = results.stream().map(this::toDTO).collect(Collectors.toList());
+        model.addAttribute("jogos", dtos);
+        return "jogos/list";
+    }
+
+    // Helper: convierte Jogo a JogoDTO para mostrar en vista
+    private JogoDTO toDTO(Jogo j) {
+        JogoDTO dto = new JogoDTO();
+        dto.setId(j.getId());
+        dto.setDateTime(j.getDateTime());
+        dto.setLocation(j.getLocation());
+        dto.setAmigavel(j.isAmigavel());
+        dto.setHomeScore(j.getHomeScore());
+        dto.setAwayScore(j.getAwayScore());
+        dto.setHomeTeamId(j.getHomeTeam().getId());
+        dto.setAwayTeamId(j.getAwayTeam().getId());
+        dto.setCampeonatoId(j.getCampeonato() != null ? j.getCampeonato().getId() : null);
+        dto.setArbitroIds(j.getReferees().stream().map(Referee::getId).collect(Collectors.toSet()));
+        dto.setPrimaryRefereeId(j.getPrimaryReferee() != null ? j.getPrimaryReferee().getId() : null);
+        return dto;
+    }
+}
+// src/main/java/pt/ul/fc/css/soccernow/controller/CampeonatoWebController.java
+package pt.ul.fc.css.soccernow.controller;
+
+import jakarta.validation.Valid;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import pt.ul.fc.css.soccernow.domain.Campeonato;
+import pt.ul.fc.css.soccernow.domain.Team;
+import pt.ul.fc.css.soccernow.dto.CampeonatoDTO;
+import pt.ul.fc.css.soccernow.service.CampeonatoService;
+import pt.ul.fc.css.soccernow.service.TeamService;
+import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Controller
+@RequestMapping("/web/campeonatos")
+public class CampeonatoWebController {
+
+    private final CampeonatoService campeonatoService;
+    private final TeamService teamService;
+
+    public CampeonatoWebController(CampeonatoService campeonatoService,
+                                  TeamService teamService) {
+        this.campeonatoService = campeonatoService;
+        this.teamService = teamService;
+    }
+
+    /**
+     * GET /web/campeonatos
+     * Lista todos los campeonatos (sin filtros).
+     */
+    @GetMapping
+    public String listCampeonatos(Model model) {
+        List<Campeonato> campeonatos = campeonatoService.getAllCampeonatos();
+        List<CampeonatoDTO> dtos = campeonatos.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+        model.addAttribute("campeonatos", dtos);
+        return "campeonatos/list";
+    }
+
+    /**
+     * GET /web/campeonatos/create
+     * Muestra formulario vacío para crear un campeonato.
+     * Añade lista de equipos disponibles al modelo.
+     */
+    @GetMapping("/create")
+    public String showCreateForm(Model model) {
+        model.addAttribute("campeonatoDTO", new CampeonatoDTO());
+        model.addAttribute("teams", teamService.getAllTeams());
+        return "campeonatos/form";
+    }
+
+    /**
+     * POST /web/campeonatos/save
+     * Crea un nuevo campeonato con la lista de equipos seleccionada.
+     */
+    @PostMapping("/save")
+    public String saveCampeonato(@Valid @ModelAttribute("campeonatoDTO") CampeonatoDTO dto,
+                                 Model model) {
+        try {
+            campeonatoService.createCampeonato(dto);
+            return "redirect:/web/campeonatos";
+        } catch (ApplicationException ex) {
+            model.addAttribute("error", ex.getMessage());
+            model.addAttribute("teams", teamService.getAllTeams());
+            return "campeonatos/form";
+        }
+    }
+
+    /**
+     * GET /web/campeonatos/edit/{id}
+     * Muestra formulario con datos de un campeonato para editar.
+     */
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        Campeonato c = campeonatoService.getCampeonatoById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Campeonato no encontrado: " + id));
+        CampeonatoDTO dto = toDTO(c);
+        model.addAttribute("campeonatoDTO", dto);
+        model.addAttribute("teams", teamService.getAllTeams());
+        return "campeonatos/form";
+    }
+
+    /**
+     * POST /web/campeonatos/update/{id}
+     * Actualiza un campeonato existente.
+     */
+    @PostMapping("/update/{id}")
+    public String updateCampeonato(@PathVariable Long id,
+                                   @ModelAttribute("campeonatoDTO") CampeonatoDTO dto,
+                                   Model model) {
+        try {
+            campeonatoService.updateCampeonato(id, dto);
+            return "redirect:/web/campeonatos";
+        } catch (ApplicationException ex) {
+            model.addAttribute("error", ex.getMessage());
+            model.addAttribute("teams", teamService.getAllTeams());
+            return "campeonatos/form";
+        }
+    }
+
+    /**
+     * GET /web/campeonatos/delete/{id}
+     * Elimina un campeonato si no tiene juegos asociados.
+     */
+    @GetMapping("/delete/{id}")
+    public String deleteCampeonato(@PathVariable Long id, Model model) {
+        try {
+            campeonatoService.deleteCampeonato(id);
+            return "redirect:/web/campeonatos";
+        } catch (ApplicationException ex) {
+            model.addAttribute("error", ex.getMessage());
+            List<CampeonatoDTO> dtos = campeonatoService.getAllCampeonatos()
+                    .stream()
+                    .map(this::toDTO)
+                    .collect(Collectors.toList());
+            model.addAttribute("campeonatos", dtos);
+            return "campeonatos/list";
+        }
+    }
+
+    /**
+     * GET /web/campeonatos/filters
+     * Filtra campeonatos por nombre, minGamesPlayed o minGamesPending.
+     * Parámetros opcionales: nome, minPlayed, minPending.
+     */
+    @GetMapping("/filters")
+    public String filterCampeonatos(
+            @RequestParam(value = "nome", required = false) String nome,
+            @RequestParam(value = "minPlayed", required = false) Long minPlayed,
+            @RequestParam(value = "minPending", required = false) Long minPending,
+            Model model
+    ) {
+        List<Campeonato> results;
+
+        if (nome != null && !nome.isBlank()) {
+            results = campeonatoService.findByNome(nome);
+        } else if (minPlayed != null) {
+            results = campeonatoService.findByMinGamesPlayed(minPlayed);
+        } else if (minPending != null) {
+            results = campeonatoService.findByMinGamesPending(minPending);
+        } else {
+            results = campeonatoService.getAllCampeonatos();
+        }
+
+        List<CampeonatoDTO> dtos = results.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+        model.addAttribute("campeonatos", dtos);
+        return "campeonatos/list";
+    }
+
+    // Helper: convierte Campeonato a CampeonatoDTO
+    private CampeonatoDTO toDTO(Campeonato c) {
+        return new CampeonatoDTO(
+            c.getId(),
+            c.getNome(),
+            c.getModalidade(),
+            c.getFormato(),
+            c.getParticipantes().stream().map(Team::getId).collect(Collectors.toSet())
+        );
+    }
+}
+// src/main/java/pt/ul/fc/css/soccernow/controller/JogoWebController.java
+package pt.ul.fc.css.soccernow.controller;
+
+import jakarta.validation.Valid;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import pt.ul.fc.css.soccernow.domain.Jogo;
+import pt.ul.fc.css.soccernow.domain.Referee;
+import pt.ul.fc.css.soccernow.domain.Team;
+import pt.ul.fc.css.soccernow.dto.JogoDTO;
+import pt.ul.fc.css.soccernow.service.JogoService;
+import pt.ul.fc.css.soccernow.service.TeamService;
+import pt.ul.fc.css.soccernow.service.RefereeService;
+import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
+import pt.ul.fc.css.soccernow.service.exceptions.NotFoundException;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Controller
+@RequestMapping("/web/jogos")
+public class JogoWebController {
+
+    private final JogoService jogoService;
+    private final TeamService teamService;
+    private final RefereeService refereeService;
+
+    public JogoWebController(JogoService jogoService,
+                             TeamService teamService,
+                             RefereeService refereeService) {
+        this.jogoService = jogoService;
+        this.teamService = teamService;
+        this.refereeService = refereeService;
+    }
+
+    /**
+     * GET /web/jogos
+     * Muestra la lista completa de juegos (sin filtros).
+     */
+    @GetMapping
+    public String listJogos(Model model) {
+        List<Jogo> jogos = jogoService.findAllJogos();
+        List<JogoDTO> dtos = jogos.stream().map(this::toDTO).collect(Collectors.toList());
+        model.addAttribute("jogos", dtos);
+        return "jogos/list";  // templates/jogos/list.html
+    }
+
+    /**
+     * GET /web/jogos/create
+     * Muestra formulario vacío para crear un juego.
+     * Pone en el modelo la lista de equipos y árbitros.
+     */
+    @GetMapping("/create")
+    public String showCreateForm(Model model) {
+        model.addAttribute("jogoDTO", new JogoDTO());
+        model.addAttribute("teams", teamService.getAllTeams());
+        model.addAttribute("arbitros", refereeService.findAllReferees());
+        return "jogos/form";  // templates/jogos/form.html
+    }
+
+    /**
+     * POST /web/jogos/save
+     * Recibe el JogoDTO del formulario y crea el juego.
+     */
+    @PostMapping("/save")
+    public String saveJogo(@ModelAttribute("jogoDTO") JogoDTO dto, Model model) {
+        try {
+            // Construir objeto Jogo para enviar a servicio
+            Jogo jogo = new Jogo();
+            jogo.setDataHora(dto.getDateTime());
+            jogo.setLocal(dto.getLocation());
+            jogo.setAmigavel(dto.isAmigavel());
+
+            // Cargar equipos y árbitros:
+            Team home = teamService.getTeamById(dto.getHomeTeamId())
+                    .orElseThrow(() -> new NotFoundException("Equipo local no encontrado"));
+            Team away = teamService.getTeamById(dto.getAwayTeamId())
+                    .orElseThrow(() -> new NotFoundException("Equipo visitante no encontrado"));
+            jogo.setHomeTeam(home);
+            jogo.setAwayTeam(away);
+
+            Set<Referee> arbitros = refereeService.findAllByIds(dto.getArbitroIds());
+            jogo.setReferees(arbitros);
+
+            if (dto.getPrimaryRefereeId() != null) {
+                Referee primary = refereeService.getRefereeById(dto.getPrimaryRefereeId())
+                        .orElseThrow(() -> new NotFoundException("Árbitro principal no encontrado"));
+                jogo.setPrimaryReferee(primary);
+            }
+
+            // Llamada a servicio:
+            jogoService.criarJogo(jogo);
+            return "redirect:/web/jogos";
+
+        } catch (ApplicationException | NotFoundException ex) {
+            model.addAttribute("error", ex.getMessage());
+            model.addAttribute("teams", teamService.getAllTeams());
+            model.addAttribute("arbitros", refereeService.findAllReferees());
+            return "jogos/form";
+        }
+    }
+
+    /**
+     * GET /web/jogos/edit/{id}
+     * Muestra formulario con datos del juego para editar (excepto resultado).
+     */
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        Jogo jogo = jogoService.obterJogo(id)
+                .orElseThrow(() -> new IllegalArgumentException("Juego no encontrado: " + id));
+        JogoDTO dto = toDTO(jogo);
+        model.addAttribute("jogoDTO", dto);
+        model.addAttribute("teams", teamService.getAllTeams());
+        model.addAttribute("arbitros", refereeService.findAllReferees());
+        return "jogos/form";
+    }
+
+    /**
+     * POST /web/jogos/update/{id}
+     * Actualiza un juego existente (solo campos mutables).
+     */
+    @PostMapping("/update/{id}")
+    public String updateJogo(@PathVariable Long id,
+                             @ModelAttribute("jogoDTO") JogoDTO dto,
+                             Model model) {
+        try {
+            Jogo existing = jogoService.obterJogo(id)
+                    .orElseThrow(() -> new NotFoundException("Juego no encontrado: " + id));
+
+            // Solo permitimos cambiar fecha, local, amigable, equipos, árbitros
+            if (dto.getDateTime() != null) existing.setDataHora(dto.getDateTime());
+            if (dto.getLocation() != null && !dto.getLocation().isBlank()) existing.setLocal(dto.getLocation());
+            existing.setAmigavel(dto.isAmigavel());
+
+            Team home = teamService.getTeamById(dto.getHomeTeamId())
+                    .orElseThrow(() -> new NotFoundException("Equipo local no encontrado"));
+            Team away = teamService.getTeamById(dto.getAwayTeamId())
+                    .orElseThrow(() -> new NotFoundException("Equipo visitante no encontrado"));
+            existing.setHomeTeam(home);
+            existing.setAwayTeam(away);
+
+            Set<Referee> arbitros = refereeService.findAllByIds(dto.getArbitroIds());
+            existing.setReferees(arbitros);
+
+            if (dto.getPrimaryRefereeId() != null) {
+                Referee primary = refereeService.getRefereeById(dto.getPrimaryRefereeId())
+                        .orElseThrow(() -> new NotFoundException("Árbitro principal no encontrado"));
+                existing.setPrimaryReferee(primary);
+            }
+
+            jogoService.criarJogo(existing); // reutilizamos lógica de validaciones
+            return "redirect:/web/jogos";
+
+        } catch (ApplicationException | NotFoundException ex) {
+            model.addAttribute("error", ex.getMessage());
+            model.addAttribute("teams", teamService.getAllTeams());
+            model.addAttribute("arbitros", refereeService.findAllReferees());
+            return "jogos/form";
+        }
+    }
+
+    /**
+     * GET /web/jogos/delete/{id}
+     * Elimina un juego si no tiene resultado. Redirige a la lista.
+     */
+    @GetMapping("/delete/{id}")
+    public String deleteJogo(@PathVariable Long id, Model model) {
+        try {
+            jogoService.cancelarJogo(id);
+            return "redirect:/web/jogos";
+        } catch (ApplicationException | NotFoundException ex) {
+            model.addAttribute("error", ex.getMessage());
+            List<Jogo> jogos = jogoService.findAllJogos();
+            model.addAttribute("jogos", jogos.stream().map(this::toDTO).collect(Collectors.toList()));
+            return "jogos/list";
+        }
+    }
+
+    /**
+     * GET /web/jogos/filters
+     * Lista juegos aplicando filtros: status (played, pending, cancelled), location, minGoals, timeSlot.
+     * Parámetros opcionales: status, location, minGoals, timeSlot.
+     */
+    @GetMapping("/filters")
+    public String filterJogos(
+            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "location", required = false) String location,
+            @RequestParam(value = "minGoals", required = false) Integer minGoals,
+            @RequestParam(value = "timeSlot", required = false) String timeSlot,
+            Model model
+    ) {
+        List<Jogo> results;
+
+        if (status != null) {
+            switch (status.toLowerCase()) {
+                case "played":
+                    results = jogoService.findPlayedGames();
+                    break;
+                case "pending":
+                    results = jogoService.findPendingGames();
+                    break;
+                case "cancelled":
+                    results = jogoService.findCancelledGames();
+                    break;
+                default:
+                    results = jogoService.findAllJogos();
+            }
+        } else if (location != null && !location.isBlank()) {
+            results = jogoService.findByLocation(location);
+        } else if (minGoals != null) {
+            results = jogoService.findByMinGoals(minGoals);
+        } else if (timeSlot != null && !timeSlot.isBlank()) {
+            results = jogoService.findByTimeSlot(timeSlot);
+        } else {
+            results = jogoService.findAllJogos();
+        }
+
+        List<JogoDTO> dtos = results.stream().map(this::toDTO).collect(Collectors.toList());
+        model.addAttribute("jogos", dtos);
+        return "jogos/list";
+    }
+
+    // Helper: convierte Jogo a JogoDTO para mostrar en vista
+    private JogoDTO toDTO(Jogo j) {
+        JogoDTO dto = new JogoDTO();
+        dto.setId(j.getId());
+        dto.setDateTime(j.getDateTime());
+        dto.setLocation(j.getLocation());
+        dto.setAmigavel(j.isAmigavel());
+        dto.setHomeScore(j.getHomeScore());
+        dto.setAwayScore(j.getAwayScore());
+        dto.setHomeTeamId(j.getHomeTeam().getId());
+        dto.setAwayTeamId(j.getAwayTeam().getId());
+        dto.setCampeonatoId(j.getCampeonato() != null ? j.getCampeonato().getId() : null);
+        dto.setArbitroIds(j.getReferees().stream().map(Referee::getId).collect(Collectors.toSet()));
+        dto.setPrimaryRefereeId(j.getPrimaryReferee() != null ? j.getPrimaryReferee().getId() : null);
+        return dto;
+    }
+}

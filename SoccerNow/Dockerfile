@@ -1,26 +1,23 @@
-# Etapa de compilación (builder)
-FROM maven:latest AS builder
-WORKDIR /build
-
-# Sólo copiamos el pom y bajamos dependencias para cachear correctamente
-COPY pom.xml .
-RUN mvn dependency:go-offline
-
-# Copiamos el resto del proyecto y compilamos sin tests
-COPY . .
-RUN mvn clean package -DskipTests
-
-# Etapa de ejecución (runtime)
-FROM eclipse-temurin:17
-# Creamos directorios necesarios (sin declarar VOLUME)
-RUN mkdir -p /tmp /app /app/logs
+# Etapa de compilación: usamos la imagen oficial de Maven + JDK 17
+FROM maven:3.8.5-openjdk-17 AS build
 WORKDIR /app
 
-# Copiamos el JAR desde el builder (ajusta el nombre según tu versión)
-COPY --from=builder /build/target/soccernow-1.0.jar ./app.jar
+# Copiamos pom.xml y la carpeta src/
+COPY pom.xml .
+COPY src ./src
 
-# Puerto expuesto por la aplicación
+# Compilamos el JAR (sin tests para agilizar)
+RUN mvn clean package -DskipTests
+
+# Etapa de runtime: usamos OpenJDK 17 JRE
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+
+# Copiamos el JAR generado por la etapa de build
+COPY --from=build /app/target/soccernow-1.0.jar ./soccernow.jar
+
+# Exponemos el puerto 8080
 EXPOSE 8080
 
-# Comando de arranque
-ENTRYPOINT ["java","-jar","/app/app.jar"]
+# Comando por defecto
+ENTRYPOINT ["java","-jar","/app/soccernow.jar"]

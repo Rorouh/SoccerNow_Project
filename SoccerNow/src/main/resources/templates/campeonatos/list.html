@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="fragments/header :: head"></head>
+  <body>
+    <div th:replace="fragments/header :: navbar"></div>
+
+    <h2>Gestión de Campeonatos</h2>
+
+    <a th:href="@{/web/campeonatos/create}">Crear Nuevo Campeonato</a>
+
+    <form th:action="@{/web/campeonatos/filters}" method="get" style="margin-top:20px; margin-bottom:20px;">
+      <label>Nombre: <input type="text" name="nome" th:value="${param.nome}" /></label>
+      <label>Mín. Juegos Jugados: <input type="number" name="minPlayed" min="0" th:value="${param.minPlayed}" /></label>
+      <label>Mín. Juegos Pendientes: <input type="number" name="minPending" min="0" th:value="${param.minPending}" /></label>
+      <button type="submit">Filtrar</button>
+      <a th:href="@{/web/campeonatos}">Limpiar</a>
+    </form>
+
+    <table border="1" cellpadding="5" cellspacing="0" style="margin-top:15px; width:100%;">
+      <thead>
+        <tr style="background:#ddd;">
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Modalidad</th>
+          <th>Formato</th>
+          <th>Participantes (IDs)</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="c : ${campeonatos}">
+          <td th:text="${c.id}"></td>
+          <td th:text="${c.nome}"></td>
+          <td th:text="${c.modalidade}"></td>
+          <td th:text="${c.formato}"></td>
+          <td>
+            <span th:each="pid : ${c.participantes}" th:text="${pid} + ' '"></span>
+          </td>
+          <td>
+            <a th:href="@{|/web/campeonatos/edit/${c.id}|}">Editar</a> |
+            <a th:href="@{|/web/campeonatos/delete/${c.id}|}"
+               th:onclick="|return confirm('¿Eliminar campeonato ID ' + ${c.id} + '?');|">
+              Eliminar
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div th:replace="fragments/footer :: footer"></div>
+  </body>
+</html>

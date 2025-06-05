@@ -1,19 +1,35 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# 1) Compila el JAR localmente con Maven, usando tus dependencias ya descargadas
-echo "🔨  Compilando con Maven (sin tests)..."
+#############################################
+# 1) Compilar el JAR localmente con Maven
+#############################################
+echo "🔨  Compilando el proyecto con Maven (sin tests)..."
 mvn clean package -DskipTests
 
-echo "🐳  Borrando contenedores y volúmenes anteriores..."
+#############################################
+# 2) Bajar cualquier contenedor anterior
+#############################################
+echo "🐳  Deteniendo y borrando contenedores antiguos (si existen)..."
 docker-compose down -v
 
-# 2) Construye la imagen Docker usando la red del host (para que el contenedor pueda resolver repo.maven.apache.org)
-echo "🐳  Construyendo imagen Docker con --network host..."
-docker build --network host -t myapp:latest .
+#############################################
+# 3) Construir la imagen Docker de la app
+#############################################
+echo "🐳  Construyendo imagen Docker de la aplicación..."
+docker-compose build springbootapp
 
-# 3) Arranca los contenedores
-echo "🚀  Levantando servicios con docker-compose..."
+#############################################
+# 4) Arrancar PostgreSQL + Spring Boot
+#############################################
+echo "🚀  Levantando contenedores con docker-compose..."
 docker-compose up -d
 
-echo "✅  ¡Listo! Proyecto desplegado en localhost:8080"
+echo "✅  ¡Todo levantado! Accede a http://localhost:8080"
+
+#############################################
+# 5) Mostrar logs de arranque de Java (últimos 10)
+#############################################
+sleep 3
+echo "🌐  Últimos 10 renglones de logs de 'java_app':"
+docker logs --tail 10 java_app

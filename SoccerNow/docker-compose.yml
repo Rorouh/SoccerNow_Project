@@ -1,39 +1,44 @@
+version: '3.8'
+
 services:
+  # -------------------------
+  # Servicio PostgreSQL
+  # -------------------------
   pgserver:
     image: postgres:latest
     container_name: pgserver
     volumes:
       - postgres-data:/var/lib/postgresql/data
-    expose:
-      - 5432
     ports:
-      - 5432:5432
+      - "5432:5432"
     networks:
       - dbnet
     environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=soccernowdb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: soccernowdb
     restart: unless-stopped
 
-  # APP*****************************************
+  # -------------------------
+  # Servicio Spring Boot
+  # -------------------------
   springbootapp:
     image: myapp:latest
+    container_name: java_app
     build:
       context: .
+      dockerfile: Dockerfile
       network: host
-    container_name: java_app
-    restart: unless-stopped
     depends_on:
       - pgserver
-    networks:
-      - dbnet
     ports:
       - "8080:8080"
+    networks:
+      - dbnet
+    restart: unless-stopped
 
 volumes:
   postgres-data:
-
 
 networks:
   dbnet:

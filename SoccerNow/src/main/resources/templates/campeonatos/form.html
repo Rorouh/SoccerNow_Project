@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head(~{::body})">
+    <title th:text="${campeonatoDTO.id != null} ? 'Editar Campeonato' : 'Crear Campeonato'">Formulario Campeonato</title>
+</head>
+<body>
+<div th:replace="fragments/header :: content"></div>
+
+<h2 th:text="${campeonatoDTO.id != null} ? 'Editar Campeonato' : 'Crear Nuevo Campeonato'"></h2>
+
+<div th:if="${error}" style="color:red; margin-bottom: 1em;">
+    <p th:text="${error}"></p>
+</div>
+
+<form th:action="@{${campeonatoDTO.id != null} ? '/web/campeonatos/update/' + ${campeonatoDTO.id} : '/web/campeonatos/save'}"
+      th:object="${campeonatoDTO}" method="post">
+
+    <div>
+        <label for="nome">Nombre del Campeonato:</label>
+        <input type="text" id="nome" th:field="*{nome}" required />
+    </div>
+
+    <div>
+        <label for="modalidade">Modalidad:</label>
+        <input type="text" id="modalidade" th:field="*{modalidade}" />
+    </div>
+
+    <div>
+        <label for="formato">Formato:</label>
+        <input type="text" id="formato" th:field="*{formato}" />
+    </div>
+
+    <div style="margin-top:1em;">
+        <label>Equipos Participantes:</label>
+        <div>
+            <div th:each="team : ${teams}">
+                <input type="checkbox" th:id="'team-' + ${team.id}"
+                       th:name="teamIds"
+                       th:value="${team.id}"
+                       th:checked="${campeonatoDTO.teamIds != null} ? ${campeonatoDTO.teamIds.contains(team.id)} : false" />
+                <label th:for="'team-' + ${team.id}" th:text="${team.name} + ' (ID: ' + ${team.id} + ')'" ></label>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 1em;">
+        <button type="submit" th:text="${campeonatoDTO.id != null} ? 'Actualizar' : 'Crear'"></button>
+        <a th:href="@{/web/campeonatos}" style="margin-left: 1em;">Cancelar</a>
+    </div>
+
+</form>
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

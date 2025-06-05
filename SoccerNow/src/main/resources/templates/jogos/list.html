@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="fragments/header :: head"></head>
+  <body>
+    <div th:replace="fragments/header :: navbar"></div>
+
+    <h2>Gestión de Juegos</h2>
+
+    <a th:href="@{/web/jogos/create}">Crear Nuevo Juego</a>
+
+    <table border="1" cellpadding="5" cellspacing="0" style="margin-top:15px; width:100%;">
+      <thead>
+        <tr style="background:#ddd;">
+          <th>ID</th>
+          <th>Fecha y Hora</th>
+          <th>Local</th>
+          <th>Amigable</th>
+          <th>Placar</th>
+          <th>Equipos</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="jogo : ${jogos}">
+          <td th:text="${jogo.id}"></td>
+          <td th:text="${#dates.format(jogo.dateTime, 'dd/MM/yyyy HH:mm')}"></td>
+          <td th:text="${jogo.location}"></td>
+          <td th:text="${jogo.amigavel} ? 'Sí' : 'No'"></td>
+          <td th:text="${jogo.homeScore} + ' x ' + ${jogo.awayScore}"></td>
+          <td>
+            Casa: <span th:text="${jogo.homeTeamName}"></span><br/>
+            Fuera: <span th:text="${jogo.awayTeamName}"></span>
+          </td>
+          <td>
+            <a th:href="@{|/web/jogos/edit/${jogo.id}|}">Editar</a> |
+            <a th:href="@{|/web/jogos/delete/${jogo.id}|}"
+               th:onclick="|return confirm('¿Cancelar juego ID ' + ${jogo.id} + '?');|">
+              Cancelar
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div th:replace="fragments/footer :: footer"></div>
+  </body>
+</html>

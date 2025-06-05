@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="fragments/header :: head(~{ (userDTO.id != null) ? 'Editar Usuario ' + ${userDTO.id} : 'Crear Nuevo Usuario'})"></head>
+  <body>
+    <div th:replace="fragments/header :: content">
+      <section>
+        <h2 th:text="${userDTO.id != null} 
+                        ? 'Editar Usuario ' + ${userDTO.id} 
+                        : 'Crear Nuevo Usuario'"></h2>
+        <div th:if="${error}" style="color:red; margin-top:10px;">
+          <p th:text="${error}"></p>
+        </div>
+        <form th:action="${userDTO.id != null} 
+                  ? @{'/web/users/update/' + ${userDTO.id}} 
+                  : @{/web/users/save}"
+              th:object="${userDTO}"
+              method="post"
+              style="margin-top:15px;">
+          <div style="margin-bottom:10px;">
+            <label>Nombre:</label>
+            <input type="text" th:field="*{name}" required />
+          </div>
+          <div style="margin-bottom:10px;">
+            <label>Email:</label>
+            <input type="email" th:field="*{email}" required />
+          </div>
+          <div style="margin-bottom:10px;">
+            <label>Contraseña:</label>
+            <input type="password" th:field="*{password}" required />
+          </div>
+          <div style="margin-bottom:10px;">
+            <label>Rol:</label>
+            <select th:field="*{role}" required>
+              <option th:value="${T(pt.ul.fc.css.soccernow.dto.UserDTO.Role).PLAYER}" 
+                      th:text="'PLAYER'"></option>
+              <option th:value="${T(pt.ul.fc.css.soccernow.dto.UserDTO.Role).REFEREE}" 
+                      th:text="'REFEREE'"></option>
+            </select>
+          </div>
+          <div style="margin-bottom:10px;" 
+               th:if="${userDTO.role == T(pt.ul.fc.css.soccernow.dto.UserDTO.Role).PLAYER}">
+            <label>Posición Preferida:</label>
+            <select th:field="*{preferredPosition}">
+              <option th:value="${T(pt.ul.fc.css.soccernow.domain.User.PreferredPosition).PORTERO}" 
+                      th:text="'PORTERO'"></option>
+              <option th:value="${T(pt.ul.fc.css.soccernow.domain.User.PreferredPosition).DEFENSA}" 
+                      th:text="'DEFENSA'"></option>
+              <option th:value="${T(pt.ul.fc.css.soccernow.domain.User.PreferredPosition).CENTROCAMPISTA}" 
+                      th:text="'CENTROCAMPISTA'"></option>
+              <option th:value="${T(pt.ul.fc.css.soccernow.domain.User.PreferredPosition).DELANTERO}" 
+                      th:text="'DELANTERO'"></option>
+            </select>
+          </div>
+          <div style="margin-bottom:10px;" 
+               th:if="${userDTO.role == T(pt.ul.fc.css.soccernow.dto.UserDTO.Role).REFEREE}">
+            <label>Certificado:</label>
+            <input type="checkbox" th:field="*{certified}" />
+          </div>
+          <div style="margin-top:20px;">
+            <button type="submit">Guardar</button>
+            <a th:href="@{/web/users}" style="margin-left:15px;">Cancelar</a>
+          </div>
+        </form>
+      </section>
+    </div>
+    <div th:replace="fragments/footer :: footer"></div>
+  </body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="fragments/header :: head"></head>
+  <body>
+    <div th:replace="fragments/header :: navbar"></div>
+
+    <h1>Jugadores</h1>
+
+    <form th:action="@{/web/players}" method="get" style="margin-bottom: 20px;">
+      <label>Nombre:</label>
+      <input type="text" name="name" th:value="${param.name}" />
+
+      <label>Posición:</label>
+      <select name="position">
+        <option value="">--Todas--</option>
+        <option th:each="pos : ${positions}"
+                th:value="${pos.name()}"
+                th:text="${pos.name()}"
+                th:selected="${param.position == pos.name()}">
+        </option>
+      </select>
+
+      <label>Mínimo de Goles:</label>
+      <input type="number" min="0" name="minGoals" th:value="${param.minGoals}" />
+
+      <label>Mínimo de Tarjetas:</label>
+      <input type="number" min="0" name="minCards" th:value="${param.minCards}" />
+
+      <button type="submit">Filtrar</button>
+    </form>
+
+    <a th:href="@{/web/players/create}">Crear Jugador</a>
+
+    <table border="1" cellpadding="5" cellspacing="0" style="margin-top:15px; width:100%;">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Posición</th>
+          <th>Goles</th>
+          <th>Tarjetas</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="p : ${players}">
+          <td th:text="${p.id}"></td>
+          <td th:text="${p.name}"></td>
+          <td th:text="${p.email}"></td>
+          <td th:text="${p.preferredPosition}"></td>
+          <td th:text="${p.goals}"></td>
+          <td th:text="${p.cards}"></td>
+          <td>
+            <a th:href="@{|/web/players/edit/${p.id}|}">Editar</a> |
+            <a th:href="@{|/web/players/delete/${p.id}|}"
+               onclick="return confirm('¿Eliminar este jugador?');">Eliminar</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div th:replace="fragments/footer :: footer"></div>
+  </body>
+</html>

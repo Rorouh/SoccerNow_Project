@@ -1,0 +1,31 @@
+<!-- 🔍 Filtros visuales añadidos a jogos/list.html -->
+<form th:action="@{/web/jogos/filters}" method="get" style="margin-bottom:20px;">
+  <label>Estado:
+    <select name="status" th:value="${param.status}">
+      <option value="">--Todos--</option>
+      <option value="played" th:selected="${param.status == 'played'}">Jugado</option>
+      <option value="pending" th:selected="${param.status == 'pending'}">Pendiente</option>
+      <option value="cancelled" th:selected="${param.status == 'cancelled'}">Cancelado</option>
+    </select>
+  </label>
+
+  <label>Localización:
+    <input type="text" name="location" th:value="${param.location}" />
+  </label>
+
+  <label>Mínimo de Goles:
+    <input type="number" min="0" name="minGoals" th:value="${param.minGoals}" />
+  </label>
+
+  <label>Franja Horaria:
+    <select name="timeSlot" th:value="${param.timeSlot}">
+      <option value="">--Cualquiera--</option>
+      <option value="mañana" th:selected="${param.timeSlot == 'mañana'}">Mañana</option>
+      <option value="tarde" th:selected="${param.timeSlot == 'tarde'}">Tarde</option>
+      <option value="noche" th:selected="${param.timeSlot == 'noche'}">Noche</option>
+    </select>
+  </label>
+
+  <button type="submit">Filtrar</button>
+  <a th:href="@{/web/jogos}">Limpiar</a>
+</form>

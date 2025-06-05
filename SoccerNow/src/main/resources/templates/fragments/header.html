@@ -1,20 +1,20 @@
-<!-- src/main/resources/templates/fragments/header.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-  <head th:fragment="head (content)">
+  <head th:fragment="head (pageTitle)">
     <meta charset="UTF-8" />
     <title th:if="${pageTitle}" th:text="${pageTitle}">Soccernow</title>
     <link rel="stylesheet" href="/css/styles.css" />
   </head>
-  <body>
-    <div th:fragment="content">
-      <!-- Navbar simple -->
-      <nav style="background:#333; color:white; padding:10px;">
-        <a href="/" style="color:white; margin-right:15px;">Inicio</a>
-        <a href="/web/users" style="color:white; margin-right:15px;">Usuarios</a>
-        <a href="/web/players" style="color:white; margin-right:15px;">Jugadores</a>
-        <a href="/web/teams" style="color:white; margin-right:15px;">Equipos</a>
-        <a href="/web/jogos" style="color:white; margin-right:15px;">Juegos</a>
-        <a href="/web/campeonatos" style="color:white; margin-right:15px;">Campeonatos</a>
-      </nav>
-      <div style="padding:20px;">
+
+  <body th:fragment="content">
+    <nav style="background:#333; color:white; padding:10px;">
+      <a th:href="@{/}" style="color:white; margin-right:15px;">Inicio</a>
+      <a th:href="@{/web/users}" style="color:white; margin-right:15px;">Usuarios</a>
+      <a th:href="@{/web/players}" style="color:white; margin-right:15px;">Jugadores</a>
+      <a th:href="@{/web/teams}" style="color:white; margin-right:15px;">Equipos</a>
+      <a th:href="@{/web/jogos}" style="color:white; margin-right:15px;">Juegos</a>
+      <a th:href="@{/web/campeonatos}" style="color:white; margin-right:15px;">Campeonatos</a>
+    </nav>
+    <div style="padding:20px;" th:insert="~{::section}"></div>
+  </body>
+</html>
