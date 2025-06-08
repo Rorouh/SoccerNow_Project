@@ -126,28 +126,18 @@ public class CampeonatoWebController {
 
     /**
      * GET /web/campeonatos/filters
-     * Filtra campeonatos por nombre, minGamesPlayed o minGamesPending.
-     * Parámetros opcionales: nome, minPlayed, minPending.
+     * Filtros avançados: nome, team, minGamesPlayed, minGamesPending
+     * Parâmetros opcionais: nome, team, minGamesPlayed, minGamesPending.
      */
     @GetMapping("/filters")
     public String filterCampeonatos(
             @RequestParam(value = "nome", required = false) String nome,
-            @RequestParam(value = "minPlayed", required = false) Long minPlayed,
-            @RequestParam(value = "minPending", required = false) Long minPending,
+            @RequestParam(value = "team", required = false) String team,
+            @RequestParam(value = "minGamesPlayed", required = false) Integer minGamesPlayed,
+            @RequestParam(value = "minGamesPending", required = false) Integer minGamesPending,
             Model model
     ) {
-        List<Campeonato> results;
-
-        if (nome != null && !nome.isBlank()) {
-            results = campeonatoService.findByNome(nome);
-        } else if (minPlayed != null) {
-            results = campeonatoService.findByMinGamesPlayed(minPlayed);
-        } else if (minPending != null) {
-            results = campeonatoService.findByMinGamesPending(minPending);
-        } else {
-            results = campeonatoService.getAllCampeonatos();
-        }
-
+        List<Campeonato> results = campeonatoService.filterCampeonatos(nome, team, minGamesPlayed, minGamesPending);
         List<CampeonatoDTO> dtos = results.stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());

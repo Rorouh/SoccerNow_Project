@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<<<<<<< HEAD
+<head th:replace="fragments/header :: head('Árbitros')"></head>
+=======
+<head th:replace="fragments/header :: head"></head>
+>>>>>>> 52a6f9c (Entrega fase1: implementação, testes, docker e documentação)
+<body>
+<div th:replace="fragments/header :: navbar"></div>
+
+<h2>Gestão de Árbitros</h2>
+
+<!-- Filtros avançados -->
+<form th:action="@{/web/referees}" method="get" style="margin-bottom:20px;">
+  <label>Nome: <input type="text" name="name" th:value="${param.name}" /></label>
+  <label>Mín. Jogos: <input type="number" name="minGames" min="0" th:value="${param.minGames}" /></label>
+  <label>Mín. Cartões: <input type="number" name="minCards" min="0" th:value="${param.minCards}" /></label>
+  <button type="submit">Filtrar</button>
+  <a th:href="@{/web/referees}">Limpar</a>
+</form>
+
+<table border="1" cellpadding="5" cellspacing="0" style="margin-top:15px; width:100%;">
+  <thead>
+    <tr style="background:#ddd;">
+      <th>ID</th>
+      <th>Nome</th>
+      <th>Email</th>
+      <th>Certificado</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr th:each="r : ${referees}">
+      <td th:text="${r.id}"></td>
+      <td th:text="${r.name}"></td>
+      <td th:text="${r.email}"></td>
+      <td th:text="${r.certified} ? 'Sim' : 'Não'"></td>
+    </tr>
+  </tbody>
+</table>
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

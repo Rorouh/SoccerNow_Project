@@ -32,16 +32,17 @@ public class PlayerController {
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "preferredPosition", required = false) String preferredPosition,
             @RequestParam(value = "minGoals", required = false) Integer minGoals,
-            @RequestParam(value = "minCards", required = false) Integer minCards
+            @RequestParam(value = "minCards", required = false) Integer minCards,
+            @RequestParam(value = "minGames", required = false) Integer minGames
     ) {
-        List<Player> results = playerService.filterPlayers(name, preferredPosition, minGoals, minCards);
+        List<Player> results = playerService.filterPlayers(name, preferredPosition, minGoals, minCards, minGames);
         List<PlayerDTO> dtos = results.stream()
                 .map(player -> new PlayerDTO(
                         player.getId(),
                         player.getName(),
                         player.getEmail(),
                         player.getPassword(),
-                        player.getPreferredPosition().name()
+                        player.getPreferredPosition() != null ? player.getPreferredPosition().name() : null
                 ))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(dtos);

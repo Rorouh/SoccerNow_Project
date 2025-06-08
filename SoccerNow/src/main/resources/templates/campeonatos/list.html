@@ -10,8 +10,9 @@
 
     <form th:action="@{/web/campeonatos/filters}" method="get" style="margin-top:20px; margin-bottom:20px;">
       <label>Nombre: <input type="text" name="nome" th:value="${param.nome}" /></label>
-      <label>Mín. Juegos Jugados: <input type="number" name="minPlayed" min="0" th:value="${param.minPlayed}" /></label>
-      <label>Mín. Juegos Pendientes: <input type="number" name="minPending" min="0" th:value="${param.minPending}" /></label>
+      <label>Equipo participante: <input type="text" name="team" th:value="${param.team}" /></label>
+      <label>Mín. Juegos Jugados: <input type="number" name="minGamesPlayed" min="0" th:value="${param.minGamesPlayed}" /></label>
+      <label>Mín. Juegos Pendientes: <input type="number" name="minGamesPending" min="0" th:value="${param.minGamesPending}" /></label>
       <button type="submit">Filtrar</button>
       <a th:href="@{/web/campeonatos}">Limpiar</a>
     </form>

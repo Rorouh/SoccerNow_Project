@@ -4,6 +4,11 @@ import jakarta.persistence.*;
 
 @Entity
 public class Estatisticas {
+    // ... outros campos e métodos ...
+    public Player getPlayer() {
+        return player;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

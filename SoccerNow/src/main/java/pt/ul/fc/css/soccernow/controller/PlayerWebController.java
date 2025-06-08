@@ -33,13 +33,14 @@ public class PlayerWebController {
     @GetMapping
     public String listPlayers(
             @RequestParam(value = "name", required = false) String name,
-            @RequestParam(value = "position", required = false) String position,
+            @RequestParam(value = "preferredPosition", required = false) String preferredPosition,
             @RequestParam(value = "minGoals", required = false) Integer minGoals,
             @RequestParam(value = "minCards", required = false) Integer minCards,
+            @RequestParam(value = "minGames", required = false) Integer minGames,
             Model model) {
 
         // Filtro avançado: permite combinar todos os filtros ao mesmo tempo
-        List<Player> players = playerService.filterPlayers(name, position, minGoals, minCards);
+        List<Player> players = playerService.filterPlayers(name, preferredPosition, minGoals, minCards, minGames);
 
         List<PlayerDTO> dtos = players.stream()
                 .map(p -> new PlayerDTO(

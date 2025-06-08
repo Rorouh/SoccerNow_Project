@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${errorTitle}">Erro</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f8f8f8; }
+        .error-container { margin: 60px auto; max-width: 500px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #ccc; padding: 40px; text-align: center; }
+        h1 { color: #d32f2f; }
+        p { color: #444; margin-top: 20px; }
+        a { color: #1976d2; text-decoration: none; margin-top: 30px; display: inline-block; }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <h1 th:text="${errorTitle}">Erro</h1>
+        <p th:text="${errorMessage}">Ocorreu um erro inesperado.</p>
+        <a th:href="@{/}">Voltar à página inicial</a>
+    </div>
+</body>
+</html>

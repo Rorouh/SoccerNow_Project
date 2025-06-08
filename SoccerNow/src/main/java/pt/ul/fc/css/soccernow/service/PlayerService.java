@@ -139,13 +139,14 @@ public class PlayerService {
      * Filtro avançado de jogadores: nome, posição, minGoals, minCards
      */
     @Transactional(readOnly = true)
-    public List<Player> filterPlayers(String name, String preferredPosition, Integer minGoals, Integer minCards) {
+    public List<Player> filterPlayers(String name, String preferredPosition, Integer minGoals, Integer minCards, Integer minGames) {
         List<Player> all = playerRepository.findAll();
         return all.stream()
             .filter(p -> name == null || p.getName().toLowerCase().contains(name.toLowerCase()))
             .filter(p -> preferredPosition == null || p.getPreferredPosition().name().equalsIgnoreCase(preferredPosition))
             .filter(p -> minGoals == null || p.getGoals() >= minGoals)
             .filter(p -> minCards == null || p.getCards() >= minCards)
+            .filter(p -> minGames == null || Integer.valueOf(p.getGames()) >= minGames)
             .toList();
     }
 }

@@ -6,17 +6,18 @@
 
     <h1>Jugadores</h1>
 
+    <!-- Filtros avançados -->
     <form th:action="@{/web/players}" method="get" style="margin-bottom: 20px;">
       <label>Nombre:</label>
       <input type="text" name="name" th:value="${param.name}" />
 
       <label>Posición:</label>
-      <select name="position">
+      <select name="preferredPosition">
         <option value="">--Todas--</option>
         <option th:each="pos : ${positions}"
                 th:value="${pos.name()}"
                 th:text="${pos.name()}"
-                th:selected="${param.position == pos.name()}">
+                th:selected="${param.preferredPosition == pos.name()}">
         </option>
       </select>
 
@@ -26,7 +27,11 @@
       <label>Mínimo de Tarjetas:</label>
       <input type="number" min="0" name="minCards" th:value="${param.minCards}" />
 
+      <label>Mínimo de Juegos:</label>
+      <input type="number" min="0" name="minGames" th:value="${param.minGames}" />
+
       <button type="submit">Filtrar</button>
+      <a th:href="@{/web/players}">Limpiar</a>
     </form>
 
     <a th:href="@{/web/players/create}">Crear Jugador</a>

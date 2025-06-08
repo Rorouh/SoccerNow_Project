@@ -7,7 +7,7 @@
     <h2>Gestión de Equipos</h2>
 
     <!-- Filtros avanzados -->
-    <form th:action="@{/web/teams/filter}" method="get" style="margin-bottom:20px;">
+    <form th:action="@{/web/teams}" method="get" style="margin-bottom:20px;">
       <label>Nombre: <input type="text" name="name" th:value="${param.name}" /></label>
       <label>Mín. Jugadores: <input type="number" name="minPlayers" min="0" th:value="${param.minPlayers}" /></label>
       <label>Mín. Victorias: <input type="number" name="minWins" min="0" th:value="${param.minWins}" /></label>

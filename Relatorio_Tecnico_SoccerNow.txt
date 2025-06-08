@@ -1,0 +1,63 @@
+Relatório Técnico — SoccerNow
+
+1. Descrição da Arquitetura do Projeto
+
+O projeto SoccerNow foi desenvolvido seguindo uma arquitetura multicamada (multi-tier), separando claramente as responsabilidades entre backend (Spring Boot), frontend Web (Thymeleaf) e frontend desktop (JavaFX). Essa abordagem promove modularidade, manutenção facilitada e escalabilidade.
+
+Componentes principais:
+- Backend (API REST - Spring Boot):
+  - Responsável pela lógica de negócio, persistência de dados e exposição de endpoints RESTful.
+  - Utiliza Spring Data JPA para acesso ao banco de dados PostgreSQL.
+  - Realiza validações, autenticação e integrações.
+- Frontend Web (Thymeleaf):
+  - Interface web baseada em templates Thymeleaf, consumindo diretamente os dados do backend via controllers Spring MVC.
+  - Focada nos casos de uso de consulta, filtragem e administração.
+- Frontend Desktop (JavaFX):
+  - Aplicação desktop rica para operações de cadastro, edição e gestão de entidades (usuários, equipas, jogos, campeonatos, resultados).
+  - Consome a API REST do backend de forma assíncrona.
+
+2. Escolha e Justificação das Decisões Técnicas na Arquitetura
+
+a) Separação de camadas (MVC e REST)
+- Padrão MVC (Model-View-Controller): Utilizado tanto no backend (Spring MVC) quanto no frontend Web (Thymeleaf), promovendo separação entre lógica de apresentação, controle e modelo de dados.
+- API RESTful: Permite múltiplos clientes (Web e JavaFX) acessarem as mesmas regras de negócio, facilitando integração e futura expansão (ex: mobile).
+- DTOs (Data Transfer Objects): Utilizados para desacoplar entidades de persistência das representações expostas via API, aumentando segurança e flexibilidade.
+- Validação e tratamento de erros: Realizados no backend, garantindo integridade dos dados e feedback claro para o usuário.
+
+b) Padrões de projeto aplicados
+- Repository: Para abstração do acesso a dados (Spring Data JPA).
+- Service Layer: Centraliza regras de negócio, facilitando testes e manutenção.
+- Controller: Responsável por receber requisições, orquestrar serviços e retornar respostas adequadas.
+- DTO/Assembler: Conversão entre entidades e objetos de transferência.
+
+3. Decisões Técnicas no Desenho da Interface Web
+
+- Thymeleaf como motor de templates: Permite integração transparente com Spring, uso de fragmentos para componentes reutilizáveis (ex: navbar, head), e facilita internacionalização.
+- Filtros e buscas avançadas: Implementados via formulários GET, permitindo ao usuário refinar resultados sem recarregar a página inteira.
+- Layout responsivo e navegação clara: Uso de fragmentos para cabeçalho e navegação, garantindo consistência visual e facilidade de manutenção.
+- Feedback ao usuário: Exibição de mensagens de erro e sucesso, validação de campos e confirmação de ações destrutivas (exclusão).
+- Separação de responsabilidades: Cada template trata de uma entidade específica, seguindo o princípio de responsabilidade única.
+
+Justificativa: Essas decisões seguem os princípios de usabilidade, reutilização e separação de preocupações, facilitando futuras alterações e garantindo uma experiência consistente.
+
+4. Decisões Técnicas no Desenho da Interface JavaFX
+
+- FXML para definição de layouts: Facilita separação entre lógica de interface e código Java, tornando o design mais visual e modular.
+- Controllers dedicados por tela: Cada tela tem seu próprio controller, seguindo o padrão MVC e facilitando manutenção.
+- População dinâmica de componentes (ex: ChoiceBox): Itens são adicionados via código para evitar problemas de compatibilidade e facilitar internacionalização.
+- Validações no frontend: Antes de enviar dados ao backend, o JavaFX valida campos obrigatórios, formatos e regras de negócio (ex: mínimo de equipas, árbitros certificados).
+- Navegação clara: Botões de "Voltar ao Menu" e feedback visual para ações de sucesso/erro.
+- Comunicação assíncrona com backend: Uso de Java HTTP Client para chamadas REST, mantendo a interface responsiva.
+
+Justificativa: O uso de JavaFX permite uma experiência rica para operações de gestão, com maior controle visual e interatividade. As decisões seguem o padrão MVC, promovendo clareza, testabilidade e facilidade de evolução.
+
+5. Considerações Finais
+
+A arquitetura e as decisões técnicas foram tomadas visando:
+- Facilidade de manutenção e evolução
+- Reutilização de código
+- Separação clara de responsabilidades
+- Facilidade de testes
+- Aderência aos padrões ensinados em aula
+
+O resultado é um sistema robusto, modular e pronto para expansão, com interfaces adequadas para diferentes perfis de uso.

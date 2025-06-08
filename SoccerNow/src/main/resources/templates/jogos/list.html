@@ -6,6 +6,30 @@
 
     <h2>Gestión de Juegos</h2>
 
+    <!-- Filtros avançados -->
+    <form th:action="@{/web/jogos/filters}" method="get" style="margin-bottom:20px;">
+      <label>Status:
+        <select name="status" th:value="${param.status}">
+          <option value="">Todos</option>
+          <option value="played">Realizados</option>
+          <option value="pending">Por Realizar</option>
+          <option value="cancelled">Cancelados</option>
+        </select>
+      </label>
+      <label>Local: <input type="text" name="location" th:value="${param.location}" /></label>
+      <label>Mín. Gols: <input type="number" name="minGoals" min="0" th:value="${param.minGoals}" /></label>
+      <label>Turno:
+        <select name="timeSlot" th:value="${param.timeSlot}">
+          <option value="">Todos</option>
+          <option value="manha">Manhã</option>
+          <option value="tarde">Tarde</option>
+          <option value="noite">Noite</option>
+        </select>
+      </label>
+      <button type="submit">Filtrar</button>
+      <a th:href="@{/web/jogos}">Limpar</a>
+    </form>
+
     <a th:href="@{/web/jogos/create}">Crear Nuevo Juego</a>
 
     <table border="1" cellpadding="5" cellspacing="0" style="margin-top:15px; width:100%;">
