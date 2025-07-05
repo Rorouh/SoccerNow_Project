@@ -159,13 +159,18 @@ public class TeamWebController {
     }
 
     /**
-     * GET /web/teams/addPlayer/{teamId}
-     * Ejemplo de caso de uso de “añadir jugador a equipo” si lo necesitas.
+     * GET /web/teams/addPlayer/{teamId}/{playerId}
+     * Añade un jugador al equipo y redirige mostrando error si ya estaba.
      */
     @GetMapping("/addPlayer/{teamId}/{playerId}")
     public String addPlayerToTeam(@PathVariable Long teamId,
-                                  @PathVariable Long playerId) {
-        teamService.addPlayerToTeam(teamId, playerId);
+                                  @PathVariable Long playerId,
+                                  RedirectAttributes redirectAttrs) {
+        try {
+            teamService.addPlayerToTeam(teamId, playerId);
+        } catch (ApplicationException ex) {
+            redirectAttrs.addFlashAttribute("error", ex.getMessage());
+        }
         return "redirect:/web/teams";
     }
 

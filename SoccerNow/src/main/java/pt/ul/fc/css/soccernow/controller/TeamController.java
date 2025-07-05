@@ -1,3 +1,4 @@
+// src/main/java/pt/ul/fc/css/soccernow/controller/TeamController.java
 package pt.ul.fc.css.soccernow.controller;
 
 import jakarta.validation.Valid;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 
 @RestController
 @RequestMapping("/api/teams")
@@ -147,18 +149,26 @@ public class TeamController {
         );
     }
 
+    
     /**
      * POST /api/teams/{teamId}/players/{playerId}
-     * Caso de uso “añadir jugador a equipo” (solo si no estaba ya):
+     * Añadir jugador al equipo (si no estaba ya).
      */
     @PostMapping("/{teamId}/players/{playerId}")
     public ResponseEntity<?> addPlayer(
             @PathVariable Long teamId,
             @PathVariable Long playerId
     ) {
-        Optional<Team> opt = teamService.addPlayerToTeam(teamId, playerId);
-        return opt
-            .map(team -> ResponseEntity.ok(TeamDTO.fromEntity(team)))
-            .orElseGet(() -> ResponseEntity.notFound().build());
+        try {
+            Optional<Team> opt = teamService.addPlayerToTeam(teamId, playerId);
+            return opt
+                .map(team -> ResponseEntity.ok(TeamDTO.fromEntity(team)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (ApplicationException ex) {
+            return ResponseEntity
+                .badRequest()
+                .body(Map.of("error", ex.getMessage()));
+        }
     }
+    
 }

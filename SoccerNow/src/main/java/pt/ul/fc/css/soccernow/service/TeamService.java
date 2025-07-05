@@ -1,12 +1,14 @@
+// src/main/java/pt/ul/fc/css/soccernow/service/TeamService.java
 package pt.ul.fc.css.soccernow.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pt.ul.fc.css.soccernow.domain.Player;       // ← Import necesario
+import pt.ul.fc.css.soccernow.domain.Player;
 import pt.ul.fc.css.soccernow.domain.Team;
 import pt.ul.fc.css.soccernow.dto.TeamDTO;
 import pt.ul.fc.css.soccernow.repository.PlayerRepository;
 import pt.ul.fc.css.soccernow.repository.TeamRepository;
+import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -81,7 +83,10 @@ public class TeamService {
         return teamRepository.findAll();
     }
 
-    // Este método es requerido por TeamServiceTest.java
+    /**
+     * Añade un jugador al equipo (si no estaba ya),
+     * guarda y recarga el equipo entero para devolver la lista actualizada.
+     */
     @Transactional
     public Optional<Team> addPlayerToTeam(Long teamId, Long playerId) {
         Optional<Team> teamOpt = teamRepository.findById(teamId);
@@ -91,8 +96,16 @@ public class TeamService {
         }
         Team team = teamOpt.get();
         Player player = playerOpt.get();
+
+        if (team.getPlayers().contains(player)) {
+            throw new ApplicationException("El jugador ya forma parte del equipo.");
+        }
+
         team.getPlayers().add(player);
-        return Optional.of(teamRepository.save(team));
+        teamRepository.save(team);
+
+        // recarga para asegurar que la colección está inicializada
+        return teamRepository.findById(teamId);
     }
     
     public List<Team> findByName(String name) {
