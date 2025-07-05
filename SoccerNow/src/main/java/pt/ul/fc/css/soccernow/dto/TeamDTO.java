@@ -2,7 +2,11 @@ package pt.ul.fc.css.soccernow.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import pt.ul.fc.css.soccernow.domain.Team;
+import pt.ul.fc.css.soccernow.domain.Player;
+
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class TeamDTO {
 
@@ -16,43 +20,39 @@ public class TeamDTO {
 
     public TeamDTO() { }
 
-    // Para respostas (com id e nome apenas)
-    public TeamDTO(Long id, String name) {
-        this.id = id;
-        this.name = name;
-        this.playerIds = null;
-    }
-
-    // Para respostas (con id)
+    // Para respuestas (con id y lista de jugadores)
     public TeamDTO(Long id, String name, Set<Long> playerIds) {
         this.id = id;
         this.name = name;
         this.playerIds = playerIds;
     }
 
-    // Para creación (sin id)
+    // Para creación o actualización (sin id)
     public TeamDTO(String name, Set<Long> playerIds) {
         this(null, name, playerIds);
     }
 
-    public Long getId() { 
-        return id; 
-    }
-    public void setId(Long id) { 
-        this.id = id; 
-    }
+    // --- Getters / Setters ---
 
-    public String getName() { 
-        return name;
-    }
-    public void setName(String name) { 
-        this.name = name; 
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Set<Long> getPlayerIds() { 
-        return playerIds; 
-    }
-    public void setPlayerIds(Set<Long> playerIds) { 
-        this.playerIds = playerIds;
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public Set<Long> getPlayerIds() { return playerIds; }
+    public void setPlayerIds(Set<Long> playerIds) { this.playerIds = playerIds; }
+
+    /**
+     * Helper para convertir entidad Team → TeamDTO
+     */
+    public static TeamDTO fromEntity(Team t) {
+        return new TeamDTO(
+            t.getId(),
+            t.getName(),
+            t.getPlayers() != null
+                ? t.getPlayers().stream().map(Player::getId).collect(Collectors.toSet())
+                : Set.of()
+        );
     }
 }

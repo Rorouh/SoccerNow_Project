@@ -182,6 +182,9 @@ public class JogoService {
     }
     
 
+    public JogoService(JogoRepository jogoRepository) {
+        this.jogoRepository = jogoRepository;
+    }
 
     public List<Jogo> findPlayedGames() {
         return jogoRepository.findByResultadoIsNotNull();
@@ -219,6 +222,32 @@ public class JogoService {
     @Transactional(readOnly = true)
     public List<Jogo> findAllJogos() {
         return jogoRepository.findAll();
+    }
+
+    /**
+     * Centraliza la lógica de búsqueda para /api/jogos
+     */
+    @Transactional(readOnly = true)
+    public List<Jogo> searchGames(String status, String location, String timeSlot, Integer minGoals) {
+        if ("played".equalsIgnoreCase(status)) {
+            return findPlayedGames();
+        }
+        if ("cancelled".equalsIgnoreCase(status)) {
+            return findCancelledGames();
+        }
+        if ("pending".equalsIgnoreCase(status)) {
+            return findPendingGames();
+        }
+        if (location != null && !location.isBlank()) {
+            return findByLocation(location);
+        }
+        if (timeSlot != null && !timeSlot.isBlank()) {
+            return findByTimeSlot(timeSlot);
+        }
+        if (minGoals != null) {
+            return findByMinGoals(minGoals);
+        }
+        return findAllJogos();
     }
 
     /**

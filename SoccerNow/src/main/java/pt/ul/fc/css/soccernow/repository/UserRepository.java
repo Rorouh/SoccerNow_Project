@@ -11,4 +11,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * con ese email.
      */
     boolean existsByEmail(String email);
+    
+    /** Busca usuarios cuyo nombre contenga (ignore mayúsculas/minúsculas) */
+    List<User> findByNameContainingIgnoreCase(String name);
+
+    /** Busca usuarios por rol ("PLAYER" o "REFEREE") */
+    List<User> findByRole(String role);
 }

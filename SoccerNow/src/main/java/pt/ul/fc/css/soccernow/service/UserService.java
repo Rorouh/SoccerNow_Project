@@ -7,12 +7,14 @@ import pt.ul.fc.css.soccernow.domain.Player;
 import pt.ul.fc.css.soccernow.domain.Referee;
 import pt.ul.fc.css.soccernow.domain.User;
 import pt.ul.fc.css.soccernow.dto.UserDTO;
-import pt.ul.fc.css.soccernow.dto.UserDTO.Role;
+import pt.ul.fc.css.soccernow.dto.UserCreateDTO;
+import pt.ul.fc.css.soccernow.dto.UserUpdateDTO;
 import pt.ul.fc.css.soccernow.repository.UserRepository;
 import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -24,42 +26,32 @@ public class UserService {
     }
 
     @Transactional
-    public User createUser(UserDTO dto) {
-        // 1) Validar que no exista otro usuario con el mismo email
+    public User createUser(UserCreateDTO dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
             throw new ApplicationException("Ya existe un usuario con ese email.");
         }
-
-        // 2) Según el role, construir la subclase correcta
         User entidad;
-        if (dto.getRole() == Role.PLAYER) {
-            // 'preferredPosition' *DEBE* venir no nulo
+        if (dto.getRole() == UserDTO.Role.PLAYER) {
             if (dto.getPreferredPosition() == null) {
                 throw new ApplicationException("El campo 'preferredPosition' es obligatorio para un PLAYER.");
             }
-            Player jugador = new Player(
+            entidad = new Player(
                 dto.getName(),
                 dto.getEmail(),
                 dto.getPassword(),
                 dto.getPreferredPosition()
             );
-            entidad = jugador;
         } else {
-            // REFEREE
-            // 'certified' *DEBE* venir no nulo
             if (dto.getCertified() == null) {
                 throw new ApplicationException("El campo 'certified' es obligatorio para un REFEREE.");
             }
-            Referee arbitro = new Referee(
+            entidad = new Referee(
                 dto.getName(),
                 dto.getEmail(),
                 dto.getPassword(),
                 dto.getCertified()
             );
-            entidad = arbitro;
         }
-
-        // 3) Guardamos en BD. JPA asigna id automáticamente.
         return userRepository.save(entidad);
     }
 
@@ -68,46 +60,24 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    @Transactional(readOnly = true)
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
     @Transactional
-    public Optional<User> updateUser(Long id, UserDTO dto) {
+    public Optional<User> updateUser(Long id, UserUpdateDTO dto) {
         return userRepository.findById(id).map(existing -> {
-            // --- 1) Campos básicos “fusión” solo si vienen en el DTO (no nulos) ---
-            if (dto.getName() != null && !dto.getName().isBlank()) {
-                existing.setName(dto.getName());
+            if (dto.getName() != null)     existing.setName(dto.getName());
+            if (dto.getEmail() != null)    existing.setEmail(dto.getEmail());
+            if (dto.getPassword() != null) existing.setPassword(dto.getPassword());
+            // No permitimos cambiar rol...
+            if (existing instanceof Player p && dto.getPreferredPosition() != null) {
+                p.setPreferredPosition(dto.getPreferredPosition());
             }
-            if (dto.getEmail() != null && !dto.getEmail().isBlank()) {
-                existing.setEmail(dto.getEmail());
+            if (existing instanceof Referee r && dto.getCertified() != null) {
+                r.setCertified(dto.getCertified());
             }
-            if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
-                existing.setPassword(dto.getPassword());
-            }
-
-            // --- 2) ¿Cambia o mantiene el rol? ---
-            if (dto.getRole() != null) {
-                if (!dto.getRole().name().equals(existing.getRole())) {
-                    // Prohibimos cambiar tipo de usuario con un simple PUT
-                    throw new ApplicationException("No está permitido cambiar el tipo de usuario (Player <-> Referee) con PUT.");
-                }
-            }
-
-            // --- 3) Campos específicos según tipo existente ---
-            if (existing instanceof Player) {
-                Player p = (Player) existing;
-                // Si mandan preferredPosition, lo actualizamos:
-                if (dto.getPreferredPosition() != null) {
-                    p.setPreferredPosition(dto.getPreferredPosition());
-                }
-                // Si mandan certified (no aplica a Player), ignoramos.
-            } else if (existing instanceof Referee) {
-                Referee r = (Referee) existing;
-                // Si mandan certified, lo actualizamos:
-                if (dto.getCertified() != null) {
-                    r.setCertified(dto.getCertified());
-                }
-                // Si mandan preferredPosition (no aplica a Referee), ignoramos.
-            }
-
-            // --- 4) Guardamos cambios ---
             return userRepository.save(existing);
         });
     }
@@ -115,14 +85,36 @@ public class UserService {
     @Transactional
     public boolean deleteUser(Long id) {
         Optional<User> opt = userRepository.findById(id);
-        if (opt.isEmpty()) {
-            return false;
-        }
+        if (opt.isEmpty()) return false;
         userRepository.delete(opt.get());
         return true;
     }
+
+    // --- Nuevos métodos de búsqueda ---
+
     @Transactional(readOnly = true)
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<User> findByName(String name) {
+        return userRepository.findByNameContainingIgnoreCase(name);
+    }
+
+    @Transactional(readOnly = true)
+    public List<User> findByRole(UserDTO.Role role) {
+        return userRepository.findByRole(role.name());
+    }
+
+    @Transactional(readOnly = true)
+    public List<User> filterUsers(String name, UserDTO.Role role) {
+        if (name != null && role != null) {
+            return userRepository.findByNameContainingIgnoreCase(name)
+                                 .stream()
+                                 .filter(u -> u.getRole().equals(role.name()))
+                                 .collect(Collectors.toList());
+        } else if (name != null) {
+            return findByName(name);
+        } else if (role != null) {
+            return findByRole(role);
+        } else {
+            return getAllUsers();
+        }
     }
 }

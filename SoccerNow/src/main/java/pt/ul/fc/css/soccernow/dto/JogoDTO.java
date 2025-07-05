@@ -1,23 +1,15 @@
+// src/main/java/pt/ul/fc/css/soccernow/dto/JogoDTO.java
 package pt.ul.fc.css.soccernow.dto;
 
+import pt.ul.fc.css.soccernow.domain.Jogo;
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class JogoDTO {
     private Long id;
-
-    // Construtor padrão necessário para frameworks
-    public JogoDTO() {}
-
     private LocalDateTime dateTime;
     private String location;
-
-    // Construtor compacto para filtros
-    public JogoDTO(Long id, LocalDateTime dateTime, String location) {
-        this.id = id;
-        this.dateTime = dateTime;
-        this.location = location;
-    }
     private boolean amigavel;
     private Integer homeScore;
     private Integer awayScore;
@@ -26,7 +18,39 @@ public class JogoDTO {
     private Long campeonatoId;
     private Set<Long> arbitroIds;
     private Long primaryRefereeId;
-    // getters e setters
+
+    public JogoDTO() {}
+
+    public JogoDTO(Long id, LocalDateTime dateTime, String location) {
+        this.id = id;
+        this.dateTime = dateTime;
+        this.location = location;
+    }
+
+    /** Convierte una entidad Jogo en DTO */
+    public static JogoDTO fromEntity(Jogo j) {
+        JogoDTO d = new JogoDTO();
+        d.setId(j.getId());
+        d.setDateTime(j.getDateTime());
+        d.setLocation(j.getLocation());
+        d.setAmigavel(j.isAmigavel());
+        d.setHomeScore(j.getHomeScore());
+        d.setAwayScore(j.getAwayScore());
+        d.setHomeTeamId(j.getHomeTeam().getId());
+        d.setAwayTeamId(j.getAwayTeam().getId());
+        d.setCampeonatoId(j.getCampeonato() != null ? j.getCampeonato().getId() : null);
+        d.setArbitroIds(j.getReferees().stream()
+                         .map(r -> r.getId())
+                         .collect(Collectors.toSet()));
+        d.setPrimaryRefereeId(
+            j.getPrimaryReferee() != null
+                ? j.getPrimaryReferee().getId()
+                : null
+        );
+        return d;
+    }
+
+    // Getters y setters...
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public LocalDateTime getDateTime() { return dateTime; }
@@ -49,4 +73,6 @@ public class JogoDTO {
     public void setArbitroIds(Set<Long> arbitroIds) { this.arbitroIds = arbitroIds; }
     public Long getPrimaryRefereeId() { return primaryRefereeId; }
     public void setPrimaryRefereeId(Long primaryRefereeId) { this.primaryRefereeId = primaryRefereeId; }
+    public boolean isCancelado() { return cancelado; }
+    public void setCancelado(boolean cancelado) { this.cancelado = cancelado; }
 }
