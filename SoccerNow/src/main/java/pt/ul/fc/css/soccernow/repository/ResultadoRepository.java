@@ -1,3 +1,4 @@
+//src\main\java\pt\ul\fc\css\soccernow\repository\ResultadoRepository.java
 package pt.ul.fc.css.soccernow.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
