@@ -34,46 +34,42 @@ public class JogoController {
      */
     @GetMapping("/filter")
     public ResponseEntity<List<JogoDTO>> filterJogos(
-            @RequestParam(value = "realizados", required = false) Boolean realizados,
-            @RequestParam(value = "aRealizar",  required = false) Boolean aRealizar,
-            @RequestParam(value = "minGoals",   required = false) Integer minGoals,
-            @RequestParam(value = "location",   required = false) String location,
-            @RequestParam(value = "timeSlot",   required = false) String timeSlot
+            @RequestParam(required = false) Boolean realizados,
+            @RequestParam(required = false) Boolean aRealizar,
+            @RequestParam(required = false) Integer minGoals,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String timeSlot
     ) {
-        List<Jogo> results = jogoService.filterJogos(realizados, aRealizar, minGoals, location, timeSlot);
-        var dtos = results.stream()
-                          .map(JogoDTO::fromEntity)
-                          .collect(Collectors.toList());
+        var resultados = jogoService.filterJogos(realizados, aRealizar, minGoals, location, timeSlot);
+        var dtos = resultados.stream().map(JogoDTO::fromEntity).collect(Collectors.toList());
         return ResponseEntity.ok(dtos);
     }
 
     @PostMapping
-    public ResponseEntity<?> criarJogo(@RequestBody Jogo jogo) {
+    public ResponseEntity<?> criarJogo(@Valid @RequestBody JogoCreateDTO dto) {
         try {
-            Jogo criado = jogoService.criarJogo(jogo);
+            Jogo criado = jogoService.criarJogo(dto);
             return ResponseEntity
-                    .created(URI.create("/api/jogos/" + criado.getId()))
-                    .body(JogoDTO.fromEntity(criado));
-        } catch (ApplicationException | NotFoundException ex) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(Map.of("error", ex.getMessage()));
+                .created(URI.create("/api/jogos/" + criado.getId()))
+                .body(JogoDTO.fromEntity(criado));
+        } catch (NotFoundException | ApplicationException ex) {
+            return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
         }
     }
 
-    @PostMapping("/{id}/resultado")
+     @PostMapping("/{id}/resultado")
     public ResponseEntity<?> registarResultado(
             @PathVariable Long id,
-            @RequestBody Resultado resultado) {
+            @RequestBody Resultado resultado
+    ) {
         try {
             Resultado res = jogoService.registarResultado(id, resultado);
             return ResponseEntity.ok(res);
-        } catch (ApplicationException | NotFoundException ex) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(Map.of("error", ex.getMessage()));
+        } catch (NotFoundException | ApplicationException ex) {
+            return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
         }
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<JogoDTO> obterJogo(@PathVariable Long id) {
@@ -91,12 +87,25 @@ public class JogoController {
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (ApplicationException e) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(Map.of("error", e.getMessage()));
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
     /** ------------------------------------------------------------ */
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateJogo(
+            @PathVariable Long id,
+            @Valid @RequestBody JogoUpdateDTO dto
+    ) {
+        try {
+            var opt = jogoService.updateJogo(id, dto);
+            return opt
+                .map(j -> ResponseEntity.ok(JogoDTO.fromEntity(j)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (ApplicationException ex) {
+            return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
+        }
+    }
 
     /**
      * GET /api/jogos
@@ -110,15 +119,13 @@ public class JogoController {
      */
     @GetMapping("/jogos")
     public ResponseEntity<List<JogoDTO>> listJogos(
-            @RequestParam(value = "status",     required = false) String status,
-            @RequestParam(value = "location",   required = false) String location,
-            @RequestParam(value = "timeSlot",   required = false) String timeSlot,
-            @RequestParam(value = "minGoals",   required = false) Integer minGoals
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String timeSlot,
+            @RequestParam(required = false) Integer minGoals
     ) {
-        List<Jogo> results = jogoService.searchGames(status, location, timeSlot, minGoals);
-        var dtos = results.stream()
-                          .map(JogoDTO::fromEntity)
-                          .collect(Collectors.toList());
+        var jogos = jogoService.searchGames(status, location, timeSlot, minGoals);
+        var dtos = jogos.stream().map(JogoDTO::fromEntity).collect(Collectors.toList());
         return ResponseEntity.ok(dtos);
     }
 }

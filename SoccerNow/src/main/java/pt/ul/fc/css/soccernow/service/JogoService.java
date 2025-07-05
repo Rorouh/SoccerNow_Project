@@ -24,161 +24,167 @@ public class JogoService {
     @Autowired
     private ResultadoRepository resultadoRepository;
     @Autowired
-    private TeamRepository teamRepository;
+    private TeamRepository teamRepository;  
     @Autowired
     private RefereeRepository refereeRepository;
 
-    @Transactional
-    public Jogo criarJogo(Jogo jogo) {
-        // Reutiliza validações completas ao criar jogo
-        return criarJogo(
-            jogo.getDataHora(),
-            jogo.getLocal(),
-            jogo.isAmigavel(),
-            jogo.getHomeTeam().getId(),
-            jogo.getAwayTeam().getId(),
-            jogo.getReferees().stream().map(Referee::getId).collect(Collectors.toSet()),
-            jogo.getPrimaryReferee() != null ? jogo.getPrimaryReferee().getId() : null
-        );
-    }
-
-    @Transactional
-    public Resultado registarResultado(Long jogoId, Resultado resultado) {
-        // Reutiliza validações completas ao registar resultado
-        return registarResultado(
-            jogoId,
-            resultado.getPlacar(),
-            resultado.getEquipaVitoriosa() != null ? resultado.getEquipaVitoriosa().getId() : null
-        );
-    }
-
-    public Optional<Jogo> obterJogo(Long id) {
-        return jogoRepository.findById(id);
-    }
-
-    // Cria jogo amigável ou de campeonato com validações de negócio
+    /**
+     * Crea un juego a partir de un DTO.
+     */
     @Transactional
     public Jogo criarJogo(LocalDateTime dataHora,
                           String local,
                           boolean amigavel,
-                          Long equipa1Id,
-                          Long equipa2Id,
-                          Set<Long> arbitroIds,
+                          Long homeTeamId,
+                          Long awayTeamId,
+                          Set<Long> refereeIds,
                           Long primaryRefereeId)
             throws NotFoundException, ApplicationException {
 
-        // 1) Uma equipa não pode jogar contra si própria
-        if (equipa1Id.equals(equipa2Id)) {
-            throw new ApplicationException("As equipas têm de ser diferentes.");
+        if (homeTeamId.equals(awayTeamId)) {
+            throw new ApplicationException("Las dos equipas deben ser diferentes.");
         }
+        Team home = teamRepository.findById(homeTeamId)
+                .orElseThrow(() -> new NotFoundException("Equipo local no encontrado: " + homeTeamId));
+        Team away = teamRepository.findById(awayTeamId)
+                .orElseThrow(() -> new NotFoundException("Equipo visitante no encontrado: " + awayTeamId));
 
-        Team home = teamRepository.findById(equipa1Id)
-                .orElseThrow(() -> new NotFoundException("Team com ID " + equipa1Id + " não encontrada."));
-        Team away = teamRepository.findById(equipa2Id)
-                .orElseThrow(() -> new NotFoundException("Team com ID " + equipa2Id + " não encontrada."));
-
-        var referees = refereeRepository.findAllById(arbitroIds);
-        if (referees.size() != arbitroIds.size()) {
-            throw new NotFoundException("Árbitro(s) não encontrado(s)");
+        Set<Referee> referees = new HashSet<>(refereeRepository.findAllById(refereeIds));
+        if (referees.size() != refereeIds.size()) {
+            throw new NotFoundException("Algún árbitro no existe.");
         }
-
-        // 2) Em campeonato, todos árbitros devem ser certificados
-        if (!amigavel) {
-            boolean allCertified = referees.stream().allMatch(Referee::isCertified);
-            if (!allCertified) {
-                throw new ApplicationException("Todos os árbitros têm de ser certificados para jogos de campeonato.");
-            }
+        if (!amigavel && referees.stream().anyMatch(r -> !r.isCertified())) {
+            throw new ApplicationException("Todos los árbitros de campeonato deben estar certificados.");
         }
 
         Jogo jogo = new Jogo(dataHora, local, amigavel);
         jogo.setHomeTeam(home);
         jogo.setAwayTeam(away);
-        jogo.setReferees(Set.copyOf(referees));
+        jogo.setReferees(referees);
 
         if (primaryRefereeId != null) {
             Referee primary = referees.stream()
                     .filter(r -> r.getId().equals(primaryRefereeId))
                     .findFirst()
-                    .orElseThrow(() -> new NotFoundException("Primary referee indicado não faz parte da lista."));
+                    .orElseThrow(() -> new NotFoundException("Árbitro principal no pertenece al listado."));
             jogo.setPrimaryReferee(primary);
         }
 
         return jogoRepository.save(jogo);
     }
 
+    @Transactional
+    public Jogo criarJogo(JogoCreateDTO dto) throws NotFoundException, ApplicationException {
+        var it = dto.getTeamIds().iterator();
+        Long homeId = it.next(), awayId = it.next();
+        return criarJogo(
+            dto.getDateTime(),
+            dto.getLocation(),
+            dto.getAmigavel(),
+            homeId,
+            awayId,
+            dto.getRefereeIds(),
+            dto.getPrimaryRefereeId()
+        );
+    }
+
+    @Transactional
+    public Resultado registarResultado(Long jogoId, String placar, Long vencedoraId)
+            throws NotFoundException, ApplicationException {
+        Jogo j = jogoRepository.findById(jogoId)
+                .orElseThrow(() -> new NotFoundException("Juego no encontrado: " + jogoId));
+        if (j.getResultado() != null) {
+            throw new ApplicationException("Ya está registrado el resultado.");
+        }
+        String[] parts = placar.split("-");
+        if (parts.length != 2) {
+            throw new ApplicationException("Formato inválido, use “golesCasa-golesFuera”.");
+        }
+        int gCasa = Integer.parseInt(parts[0].trim()), gFuera = Integer.parseInt(parts[1].trim());
+        Resultado res = new Resultado();
+        res.setPlacar(placar);
+        res.setJogo(j);
+
+        if (vencedoraId != null) {
+            Team win = teamRepository.findById(vencedoraId)
+                    .orElseThrow(() -> new NotFoundException("Equipo vencedor no existe: " + vencedoraId));
+            if (!Objects.equals(win.getId(), j.getHomeTeam().getId()) &&
+                !Objects.equals(win.getId(), j.getAwayTeam().getId())) {
+                throw new ApplicationException("El vencedor no participó en este juego.");
+            }
+            boolean valid = (win.getId().equals(j.getHomeTeam().getId()) ? gCasa > gFuera : gFuera > gCasa);
+            if (!valid) {
+                throw new ApplicationException("El marcador no concuerda con el equipo ganador.");
+            }
+            res.setEquipaVitoriosa(win);
+        }
+
+        j.setResultado(res);
+        jogoRepository.save(j);
+        return resultadoRepository.save(res);
+    }
+
+    @Transactional
+    public Resultado registarResultado(Long jogoId, Resultado r) throws NotFoundException, ApplicationException {
+        return registarResultado(jogoId, r.getPlacar(),
+                                 r.getEquipaVitoriosa() != null ? r.getEquipaVitoriosa().getId() : null);
+    }
+
+    public Optional<Jogo> obterJogo(Long id) {
+        return jogoRepository.findById(id);
+    }
+
+
     // Registra resultado com validações de negócio
     @Transactional
     public Resultado registarResultado(Long jogoId, String placar, Long equipaVitoriosaId)
             throws NotFoundException, ApplicationException {
 
-        // 1) cargar Jogo
         Jogo jogo = jogoRepository.findById(jogoId)
-                .orElseThrow(() -> new NotFoundException("Jogo com ID " + jogoId + " não encontrado."));
-
+            .orElseThrow(() -> new NotFoundException("Jogo com ID " + jogoId + " não encontrado."));
         if (jogo.getResultado() != null) {
             throw new ApplicationException("Jogo já tem um resultado registado.");
         }
-
-        // 2) parsear marcador
         String[] parts = placar.split("-");
         if (parts.length != 2) {
             throw new ApplicationException("Formato de placar inválido, use \"golosCasa-golosFora\".");
         }
         int gCasa = Integer.parseInt(parts[0].trim());
         int gFora = Integer.parseInt(parts[1].trim());
-
-        // 3) crear objeto Resultado
         Resultado resultado = new Resultado();
         resultado.setPlacar(placar);
         resultado.setJogo(jogo);
-
         if (equipaVitoriosaId != null) {
-            // 4) cargar Team vencedora — primero NotFoundException
             Team vencedora = teamRepository.findById(equipaVitoriosaId)
-                .orElseThrow(() -> new NotFoundException(
-                    "Team vitoriosa com ID " + equipaVitoriosaId + " não encontrada."));
-
-            // 5) comprobar participación
-            Long homeId = jogo.getHomeTeam().getId();
-            Long awayId = jogo.getAwayTeam().getId();
+                .orElseThrow(() -> new NotFoundException("Team vitoriosa com ID " + equipaVitoriosaId + " não encontrada."));
+            Long homeId = jogo.getHomeTeam().getId(), awayId = jogo.getAwayTeam().getId();
             if (!equipaVitoriosaId.equals(homeId) && !equipaVitoriosaId.equals(awayId)) {
-                throw new ApplicationException("Team vitoriosa indicada não participou neste jogo.");
+                throw new ApplicationException("Team vencedora não participou neste jogo.");
             }
-
-            // 6) validar que marcó mais goles que el adversario
-            boolean ganhou;
-            if (equipaVitoriosaId.equals(homeId)) {
-                ganhou = gCasa > gFora;
-            } else {
-                ganhou = gFora > gCasa;
-            }
+            boolean ganhou = equipaVitoriosaId.equals(homeId) ? gCasa > gFora : gFora > gCasa;
             if (!ganhou) {
-                throw new ApplicationException("Autogolo não permitido: equipa vencedora não bate o adversário.");
+                throw new ApplicationException("Autogolo não permitido.");
             }
-
             resultado.setEquipaVitoriosa(vencedora);
         }
-
-        // 7) persistir todo
         jogo.setResultado(resultado);
         jogoRepository.save(jogo);
         return resultadoRepository.save(resultado);
     }
 
+    /** Cancela un juego pendiente. */
     @Transactional
     public void cancelarJogo(Long jogoId) throws NotFoundException, ApplicationException {
-        Jogo jogo = jogoRepository.findById(jogoId)
-                .orElseThrow(() -> new NotFoundException("Jogo com ID " + jogoId + " não encontrado."));
-
-        if (jogo.getResultado() != null) {
-            throw new ApplicationException("Não se pode cancelar um jogo que já tem resultado registrado.");
+        Jogo j = jogoRepository.findById(jogoId)
+                .orElseThrow(() -> new NotFoundException("Juego no encontrado: " + jogoId));
+        if (j.getResultado() != null) {
+            throw new ApplicationException("No se puede cancelar un juego con resultado.");
         }
-        if (jogo.isCancelado()) {
-            throw new ApplicationException("Jogo já está cancelado.");
+        if (j.isCancelado()) {
+            throw new ApplicationException("Juego ya está cancelado.");
         }
-
-        jogo.setCancelado(true);
-        jogoRepository.save(jogo);
+        j.setCancelado(true);
+        jogoRepository.save(j);
     }
     
 
@@ -250,6 +256,10 @@ public class JogoService {
         return findAllJogos();
     }
 
+    @Transactional(readOnly = true)
+    public List<Jogo> findAllJogos() {
+        return jogoRepository.findAll();
+    }
     /**
      * Filtro avançado de jogos: realizados, aRealizar, minGoals, location, timeSlot
      */
@@ -294,5 +304,59 @@ public class JogoService {
             default:
                 return false;
         }
+    }
+
+    /**
+     * Actualiza un juego existente a partir de un DTO.
+     */
+    @Transactional(readOnly = true)
+    public Jogo atualizarJogo(Long id, JogoUpdateDTO dto) throws NotFoundException, ApplicationException {
+        Jogo existing = jogoRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("Jogo com ID " + id + " não encontrado."));
+        // campos mutables
+        if (dto.getDateTime() != null) {
+            existing.setDataHora(dto.getDateTime());
+        }
+        if (dto.getLocation() != null && !dto.getLocation().isBlank()) {
+            existing.setLocal(dto.getLocation());
+        }
+        if (dto.getAmigavel() != null) {
+            existing.setAmigavel(dto.getAmigavel());
+        }
+        // equipos
+        if (dto.getTeamIds() != null) {
+            if (dto.getTeamIds().size() != 2) {
+                throw new ApplicationException("Se deben especificar exactamente 2 equipos.");
+            }
+            Iterator<Long> it = dto.getTeamIds().iterator();
+            Long homeId = it.next(), awayId = it.next();
+            Team home = teamRepository.findById(homeId)
+                .orElseThrow(() -> new NotFoundException("Team com ID " + homeId + " não encontrado."));
+            Team away = teamRepository.findById(awayId)
+                .orElseThrow(() -> new NotFoundException("Team com ID " + awayId + " não encontrado."));
+            existing.setHomeTeam(home);
+            existing.setAwayTeam(away);
+        }
+        // árbitros
+        if (dto.getRefereeIds() != null) {
+            var refs = refereeRepository.findAllById(dto.getRefereeIds());
+            if (refs.size() != dto.getRefereeIds().size()) {
+                throw new NotFoundException("Um ou mais árbitros não encontrados.");
+            }
+            // si es campeonato, validar certificados
+            if (!existing.isAmigavel() && refs.stream().anyMatch(r -> !r.isCertified())) {
+                throw new ApplicationException("Todos los árbitros deben estar certificados para partidos de campeonato.");
+            }
+            existing.setReferees(Set.copyOf(refs));
+        }
+        // árbitro principal
+        if (dto.getPrimaryRefereeId() != null) {
+            Referee primary = existing.getReferees().stream()
+                .filter(r -> r.getId().equals(dto.getPrimaryRefereeId()))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Árbitro principal no forma parte de la lista."));
+            existing.setPrimaryReferee(primary);
+        }
+        return jogoRepository.save(existing);
     }
 }
