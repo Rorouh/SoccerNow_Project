@@ -7,27 +7,27 @@ import jakarta.validation.constraints.NotBlank;
 
 public class PlayerDTO {
 
+
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
-    @NotBlank(message = "El nombre no puede estar vacío")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String name;
 
-    @NotBlank(message = "El email no puede estar vacío")
-    @Email(message = "Debe ser un email válido")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String email;
 
-    @NotBlank(message = "La contraseña no puede estar vacía")
+    /** Nunca devolvemos la contraseña en la respuesta */
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    @NotBlank(message = "La posición preferida no puede estar vacía")
-    private String preferredPosition;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private PreferredPosition preferredPosition;
 
-    @Min(value = 0, message = "Los goles no pueden ser negativos")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int goals;
 
-    @Min(value = 0, message = "Las tarjetas no pueden ser negativas")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int cards;
 
     public PlayerDTO() { }
@@ -55,6 +55,17 @@ public class PlayerDTO {
         this(null, name, email, password, preferredPosition);
     }
 
+    /** Factory para mapear entidad → DTO de salida */
+    public static PlayerDTO fromEntity(Player p) {
+        return new PlayerDTO(
+            p.getId(),
+            p.getName(),
+            p.getEmail(),
+            p.getPreferredPosition(),
+            p.getGoals(),
+            p.getCards()
+        );
+    }
     public Long getId() {
         return id;
     }

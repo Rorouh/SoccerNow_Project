@@ -1,25 +1,24 @@
+// src/main/java/pt/ul/fc/css/soccernow/dto/UserDTO.java
 package pt.ul.fc.css.soccernow.dto;
 
-import pt.ul.fc.css.soccernow.domain.User;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import pt.ul.fc.css.soccernow.domain.Player;
+import pt.ul.fc.css.soccernow.domain.Referee;
+import pt.ul.fc.css.soccernow.domain.User;
 
 public class UserDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
-    @NotBlank(message = "El nombre no puede estar vacío")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String name;
 
-    @NotBlank(message = "El email no puede estar vacío")
-    @Email(message = "Debe ser un email válido")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String email;
 
-    @NotBlank(message = "La contraseña no puede estar vacía")
+    /** Nunca devolvemos la contraseña en la salida */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     public enum Role {
@@ -27,42 +26,29 @@ public class UserDTO {
         REFEREE
     }
 
-    @NotNull(message = "El rol no puede ser nulo")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Role role;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private User.PreferredPosition preferredPosition;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Boolean certified;
 
+    public UserDTO() {}
 
-    public UserDTO() {
-    }
-
-
-    public UserDTO(Long id,
-                   String name,
-                   String email,
-                   String password,
-                   Role role,
-                   User.PreferredPosition preferredPosition,
-                   Boolean certified) {
+    private UserDTO(Long id,
+                    String name,
+                    String email,
+                    Role role,
+                    User.PreferredPosition preferredPosition,
+                    Boolean certified) {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.password = password;
         this.role = role;
         this.preferredPosition = preferredPosition;
         this.certified = certified;
-    }
-
-
-    public UserDTO(String name,
-                   String email,
-                   String password,
-                   Role role,
-                   User.PreferredPosition preferredPosition,
-                   Boolean certified) {
-        this(null, name, email, password, role, preferredPosition, certified);
     }
 
     // Getters e Setters
@@ -120,5 +106,29 @@ public class UserDTO {
 
     public void setCertified(Boolean certified) {
         this.certified = certified;
+    }
+
+    /** Factory para mapear entidad → DTO de salida */
+    public static UserDTO fromEntity(User u) {
+        if (u instanceof Player p) {
+            return new UserDTO(
+                p.getId(),
+                p.getName(),
+                p.getEmail(),
+                Role.PLAYER,
+                p.getPreferredPosition(),
+                null
+            );
+        } else {
+            Referee r = (Referee) u;
+            return new UserDTO(
+                r.getId(),
+                r.getName(),
+                r.getEmail(),
+                Role.REFEREE,
+                null,
+                r.isCertified()
+            );
+        }
     }
 }

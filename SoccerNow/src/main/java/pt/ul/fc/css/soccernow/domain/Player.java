@@ -9,28 +9,6 @@ import java.util.stream.Stream;
 @Entity
 public class Player extends User {
 
-    // ... outros campos e métodos ...
-
-    /**
-     * Retorna o número de jogos únicos em que o jogador participou
-     */
-    public int getGames() {
-        if (teams == null || teams.isEmpty()) return 0;
-        return teams.stream()
-            .flatMap(team -> {
-                // Recupera todos os jogos como mandante e visitante
-                Stream<Jogo> jogosMandante = team.getJogosComoVisitada() != null ? team.getJogosComoVisitada().stream() : Stream.empty();
-                Stream<Jogo> jogosVisitante = team.getJogosComoVisitante() != null ? team.getJogosComoVisitante().stream() : Stream.empty();
-                return Stream.concat(jogosMandante, jogosVisitante);
-            })
-            .filter(jogo -> jogo.getEstatisticas() != null && jogo.getEstatisticas().stream().anyMatch(est -> est.getPlayer() != null && est.getPlayer().getId().equals(this.getId())))
-            .map(Jogo::getId)
-            .distinct()
-            .toList()
-            .size();
-    }
-
-
     @Column(nullable = false)
     private int goals = 0;
 
@@ -69,4 +47,25 @@ public class Player extends User {
     public void setCards(int cards) {
         this.cards = cards;
     }
+
+    /**
+     * Retorna o número de jogos únicos em que o jogador participou
+     */
+    public int getGames() {
+        if (teams == null || teams.isEmpty()) return 0;
+        return teams.stream()
+            .flatMap(team -> {
+                // Recupera todos os jogos como mandante e visitante
+                Stream<Jogo> jogosMandante = team.getJogosComoVisitada() != null ? team.getJogosComoVisitada().stream() : Stream.empty();
+                Stream<Jogo> jogosVisitante = team.getJogosComoVisitante() != null ? team.getJogosComoVisitante().stream() : Stream.empty();
+                return Stream.concat(jogosMandante, jogosVisitante);
+            })
+            .filter(jogo -> jogo.getEstatisticas() != null && jogo.getEstatisticas().stream().anyMatch(est -> est.getPlayer() != null && est.getPlayer().getId().equals(this.getId())))
+            .map(Jogo::getId)
+            .distinct()
+            .toList()
+            .size();
+    }
+
+
 }

@@ -15,25 +15,16 @@ import java.util.Optional;
 @Service
 public class PlayerService {
 
-    private final PlayerRepository playerRepository;
-
-    public PlayerService(PlayerRepository playerRepository) {
-        this.playerRepository = playerRepository;
-    }
-
     @Transactional
-    public Player createPlayer(PlayerDTO dto) {
-        // 1) Validar que no exista otro jugador con el mismo email
+    public Player createPlayer(PlayerCreateDTO dto) {
         if (playerRepository.existsByEmail(dto.getEmail())) {
             throw new ApplicationException("Ya existe un jugador con ese email.");
         }
-
-        // 2) Validar preferredPosition no nulo ni vacío
         if (dto.getPreferredPosition() == null || dto.getPreferredPosition().isBlank()) {
             throw new ApplicationException("El campo 'preferredPosition' es obligatorio para un PLAYER.");
         }
 
-        // 3) Convertir el String a enum PreferredPosition
+        // Convertir String → enum
         User.PreferredPosition enumPos;
         try {
             enumPos = User.PreferredPosition.valueOf(dto.getPreferredPosition());
@@ -41,18 +32,15 @@ public class PlayerService {
             throw new ApplicationException("PreferredPosition inválido. Valores válidos: PORTERO, DEFENSA, CENTROCAMPISTA, DELANTERO.");
         }
 
-        // 4) Construir la entidad Player
         Player jugador = new Player();
         jugador.setName(dto.getName());
         jugador.setEmail(dto.getEmail());
         jugador.setPassword(dto.getPassword());
-        // En User el campo "role" también se guarda, pero PlayerService asume role = "PLAYER"
-        jugador.setRole("PLAYER");
+        jugador.setRole("PLAYER");  // heredado de User
         jugador.setPreferredPosition(enumPos);
         jugador.setGoals(dto.getGoals());
         jugador.setCards(dto.getCards());
 
-        // 5) Guardar en BD
         return playerRepository.save(jugador);
     }
 
@@ -62,9 +50,8 @@ public class PlayerService {
     }
 
     @Transactional
-    public Optional<Player> updatePlayer(Long id, PlayerDTO dto) {
+    public Optional<Player> updatePlayer(Long id, PlayerUpdateDTO dto) {
         return playerRepository.findById(id).map(existing -> {
-            // 1) Campos básicos “fusión”
             if (dto.getName() != null && !dto.getName().isBlank()) {
                 existing.setName(dto.getName());
             }
@@ -74,24 +61,20 @@ public class PlayerService {
             if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
                 existing.setPassword(dto.getPassword());
             }
-
-
-
-            // 2) preferredPosition: si viene, convertir a enum y asignar
             if (dto.getPreferredPosition() != null) {
-                User.PreferredPosition enumPos;
                 try {
-                    enumPos = User.PreferredPosition.valueOf(dto.getPreferredPosition());
+                    existing.setPreferredPosition(
+                        User.PreferredPosition.valueOf(dto.getPreferredPosition()));
                 } catch (IllegalArgumentException ex) {
                     throw new ApplicationException("PreferredPosition inválido. Valores válidos: PORTERO, DEFENSA, CENTROCAMPISTA, DELANTERO.");
                 }
-                existing.setPreferredPosition(enumPos);
             }
-
-            existing.setGoals(dto.getGoals());
-            existing.setCards(dto.getCards());
-
-            // 3) Guardar cambios
+            if (dto.getGoals() != null) {
+                existing.setGoals(dto.getGoals());
+            }
+            if (dto.getCards() != null) {
+                existing.setCards(dto.getCards());
+            }
             return playerRepository.save(existing);
         });
     }
@@ -99,13 +82,11 @@ public class PlayerService {
     @Transactional
     public boolean deletePlayer(Long id) {
         Optional<Player> opt = playerRepository.findById(id);
-        if (opt.isEmpty()) {
-            return false;
-        }
+        if (opt.isEmpty()) return false;
         playerRepository.delete(opt.get());
         return true;
     }
-
+    
     // -------------------------------------------------------
     // Estos métodos se añaden para que los tests de PlayerServiceTest compilen:
     @Transactional(readOnly = true)
