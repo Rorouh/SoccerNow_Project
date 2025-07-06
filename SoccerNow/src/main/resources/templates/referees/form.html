@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="fragments/header :: head(
+      ${refereeDTO.id} != null
+        ? 'Editar Árbitro ' + ${refereeDTO.id}
+        : 'Crear Nuevo Árbitro')">
+  </head>
+  <body th:replace="fragments/header :: content">
+    <section>
+      <h2 th:text="${refereeDTO.id} != null
+                      ? 'Editar Árbitro ' + ${refereeDTO.id}
+                      : 'Crear Nuevo Árbitro'"></h2>
+
+      <div th:if="${error}" style="color:red; margin-bottom:1em;">
+        <p th:text="${error}"></p>
+      </div>
+
+      <form th:action="${refereeDTO.id} != null
+                        ? @{/web/referees/update/{id}(id=${refereeDTO.id})}
+                        : @{/web/referees/save}"
+            th:object="${refereeDTO}" method="post">
+        <div style="margin-bottom:10px;">
+          <label>Nombre:</label>
+          <input type="text" th:field="*{name}" required />
+        </div>
+        <div style="margin-bottom:10px;">
+          <label>Email:</label>
+          <input type="email" th:field="*{email}" required />
+        </div>
+        <div style="margin-bottom:10px;">
+          <label>Certificado:</label>
+          <input type="checkbox" th:field="*{certified}" />
+        </div>
+        <div style="margin-top:20px;">
+          <button type="submit"
+                  th:text="${refereeDTO.id} != null ? 'Actualizar' : 'Crear'"></button>
+          <a th:href="@{/web/referees}" style="margin-left:15px;">Cancelar</a>
+        </div>
+      </form>
+    </section>
+    <div th:replace="fragments/footer :: footer"></div>
+  </body>
+</html>

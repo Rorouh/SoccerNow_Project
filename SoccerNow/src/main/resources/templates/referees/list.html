@@ -5,15 +5,14 @@
     <section>
       <h2>Gestión de Árbitros</h2>
 
-      <!-- Filtros avanzados si los necesitas -->
       <form th:action="@{/web/referees}" method="get" style="margin-bottom:20px;">
-        <label>Nombre: 
+        <label>Nombre:
           <input type="text" name="name" th:value="${param.name}" />
         </label>
-        <label>Mín. Juegos: 
+        <label>Mín. Juegos:
           <input type="number" name="minGames" min="0" th:value="${param.minGames}" />
         </label>
-        <label>Mín. Cartones: 
+        <label>Mín. Cartones:
           <input type="number" name="minCards" min="0" th:value="${param.minCards}" />
         </label>
         <button type="submit">Filtrar</button>
@@ -28,7 +27,6 @@
             <th>Nombre</th>
             <th>Email</th>
             <th>Certificado</th>
-            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -37,13 +35,6 @@
             <td th:text="${r.name}"></td>
             <td th:text="${r.email}"></td>
             <td th:text="${r.certified} ? 'Sí' : 'No'"></td>
-            <td>
-              <a th:href="@{/web/referees/edit/{id}(id=${r.id})}">Editar</a> |
-              <a th:href="@{/web/referees/delete/{id}(id=${r.id})}"
-                 th:onclick="|return confirm('¿Eliminar árbitro ID ' + ${r.id} + '?');|">
-                Eliminar
-              </a>
-            </td>
           </tr>
         </tbody>
       </table>

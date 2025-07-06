@@ -5,7 +5,6 @@ import pt.ul.fc.css.soccernow.domain.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import pt.ul.fc.css.soccernow.dto.UserDTO;
 
 public class UserCreateDTO {
     @NotBlank(message = "El nombre no puede estar vacío")
