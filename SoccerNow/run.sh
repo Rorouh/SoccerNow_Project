@@ -5,7 +5,8 @@ set -euo pipefail
 # 1) Compilar el JAR localmente con Maven
 #############################################
 echo "🔨  Compilando el proyecto con Maven (sin tests)..."
-mvn clean package -DskipTests
+mvn clean package -Dmaven.test.skip=true
+
 
 #############################################
 # 2) Bajar cualquier contenedor anterior

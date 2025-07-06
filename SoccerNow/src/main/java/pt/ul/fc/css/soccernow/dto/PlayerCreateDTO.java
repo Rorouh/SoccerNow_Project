@@ -60,19 +60,19 @@ public class PlayerCreateDTO {
         this.preferredPosition = preferredPosition;
     }
 
-    public int getGoals() {
+    public Integer getGoals() {
         return goals;
     }
 
-    public void setGoals(int goals) {
+    public void setGoals(Integer goals) {
         this.goals = goals;
     }
 
-    public int getCards() {
+    public Integer getCards() {
         return cards;
     }
 
-    public void setCards(int cards) {
+    public void setCards(Integer cards) {
         this.cards = cards;
     }
 }

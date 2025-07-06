@@ -50,7 +50,39 @@ public class UserDTO {
         this.preferredPosition = preferredPosition;
         this.certified = certified;
     }
+    /* Constructor específico para JUGADORES
+    *  – role se fija automáticamente a PLAYER
+    *  – certified queda a null
+    */
+    public UserDTO(Long id,
+        String name,
+        String email,
+        User.PreferredPosition preferredPosition) {
 
+        this.id                = id;
+        this.name              = name;
+        this.email             = email;
+        this.role              = Role.PLAYER;
+        this.preferredPosition = preferredPosition;
+        this.certified         = null;
+    }
+
+    /* Constructor específico para ÁRBITROS
+    *  – role se fija automáticamente a REFEREE
+    *  – preferredPosition queda a null
+    */
+    public UserDTO(Long id,
+        String name,
+        String email,
+        boolean certified) {
+
+        this.id                = id;
+        this.name              = name;
+        this.email             = email;
+        this.role              = Role.REFEREE;
+        this.preferredPosition = null;
+        this.certified         = certified;
+    }
     // Getters e Setters
     public Long getId() {
         return id;

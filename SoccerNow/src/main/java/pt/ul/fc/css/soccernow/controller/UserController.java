@@ -14,7 +14,6 @@ import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 
 
@@ -80,7 +79,7 @@ public class UserController {
      */
     @GetMapping("/filter")
     public ResponseEntity<List<UserDTO>> filterUsers(
-            @RequestParam(value = "name", required = false) UserDTO.Role name,
+            @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "role", required = false) UserDTO.Role role
     ) {
         var results = userService.filterUsers(name, role);

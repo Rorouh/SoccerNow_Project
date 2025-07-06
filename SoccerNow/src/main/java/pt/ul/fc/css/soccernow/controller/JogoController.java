@@ -4,7 +4,6 @@ package pt.ul.fc.css.soccernow.controller;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
@@ -104,10 +103,8 @@ public class JogoController {
             @Valid @RequestBody JogoUpdateDTO dto
     ) {
         try {
-            var opt = jogoService.atualizarJogo(id, dto);
-            return opt
-                .map(j -> ResponseEntity.ok(JogoDTO.fromEntity(j)))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+            Jogo actualizado = jogoService.atualizarJogo(id, dto);
+            return ResponseEntity.ok(JogoDTO.fromEntity(actualizado));
         } catch (ApplicationException ex) {
             return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
         }

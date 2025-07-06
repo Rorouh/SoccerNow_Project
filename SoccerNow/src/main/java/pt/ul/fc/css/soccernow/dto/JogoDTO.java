@@ -7,8 +7,7 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Set;
-import pt.ul.fc.css.soccernow.domain.Referee;
-import pt.ul.fc.css.soccernow.domain.Team;
+
 
 
 public class JogoDTO {
@@ -21,7 +20,7 @@ public class JogoDTO {
     private Long homeTeamId;
     private Long awayTeamId;
     private Long campeonatoId;
-    private Set<Long> refereeIds;
+    private Set<Long> arbitroids;
     private Long primaryRefereeId;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -78,8 +77,8 @@ public class JogoDTO {
     public Long getCampeonatoId() { return campeonatoId; }
     public void setCampeonatoId(Long campeonatoId) { this.campeonatoId = campeonatoId; }
 
-    public Set<Long> getArbitroIds() { return arbitroIds; }
-    public void setArbitroIds(Set<Long> arbitroIds) { this.arbitroIds = arbitroIds; }
+    public Set<Long> getArbitroIds() { return arbitroids; }
+    public void setArbitroIds(Set<Long> arbitroIds) { this.arbitroids = arbitroIds; }
 
     public Long getPrimaryRefereeId() { return primaryRefereeId; }
     public void setPrimaryRefereeId(Long primaryRefereeId) { this.primaryRefereeId = primaryRefereeId; }
@@ -89,6 +88,6 @@ public class JogoDTO {
 
     // Para que compile setRefereeIds
     public void setRefereeIds(Set<Long> refereeIds) {
-        this.refereeIds = refereeIds;
+        this.arbitroids = refereeIds;
     }
 }

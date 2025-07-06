@@ -9,13 +9,11 @@ import pt.ul.fc.css.soccernow.dto.PlayerCreateDTO;
 import pt.ul.fc.css.soccernow.dto.PlayerUpdateDTO;
 import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 import pt.ul.fc.css.soccernow.repository.PlayerRepository;
-import pt.ul.fc.css.soccernow.domain.Player.PreferredPosition;
+import pt.ul.fc.css.soccernow.domain.User.PreferredPosition;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.stream.Collectors;
+
 
 @Service
 public class PlayerService {

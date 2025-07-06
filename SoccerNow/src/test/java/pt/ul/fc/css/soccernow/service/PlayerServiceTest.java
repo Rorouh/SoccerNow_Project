@@ -7,7 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import pt.ul.fc.css.soccernow.domain.Player;
-import pt.ul.fc.css.soccernow.domain.Player.PreferredPosition;
+import pt.ul.fc.css.soccernow.domain.User.PreferredPosition;
 import pt.ul.fc.css.soccernow.dto.PlayerCreateDTO;
 import pt.ul.fc.css.soccernow.dto.PlayerUpdateDTO;
 import pt.ul.fc.css.soccernow.repository.PlayerRepository;

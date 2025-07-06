@@ -1,7 +1,6 @@
 // src/main/java/pt/ul/fc/css/soccernow/controller/JogoWebController.java
 package pt.ul.fc.css.soccernow.controller;
 
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +14,6 @@ import pt.ul.fc.css.soccernow.service.RefereeService;
 import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 import pt.ul.fc.css.soccernow.service.exceptions.NotFoundException;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

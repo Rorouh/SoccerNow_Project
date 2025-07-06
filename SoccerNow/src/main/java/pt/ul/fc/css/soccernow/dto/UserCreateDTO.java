@@ -5,6 +5,7 @@ import pt.ul.fc.css.soccernow.domain.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import pt.ul.fc.css.soccernow.dto.UserDTO;
 
 public class UserCreateDTO {
     @NotBlank(message = "El nombre no puede estar vacío")
@@ -17,10 +18,9 @@ public class UserCreateDTO {
     @NotBlank(message = "La contraseña no puede estar vacía")
     private String password;
 
-    public enum Role { PLAYER, REFEREE }
-
+    //public enum Role { PLAYER, REFEREE }
     @NotNull(message = "El rol no puede ser nulo")
-    private Role role;
+    private UserDTO.Role Role;
 
     /** Obligatorio si role=PLAYER */
     private User.PreferredPosition preferredPosition;
@@ -55,12 +55,12 @@ public class UserCreateDTO {
         this.password = password;
     }
 
-    public Role getRole() {
-        return role;
+    public UserDTO.Role getRole() {
+        return Role;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setRole(UserDTO.Role role) {
+        this.Role = role;
     }
 
     public User.PreferredPosition getPreferredPosition() {

@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Iterator;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -322,5 +321,11 @@ public class JogoService {
             existing.setPrimaryReferee(primary);
         }
         return jogoRepository.save(existing);
+    }
+
+    @Transactional
+    public Jogo criarJogo(Jogo jogo) throws ApplicationException {
+        // ✅  aquí podrías reutilizar validaciones o simplemente guardar
+        return jogoRepository.save(jogo);
     }
 }

@@ -1,7 +1,7 @@
-// src/main/java/pt/ul/fc/css/soccernow/controller/TeamController.java
+//src/main/java/pt/ul/fc/css/soccernow/controller/TeamController.java
+package pt.ul.fc.css.soccernow.controller;
 import java.net.URI;
 import java.util.List;
-import java.util.Set;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import pt.ul.fc.css.soccernow.domain.Team;
-import pt.ul.fc.css.soccernow.domain.Player.PreferredPosition;
+import pt.ul.fc.css.soccernow.domain.User;
 import pt.ul.fc.css.soccernow.dto.TeamDTO;
 import pt.ul.fc.css.soccernow.service.TeamService;
 import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
@@ -107,7 +107,7 @@ public class TeamController {
             @RequestParam(value = "name",            required = false) String name,
             @RequestParam(value = "minPlayers",      required = false) Integer minPlayers,
             @RequestParam(value = "minWins",         required = false) Long    minWins,
-            @RequestParam(value = "missingPosition", required = false) PreferredPosition missingPosition
+            @RequestParam(value = "missingPosition", required = false) User.PreferredPosition missingPosition
     ) {
         List<Team> results;
         if (name != null && !name.isBlank()) {

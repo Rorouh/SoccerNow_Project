@@ -11,16 +11,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import pt.ul.fc.css.soccernow.domain.Jogo;
 import pt.ul.fc.css.soccernow.domain.Resultado;
 import pt.ul.fc.css.soccernow.dto.JogoCreateDTO;
-import pt.ul.fc.css.soccernow.dto.JogoDTO;
+
 import pt.ul.fc.css.soccernow.service.JogoService;
 import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 import pt.ul.fc.css.soccernow.service.exceptions.NotFoundException;
 
-import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;

@@ -7,7 +7,7 @@ COPY pom.xml .
 COPY src ./src
 
 # Compilamos el JAR (sin tests para agilizar)
-RUN mvn clean package -DskipTests
+RUN mvn clean package -Dmaven.test.skip=true
 
 # Etapa de runtime: usamos OpenJDK 17 JRE
 FROM eclipse-temurin:17-jre-alpine

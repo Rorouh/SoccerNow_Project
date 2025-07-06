@@ -13,7 +13,6 @@ import pt.ul.fc.css.soccernow.service.TeamService;
 import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
