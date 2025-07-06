@@ -1,23 +1,25 @@
 // src/main/java/pt/ul/fc/css/soccernow/controller/JogoController.java
 package pt.ul.fc.css.soccernow.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import pt.ul.fc.css.soccernow.domain.Jogo;
-import pt.ul.fc.css.soccernow.domain.Referee;
-import pt.ul.fc.css.soccernow.domain.Resultado;
-import pt.ul.fc.css.soccernow.dto.JogoDTO;
-import pt.ul.fc.css.soccernow.service.JogoService;
-import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
-import pt.ul.fc.css.soccernow.service.exceptions.NotFoundException;
-
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import pt.ul.fc.css.soccernow.domain.Jogo;
+import pt.ul.fc.css.soccernow.domain.Resultado;
+import pt.ul.fc.css.soccernow.dto.JogoCreateDTO;
+import pt.ul.fc.css.soccernow.dto.JogoDTO;
+import pt.ul.fc.css.soccernow.dto.JogoUpdateDTO;
+import pt.ul.fc.css.soccernow.service.JogoService;
+import pt.ul.fc.css.soccernow.service.exceptions.*;
+
 
 
 
@@ -102,7 +104,7 @@ public class JogoController {
             @Valid @RequestBody JogoUpdateDTO dto
     ) {
         try {
-            var opt = jogoService.updateJogo(id, dto);
+            var opt = jogoService.atualizarJogo(id, dto);
             return opt
                 .map(j -> ResponseEntity.ok(JogoDTO.fromEntity(j)))
                 .orElseGet(() -> ResponseEntity.notFound().build());

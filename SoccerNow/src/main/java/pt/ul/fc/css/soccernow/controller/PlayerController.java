@@ -5,7 +5,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ul.fc.css.soccernow.domain.Player;
-import pt.ul.fc.css.soccernow.domain.User.PreferredPosition;
+import pt.ul.fc.css.soccernow.domain.Player.PreferredPosition;
 import pt.ul.fc.css.soccernow.dto.PlayerCreateDTO;
 import pt.ul.fc.css.soccernow.dto.PlayerDTO;
 import pt.ul.fc.css.soccernow.dto.PlayerUpdateDTO;
@@ -14,6 +14,8 @@ import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 

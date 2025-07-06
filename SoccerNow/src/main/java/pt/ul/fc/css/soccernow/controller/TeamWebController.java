@@ -1,19 +1,17 @@
 // src/main/java/pt/ul/fc/css/soccernow/controller/TeamWebController.java
 package pt.ul.fc.css.soccernow.controller;
 
-import jakarta.validation.Valid;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import pt.ul.fc.css.soccernow.domain.Player;
-import pt.ul.fc.css.soccernow.domain.Team;
-import pt.ul.fc.css.soccernow.dto.TeamDTO;
-import pt.ul.fc.css.soccernow.service.TeamService;
-import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
-
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import pt.ul.fc.css.soccernow.domain.Player;
+import pt.ul.fc.css.soccernow.domain.User;
+import pt.ul.fc.css.soccernow.dto.PlayerDTO;
+import pt.ul.fc.css.soccernow.dto.PlayerCreateDTO;
+import pt.ul.fc.css.soccernow.dto.PlayerUpdateDTO;
+import pt.ul.fc.css.soccernow.service.PlayerService;
+import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 
 @Controller
 @RequestMapping("/web/teams")

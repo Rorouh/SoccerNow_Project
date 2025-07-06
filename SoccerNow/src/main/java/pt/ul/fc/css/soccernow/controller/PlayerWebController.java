@@ -1,21 +1,12 @@
-// src/main/java/pt/ul/fc/css/soccernow/controller/PlayerWebController.java
 package pt.ul.fc.css.soccernow.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pt.ul.fc.css.soccernow.domain.User;
-import pt.ul.fc.css.soccernow.domain.Player;
-import pt.ul.fc.css.soccernow.dto.PlayerDTO;
-import pt.ul.fc.css.soccernow.service.PlayerService;
-import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
+import pt.ul.fc.css.soccernow.dto.PlayerCreateDTO;
+import pt.ul.fc.css.soccernow.dto.PlayerUpdateDTO;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-@Controller
-@RequestMapping("/web/players")
 public class PlayerWebController {
 
     private final PlayerService playerService;
@@ -75,8 +66,7 @@ public class PlayerWebController {
      * Crea un jugador. Luego redirige a la lista.
      */
     @PostMapping("/save")
-    public String savePlayer(@Valid @ModelAttribute("playerDTO") PlayerDTO dto,
-                             Model model) {
+    public String savePlayer(@Valid @ModelAttribute("playerDTO") PlayerCreateDTO dto, Model model) {
         try {
             playerService.createPlayer(dto);
             return "redirect:/web/players";
@@ -118,9 +108,7 @@ public class PlayerWebController {
      * Actualiza un jugador existente.
      */
     @PostMapping("/update/{id}")
-    public String updatePlayer(@PathVariable Long id,
-                               @ModelAttribute("playerDTO") PlayerDTO dto,
-                               Model model) {
+    public String updatePlayer(@PathVariable Long id, @ModelAttribute("playerDTO") PlayerUpdateDTO dto, Model model) {
         try {
             var opt = playerService.updatePlayer(id, dto);
             if (opt.isEmpty()) {

@@ -9,12 +9,13 @@ import pt.ul.fc.css.soccernow.dto.PlayerCreateDTO;
 import pt.ul.fc.css.soccernow.dto.PlayerUpdateDTO;
 import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 import pt.ul.fc.css.soccernow.repository.PlayerRepository;
+import pt.ul.fc.css.soccernow.domain.Player.PreferredPosition;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.HashSet;
-
+import java.util.stream.Collectors;
 
 @Service
 public class PlayerService {
@@ -33,11 +34,13 @@ public class PlayerService {
         }
 
         // Convertir String → enum
-        User.PreferredPosition enumPos;
+        PreferredPosition enumPos;
         try {
-            enumPos = User.PreferredPosition.valueOf(dto.getPreferredPosition());
+            enumPos = PreferredPosition.valueOf(dto.getPreferredPosition());
         } catch (IllegalArgumentException ex) {
-            throw new ApplicationException("PreferredPosition inválido. Valores válidos: PORTERO, DEFENSA, CENTROCAMPISTA, DELANTERO.");
+            throw new ApplicationException(
+                "PreferredPosition inválido. Valores válidos: PORTERO, DEFENSA, CENTROCAMPISTA, DELANTERO."
+            );
         }
 
         Player jugador = new Player();

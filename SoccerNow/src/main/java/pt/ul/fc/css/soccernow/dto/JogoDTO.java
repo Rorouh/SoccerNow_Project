@@ -3,11 +3,12 @@ package pt.ul.fc.css.soccernow.dto;
 
 import pt.ul.fc.css.soccernow.domain.Jogo;
 import java.time.LocalDateTime;
-import java.util.Set;
 import java.util.stream.Collectors;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Set;
+import pt.ul.fc.css.soccernow.domain.Referee;
+import pt.ul.fc.css.soccernow.domain.Team;
 
 
 public class JogoDTO {
@@ -85,4 +86,9 @@ public class JogoDTO {
 
     public boolean isCancelado() { return cancelado; }
     public void setCancelado(boolean cancelado) { this.cancelado = cancelado; }
+
+    // Para que compile setRefereeIds
+    public void setRefereeIds(Set<Long> refereeIds) {
+        this.refereeIds = refereeIds;
+    }
 }

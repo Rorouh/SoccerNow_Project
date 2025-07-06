@@ -2,7 +2,7 @@
 package pt.ul.fc.css.soccernow.repository;
 
 import pt.ul.fc.css.soccernow.domain.Player;
-import pt.ul.fc.css.soccernow.domain.User.PreferredPosition;
+import pt.ul.fc.css.soccernow.domain.Player.PreferredPosition;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

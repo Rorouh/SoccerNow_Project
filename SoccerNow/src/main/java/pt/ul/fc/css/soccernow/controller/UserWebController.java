@@ -1,21 +1,18 @@
-// src/main/java/pt/ul/fc/css/soccernow/controller/UsuarioWebController.java
 package pt.ul.fc.css.soccernow.controller;
 
-import jakarta.validation.Valid;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.Optional;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import pt.ul.fc.css.soccernow.domain.User;
 import pt.ul.fc.css.soccernow.dto.UserDTO;
+import pt.ul.fc.css.soccernow.dto.UserCreateDTO;
+import pt.ul.fc.css.soccernow.dto.UserUpdateDTO;
 import pt.ul.fc.css.soccernow.service.UserService;
 import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
-@Controller
-@RequestMapping("/web/users")
 public class UserWebController {
 
     private final UserService userService;
@@ -44,8 +41,7 @@ public class UserWebController {
 
     /** POST /web/users/save → guarda nuevo usuario */
     @PostMapping("/save")
-    public String saveUser(@Valid @ModelAttribute("userDTO") UserDTO dto,
-                           Model model) {
+    public String saveUser(@Valid @ModelAttribute("userDTO") UserCreateDTO dto, Model model)    {
         try {
             userService.createUser(dto);
             return "redirect:/web/users";
@@ -70,9 +66,7 @@ public class UserWebController {
 
     /** POST /web/users/update/{id} → actualiza usuario */
     @PostMapping("/update/{id}")
-    public String updateUser(@PathVariable Long id,
-                             @ModelAttribute("userDTO") UserDTO dto,
-                             Model model) {
+    public String updateUser(@PathVariable Long id, @ModelAttribute("userDTO") UserUpdateDTO dto, Model model) {
         try {
             userService.updateUser(id, dto)
                        .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));

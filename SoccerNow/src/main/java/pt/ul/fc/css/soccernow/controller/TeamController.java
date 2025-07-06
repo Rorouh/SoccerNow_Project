@@ -1,21 +1,20 @@
 // src/main/java/pt/ul/fc/css/soccernow/controller/TeamController.java
-package pt.ul.fc.css.soccernow.controller;
+import java.net.URI;
+import java.util.List;
+import java.util.Set;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import pt.ul.fc.css.soccernow.domain.Team;
 import pt.ul.fc.css.soccernow.domain.Player.PreferredPosition;
 import pt.ul.fc.css.soccernow.dto.TeamDTO;
 import pt.ul.fc.css.soccernow.service.TeamService;
 import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
-
-import java.net.URI;
-import java.util.List;
-import java.util.Optional;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 
 
 

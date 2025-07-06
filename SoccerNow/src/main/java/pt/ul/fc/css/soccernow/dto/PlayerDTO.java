@@ -5,10 +5,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
-import java.util.Set;
+import pt.ul.fc.css.soccernow.domain.Player;
+import pt.ul.fc.css.soccernow.domain.Player.PreferredPosition;
 
 public class PlayerDTO {
-
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
@@ -19,7 +19,6 @@ public class PlayerDTO {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String email;
 
-    /** Nunca devolvemos la contraseña en la respuesta */
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
@@ -43,12 +42,9 @@ public class PlayerDTO {
     }
 
 
-    public PlayerDTO(Long id, String name, String email, String password, String preferredPosition, int goals, int cards) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.preferredPosition = preferredPosition;
+    // Ahora uso PreferredPosition en vez de String
+    public PlayerDTO(Long id, String name, String email,String password, PreferredPosition preferredPosition, int goals, int cards) {
+        this(id, name, email, password, preferredPosition, goals, cards);
         this.goals = goals;
         this.cards = cards;
     }

@@ -6,7 +6,10 @@ import jakarta.validation.constraints.Email;
 
 public class UserUpdateDTO {
     /** Todos opcionales para PUT parcial */
+    private Long id;
+    
     private String name;
+
 
     @Email(message = "Debe ser un email válido")
     private String email;

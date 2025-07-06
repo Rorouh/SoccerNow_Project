@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pt.ul.fc.css.soccernow.domain.*;
+import pt.ul.fc.css.soccernow.dto.JogoCreateDTO;
+import pt.ul.fc.css.soccernow.dto.JogoUpdateDTO;
 import pt.ul.fc.css.soccernow.repository.JogoRepository;
 import pt.ul.fc.css.soccernow.repository.ResultadoRepository;
 import pt.ul.fc.css.soccernow.repository.TeamRepository;
@@ -138,44 +140,6 @@ public class JogoService {
         return jogoRepository.findById(id);
     }
 
-
-    // Registra resultado com validações de negócio
-    @Transactional
-    public Resultado registarResultado(Long jogoId, String placar, Long equipaVitoriosaId)
-            throws NotFoundException, ApplicationException {
-
-        Jogo jogo = jogoRepository.findById(jogoId)
-            .orElseThrow(() -> new NotFoundException("Jogo com ID " + jogoId + " não encontrado."));
-        if (jogo.getResultado() != null) {
-            throw new ApplicationException("Jogo já tem um resultado registado.");
-        }
-        String[] parts = placar.split("-");
-        if (parts.length != 2) {
-            throw new ApplicationException("Formato de placar inválido, use \"golosCasa-golosFora\".");
-        }
-        int gCasa = Integer.parseInt(parts[0].trim());
-        int gFora = Integer.parseInt(parts[1].trim());
-        Resultado resultado = new Resultado();
-        resultado.setPlacar(placar);
-        resultado.setJogo(jogo);
-        if (equipaVitoriosaId != null) {
-            Team vencedora = teamRepository.findById(equipaVitoriosaId)
-                .orElseThrow(() -> new NotFoundException("Team vitoriosa com ID " + equipaVitoriosaId + " não encontrada."));
-            Long homeId = jogo.getHomeTeam().getId(), awayId = jogo.getAwayTeam().getId();
-            if (!equipaVitoriosaId.equals(homeId) && !equipaVitoriosaId.equals(awayId)) {
-                throw new ApplicationException("Team vencedora não participou neste jogo.");
-            }
-            boolean ganhou = equipaVitoriosaId.equals(homeId) ? gCasa > gFora : gFora > gCasa;
-            if (!ganhou) {
-                throw new ApplicationException("Autogolo não permitido.");
-            }
-            resultado.setEquipaVitoriosa(vencedora);
-        }
-        jogo.setResultado(resultado);
-        jogoRepository.save(jogo);
-        return resultadoRepository.save(resultado);
-    }
-
     /** Cancela un juego pendiente. */
     @Transactional
     public void cancelarJogo(Long jogoId) throws NotFoundException, ApplicationException {
@@ -260,10 +224,6 @@ public class JogoService {
         return findAllJogos();
     }
 
-    @Transactional(readOnly = true)
-    public List<Jogo> findAllJogos() {
-        return jogoRepository.findAll();
-    }
     /**
      * Filtro avançado de jogos: realizados, aRealizar, minGoals, location, timeSlot
      */
