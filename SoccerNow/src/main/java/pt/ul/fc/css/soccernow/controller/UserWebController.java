@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import pt.ul.fc.css.soccernow.domain.User;
@@ -29,8 +30,10 @@ public class UserWebController {
   /** GET /web/users → lista todos los usuarios */
   @GetMapping
   public String listUsers(Model model) {
-    List<User> usuarios = userService.getAllUsers(); // suponer que agregaste método getAllUsers()
-    List<UserDTO> dtos = usuarios.stream().map(this::toDTO).collect(Collectors.toList());
+    List<User> usuarios = userService.getAllUsers();
+    List<UserDTO> dtos = usuarios.stream()
+                                 .map(this::toDTO)
+                                 .collect(Collectors.toList());
     model.addAttribute("users", dtos);
     return "users/list";
   }
@@ -38,13 +41,21 @@ public class UserWebController {
   /** GET /web/users/create → muestra formulario vacío para crear usuario */
   @GetMapping("/create")
   public String showCreateForm(Model model) {
-    model.addAttribute("userDTO", new UserDTO());
+    model.addAttribute("userDTO", new UserCreateDTO());
     return "users/form";
   }
 
   /** POST /web/users/save → guarda nuevo usuario */
   @PostMapping("/save")
-  public String saveUser(@Valid @ModelAttribute("userDTO") UserCreateDTO dto, Model model) {
+  public String saveUser(
+      @Valid @ModelAttribute("userDTO") UserCreateDTO dto,
+      BindingResult result,
+      Model model) {
+
+    if (result.hasErrors()) {
+      return "users/form";
+    }
+
     try {
       userService.createUser(dto);
       return "redirect:/web/users";
@@ -61,8 +72,21 @@ public class UserWebController {
     if (opt.isEmpty()) {
       return "redirect:/web/users";
     }
+
     User u = opt.get();
-    UserDTO dto = toDTO(u);
+    UserUpdateDTO dto = new UserUpdateDTO();
+    dto.setName(u.getName());
+    dto.setEmail(u.getEmail());
+    dto.setRole(u instanceof pt.ul.fc.css.soccernow.domain.Player
+                ? UserDTO.Role.PLAYER
+                : UserDTO.Role.REFEREE);
+    // Rellena el campo específico según el tipo
+    if (u instanceof pt.ul.fc.css.soccernow.domain.Player p) {
+      dto.setPreferredPosition(p.getPreferredPosition());
+    } else {
+      dto.setCertified(((pt.ul.fc.css.soccernow.domain.Referee) u).isCertified());
+    }
+
     model.addAttribute("userDTO", dto);
     return "users/form";
   }
@@ -70,7 +94,15 @@ public class UserWebController {
   /** POST /web/users/update/{id} → actualiza usuario */
   @PostMapping("/update/{id}")
   public String updateUser(
-      @PathVariable Long id, @ModelAttribute("userDTO") UserUpdateDTO dto, Model model) {
+      @PathVariable Long id,
+      @Valid @ModelAttribute("userDTO") UserUpdateDTO dto,
+      BindingResult result,
+      Model model) {
+
+    if (result.hasErrors()) {
+      return "users/form";
+    }
+
     try {
       userService
           .updateUser(id, dto)
@@ -92,15 +124,22 @@ public class UserWebController {
     return "redirect:/web/users";
   }
 
-    /** Helper para convertir entidad → DTO */
-    private UserDTO toDTO(User u) {
-        // Si es Player:
-        if (u instanceof pt.ul.fc.css.soccernow.domain.Player p) {
-          return new UserDTO(p.getId(), p.getName(), p.getEmail(), p.getPreferredPosition());
-
-        } else {
-            pt.ul.fc.css.soccernow.domain.Referee r = (pt.ul.fc.css.soccernow.domain.Referee) u;
-            return new UserDTO(r.getId(), r.getName(), r.getEmail(), r.isCertified());
-        }
+  /** Helper para convertir entidad → DTO */
+  private UserDTO toDTO(User u) {
+    if (u instanceof pt.ul.fc.css.soccernow.domain.Player p) {
+      return new UserDTO(
+          p.getId(),
+          p.getName(),
+          p.getEmail(),
+          p.getPreferredPosition());
+    } else {
+      pt.ul.fc.css.soccernow.domain.Referee r =
+          (pt.ul.fc.css.soccernow.domain.Referee) u;
+      return new UserDTO(
+          r.getId(),
+          r.getName(),
+          r.getEmail(),
+          r.isCertified());
     }
+  }
 }

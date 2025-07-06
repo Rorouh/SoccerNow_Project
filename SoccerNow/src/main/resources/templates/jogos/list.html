@@ -1,71 +1,52 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-  <head th:replace="fragments/header :: head"></head>
-  <body>
-    <div th:replace="fragments/header :: navbar"></div>
+  <head th:replace="fragments/header :: head('Lista de Juegos')"></head>
+  <body th:replace="fragments/header :: content">
+    <section>
+      <h2>Gestión de Juegos</h2>
+      <a th:href="@{/web/jogos/create}">Crear Nuevo Juego</a>
 
-    <h2>Gestión de Juegos</h2>
+      <!-- Aquí podrías añadir filtros si los necesitas -->
 
-    <!-- Filtros avançados -->
-    <form th:action="@{/web/jogos/filters}" method="get" style="margin-bottom:20px;">
-      <label>Status:
-        <select name="status" th:value="${param.status}">
-          <option value="">Todos</option>
-          <option value="played">Realizados</option>
-          <option value="pending">Por Realizar</option>
-          <option value="cancelled">Cancelados</option>
-        </select>
-      </label>
-      <label>Local: <input type="text" name="location" th:value="${param.location}" /></label>
-      <label>Mín. Gols: <input type="number" name="minGoals" min="0" th:value="${param.minGoals}" /></label>
-      <label>Turno:
-        <select name="timeSlot" th:value="${param.timeSlot}">
-          <option value="">Todos</option>
-          <option value="manha">Manhã</option>
-          <option value="tarde">Tarde</option>
-          <option value="noite">Noite</option>
-        </select>
-      </label>
-      <button type="submit">Filtrar</button>
-      <a th:href="@{/web/jogos}">Limpar</a>
-    </form>
-
-    <a th:href="@{/web/jogos/create}">Crear Nuevo Juego</a>
-
-    <table border="1" cellpadding="5" cellspacing="0" style="margin-top:15px; width:100%;">
-      <thead>
-        <tr style="background:#ddd;">
-          <th>ID</th>
-          <th>Fecha y Hora</th>
-          <th>Local</th>
-          <th>Amigable</th>
-          <th>Placar</th>
-          <th>Equipos</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr th:each="jogo : ${jogos}">
-          <td th:text="${jogo.id}"></td>
-          <td th:text="${#dates.format(jogo.dateTime, 'dd/MM/yyyy HH:mm')}"></td>
-          <td th:text="${jogo.location}"></td>
-          <td th:text="${jogo.amigavel} ? 'Sí' : 'No'"></td>
-          <td th:text="${jogo.homeScore} + ' x ' + ${jogo.awayScore}"></td>
-          <td>
-            Casa: <span th:text="${jogo.homeTeamName}"></span><br/>
-            Fuera: <span th:text="${jogo.awayTeamName}"></span>
-          </td>
-          <td>
-            <a th:href="@{|/web/jogos/edit/${jogo.id}|}">Editar</a> |
-            <a th:href="@{|/web/jogos/delete/${jogo.id}|}"
-               th:onclick="|return confirm('¿Cancelar juego ID ' + ${jogo.id} + '?');|">
-              Cancelar
-            </a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
+      <table border="1" cellpadding="5" cellspacing="0"
+             style="width:100%; margin-top:15px;">
+        <thead>
+          <tr style="background:#ddd;">
+            <th>ID</th>
+            <th>Fecha y Hora</th>
+            <th>Localización</th>
+            <th>Amistoso</th>
+            <th>Local</th>
+            <th>Visitante</th>
+            <th>Árbitros</th>
+            <th>Principal</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="j : ${jogos}">
+            <td th:text="${j.id}"></td>
+            <td th:text="${#dates.format(j.dateTime, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${j.location}"></td>
+            <td th:text="${j.amigavel} ? 'Sí' : 'No'"></td>
+            <td th:text="${j.homeTeamName}"></td>
+            <td th:text="${j.awayTeamName}"></td>
+            <td>
+              <span th:each="rid : ${j.arbitroIds}"
+                    th:text="${rid} + ' '"></span>
+            </td>
+            <td th:text="${j.primaryRefereeId}"></td>
+            <td>
+              <a th:href="@{/web/jogos/edit/{id}(id=${j.id})}">Editar</a> |
+              <a th:href="@{/web/jogos/delete/{id}(id=${j.id})}"
+                 th:onclick="|return confirm('¿Eliminar juego ID ' + ${j.id} + '?');|">
+                Eliminar
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
     <div th:replace="fragments/footer :: footer"></div>
   </body>
 </html>

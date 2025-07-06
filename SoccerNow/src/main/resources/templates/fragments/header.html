@@ -7,7 +7,7 @@
   </head>
 
   <body th:fragment="content">
-    <nav style="background:#333; color:white; padding:10px;">
+    <nav th:fragment="navbar" style="background:#333; color:white; padding:10px;">
       <a th:href="@{/}" style="color:white; margin-right:15px;">Inicio</a>
       <a th:href="@{/web/users}" style="color:white; margin-right:15px;">Usuarios</a>
       <a th:href="@{/web/players}" style="color:white; margin-right:15px;">Jugadores</a>

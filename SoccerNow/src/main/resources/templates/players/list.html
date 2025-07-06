@@ -1,70 +1,64 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-  <head th:replace="fragments/header :: head"></head>
-  <body>
-    <div th:replace="fragments/header :: navbar"></div>
+  <head th:replace="fragments/header :: head('Lista de Jugadores')"></head>
+  <body th:replace="fragments/header :: content">
+    <section>
+      <h2>Gestión de Jugadores</h2>
+      <a th:href="@{/web/players/create}">Crear Nuevo Jugador</a>
 
-    <h1>Jugadores</h1>
+      <form th:action="@{/web/players}" method="get"
+            style="margin:20px 0;">
+        <label>Nombre:
+          <input type="text" name="name" th:value="${param.name}"/>
+        </label>
+        <label>Posición:
+          <input type="text" name="preferredPosition" 
+                 th:value="${param.preferredPosition}"/>
+        </label>
+        <label>Mín. Goles:
+          <input type="number" name="minGoals" min="0" 
+                 th:value="${param.minGoals}"/>
+        </label>
+        <label>Mín. Tarjetas:
+          <input type="number" name="minCards" min="0" 
+                 th:value="${param.minCards}"/>
+        </label>
+        <label>Mín. Juegos:
+          <input type="number" name="minGames" min="0" 
+                 th:value="${param.minGames}"/>
+        </label>
+        <button type="submit">Filtrar</button>
+        <a th:href="@{/web/players}">Limpiar</a>
+      </form>
 
-    <!-- Filtros avançados -->
-    <form th:action="@{/web/players}" method="get" style="margin-bottom: 20px;">
-      <label>Nombre:</label>
-      <input type="text" name="name" th:value="${param.name}" />
-
-      <label>Posición:</label>
-      <select name="preferredPosition">
-        <option value="">--Todas--</option>
-        <option th:each="pos : ${positions}"
-                th:value="${pos.name()}"
-                th:text="${pos.name()}"
-                th:selected="${param.preferredPosition == pos.name()}">
-        </option>
-      </select>
-
-      <label>Mínimo de Goles:</label>
-      <input type="number" min="0" name="minGoals" th:value="${param.minGoals}" />
-
-      <label>Mínimo de Tarjetas:</label>
-      <input type="number" min="0" name="minCards" th:value="${param.minCards}" />
-
-      <label>Mínimo de Juegos:</label>
-      <input type="number" min="0" name="minGames" th:value="${param.minGames}" />
-
-      <button type="submit">Filtrar</button>
-      <a th:href="@{/web/players}">Limpiar</a>
-    </form>
-
-    <a th:href="@{/web/players/create}">Crear Jugador</a>
-
-    <table border="1" cellpadding="5" cellspacing="0" style="margin-top:15px; width:100%;">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Email</th>
-          <th>Posición</th>
-          <th>Goles</th>
-          <th>Tarjetas</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr th:each="p : ${players}">
-          <td th:text="${p.id}"></td>
-          <td th:text="${p.name}"></td>
-          <td th:text="${p.email}"></td>
-          <td th:text="${p.preferredPosition}"></td>
-          <td th:text="${p.goals}"></td>
-          <td th:text="${p.cards}"></td>
-          <td>
-            <a th:href="@{|/web/players/edit/${p.id}|}">Editar</a> |
-            <a th:href="@{|/web/players/delete/${p.id}|}"
-               onclick="return confirm('¿Eliminar este jugador?');">Eliminar</a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
+      <table border="1" cellpadding="5" cellspacing="0"
+             style="width:100%; margin-top:15px;">
+        <thead>
+          <tr style="background:#ddd;">
+            <th>ID</th><th>Nombre</th><th>Email</th>
+            <th>Posición</th><th>Goles</th><th>Tarjetas</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="p : ${players}">
+            <td th:text="${p.id}"></td>
+            <td th:text="${p.name}"></td>
+            <td th:text="${p.email}"></td>
+            <td th:text="${p.preferredPosition}"></td>
+            <td th:text="${p.goals}"></td>
+            <td th:text="${p.cards}"></td>
+            <td>
+              <a th:href="@{/web/players/edit/{id}(id=${p.id})}">Editar</a> |
+              <a th:href="@{/web/players/delete/{id}(id=${p.id})}"
+                 th:onclick="|return confirm('¿Eliminar jugador ID ' + ${p.id} + '?');|">
+                Eliminar
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
     <div th:replace="fragments/footer :: footer"></div>
   </body>
 </html>

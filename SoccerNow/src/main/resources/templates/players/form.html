@@ -1,67 +1,73 @@
-<!-- src/main/resources/templates/players/form.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title th:text="${playerDTO.id} != null ? 'Editar Jugador' : 'Crear Jugador'">Formulario Jugador</title>
-</head>
-<body>
-<h1 th:text="${playerDTO.id} != null ? 'Editar Jugador' : 'Crear Jugador'">Formulario Jugador</h1>
+  <head th:replace="fragments/header :: head(
+      ${playerDTO.id} != null 
+        ? 'Editar Jugador ' + ${playerDTO.id} 
+        : 'Crear Nuevo Jugador')">
+  </head>
+  <body th:replace="fragments/header :: content">
+    <section>
+      <h2 th:text="${playerDTO.id} != null 
+                      ? 'Editar Jugador ' + ${playerDTO.id} 
+                      : 'Crear Nuevo Jugador'"></h2>
 
-<div th:if="${error}">
-    <p style="color:red;" th:text="${error}"></p>
-</div>
+      <div th:if="${error}" style="color:red; margin-bottom:1em;">
+        <p th:text="${error}"></p>
+      </div>
 
-<form th:action="${playerDTO.id} != null
-                  ? @{|/web/players/update/${playerDTO.id}|}
-                  : @{/web/players/save}"
-      th:object="${playerDTO}" method="post">
+      <form th:action="${playerDTO.id} != null
+                        ? @{/web/players/update/{id}(id=${playerDTO.id})}
+                        : @{/web/players/save}"
+            th:object="${playerDTO}" method="post">
 
-    <div>
-        <label for="name">Nombre:</label>
-        <input type="text" id="name" th:field="*{name}" />
-        <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
-    </div>
+        <div>
+          <label for="name">Nombre:</label>
+          <input type="text" id="name" th:field="*{name}" required/>
+          <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+        </div>
 
-    <div>
-        <label for="email">Email:</label>
-        <input type="email" id="email" th:field="*{email}" />
-        <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
-    </div>
+        <div>
+          <label for="email">Email:</label>
+          <input type="email" id="email" th:field="*{email}" required/>
+          <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+        </div>
 
-    <div>
-        <label for="password">Contraseña:</label>
-        <input type="password" id="password" th:field="*{password}" />
-        <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
-    </div>
+        <div>
+          <label for="password">Contraseña:</label>
+          <input type="password" id="password" th:field="*{password}" 
+                 th:attr="required=${playerDTO.id == null}"/>
+          <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+        </div>
 
-    <div>
-        <label for="preferredPosition">Posición Preferida:</label>
-        <select id="preferredPosition" th:field="*{preferredPosition}">
+        <div>
+          <label for="preferredPosition">Posición Preferida:</label>
+          <select id="preferredPosition" th:field="*{preferredPosition}" required>
             <option value="" disabled>--Seleccionar--</option>
             <option th:each="pos : ${positions}"
-                    th:value="${pos.name()}"
-                    th:text="${pos.name()}"
-                    th:selected="${pos.name() == playerDTO.preferredPosition}">
-            </option>
-        </select>
-        <p th:if="${#fields.hasErrors('preferredPosition')}" th:errors="*{preferredPosition}"></p>
-    </div>
+                    th:value="${pos}"
+                    th:text="${pos}"></option>
+          </select>
+          <p th:if="${#fields.hasErrors('preferredPosition')}"
+             th:errors="*{preferredPosition}"></p>
+        </div>
 
-    <div>
-        <label for="goals">Goles:</label>
-        <input type="number" id="goals" th:field="*{goals}" min="0" />
-    </div>
+        <div style="margin-top:1em;">
+          <label for="goals">Goles:</label>
+          <input type="number" id="goals" th:field="*{goals}" min="0"/>
+        </div>
 
-    <div>
-        <label for="cards">Tarjetas:</label>
-        <input type="number" id="cards" th:field="*{cards}" min="0" />
-    </div>
+        <div>
+          <label for="cards">Tarjetas:</label>
+          <input type="number" id="cards" th:field="*{cards}" min="0"/>
+        </div>
 
-    <div>
-        <button type="submit">Guardar</button>
-        <a th:href="@{/web/players}">Cancelar</a>
-    </div>
-</form>
-</body>
+        <div style="margin-top:1.5em;">
+          <button type="submit" 
+                  th:text="${playerDTO.id} != null ? 'Actualizar' : 'Crear'"></button>
+          <a th:href="@{/web/players}" style="margin-left:1em;">Cancelar</a>
+        </div>
+      </form>
+    </section>
+    <div th:replace="fragments/footer :: footer"></div>
+  </body>
 </html>

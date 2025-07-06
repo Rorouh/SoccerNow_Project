@@ -14,6 +14,7 @@ import pt.ul.fc.css.soccernow.domain.Player;
 import pt.ul.fc.css.soccernow.domain.Team;
 import pt.ul.fc.css.soccernow.dto.TeamDTO;
 import pt.ul.fc.css.soccernow.service.TeamService;
+import pt.ul.fc.css.soccernow.service.PlayerService;
 import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 
 @Controller
@@ -21,9 +22,11 @@ import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 public class TeamWebController {
 
     private final TeamService teamService;
+    private final PlayerService playerService;
 
-    public TeamWebController(TeamService teamService) {
+    public TeamWebController(TeamService teamService, PlayerService playerService) {
         this.teamService = teamService;
+        this.playerService = playerService;
     }
 
     /**
@@ -86,10 +89,7 @@ public class TeamWebController {
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         model.addAttribute("teamDTO", new TeamDTO());
-        // Para el formulario, necesitaremos cargar todos los jugadores disponibles.
-        // Suponemos que hay método findAllPlayers() en PlayerService. Si no existe, añádelo:
-        // List<Player> all = playerService.findAllPlayers();
-        // model.addAttribute("allPlayers", all);
+        model.addAttribute("allPlayers", playerService.findAllPlayers());
         return "teams/form";  // templates/teams/form.html
     }
 
@@ -105,6 +105,7 @@ public class TeamWebController {
             return "redirect:/web/teams";
         } catch (ApplicationException ex) {
             model.addAttribute("error", ex.getMessage());
+            model.addAttribute("allPlayers", playerService.findAllPlayers());
             return "teams/form";
         }
     }
@@ -126,6 +127,7 @@ public class TeamWebController {
                 t.getPlayers().stream().map(Player::getId).collect(Collectors.toSet())
         );
         model.addAttribute("teamDTO", dto);
+        model.addAttribute("allPlayers", playerService.findAllPlayers());
         return "teams/form";
     }
 
@@ -145,6 +147,7 @@ public class TeamWebController {
             return "redirect:/web/teams";
         } catch (ApplicationException ex) {
             model.addAttribute("error", ex.getMessage());
+            model.addAttribute("allPlayers", playerService.findAllPlayers());
             return "teams/form";
         }
     }

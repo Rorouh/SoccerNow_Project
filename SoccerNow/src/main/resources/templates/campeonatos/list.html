@@ -1,53 +1,60 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-  <head th:replace="fragments/header :: head"></head>
-  <body>
-    <div th:replace="fragments/header :: navbar"></div>
+  <head th:replace="fragments/header :: head('Lista de Campeonatos')"></head>
+  <body th:replace="fragments/header :: content">
+    <section>
+      <h2>Gestión de Campeonatos</h2>
+      <a th:href="@{/web/campeonatos/create}">Crear Nuevo Campeonato</a>
 
-    <h2>Gestión de Campeonatos</h2>
+      <form th:action="@{/web/campeonatos/filters}" method="get"
+            style="margin:20px 0;">
+        <label>Nombre: 
+          <input type="text" name="nome" th:value="${param.nome}" />
+        </label>
+        <label>Equipo participante: 
+          <input type="text" name="team" th:value="${param.team}" />
+        </label>
+        <label>Mín. Juegos Jugados: 
+          <input type="number" name="minGamesPlayed" min="0" 
+                 th:value="${param.minGamesPlayed}" />
+        </label>
+        <label>Mín. Juegos Pendientes: 
+          <input type="number" name="minGamesPending" min="0" 
+                 th:value="${param.minGamesPending}" />
+        </label>
+        <button type="submit">Filtrar</button>
+        <a th:href="@{/web/campeonatos}">Limpiar</a>
+      </form>
 
-    <a th:href="@{/web/campeonatos/create}">Crear Nuevo Campeonato</a>
-
-    <form th:action="@{/web/campeonatos/filters}" method="get" style="margin-top:20px; margin-bottom:20px;">
-      <label>Nombre: <input type="text" name="nome" th:value="${param.nome}" /></label>
-      <label>Equipo participante: <input type="text" name="team" th:value="${param.team}" /></label>
-      <label>Mín. Juegos Jugados: <input type="number" name="minGamesPlayed" min="0" th:value="${param.minGamesPlayed}" /></label>
-      <label>Mín. Juegos Pendientes: <input type="number" name="minGamesPending" min="0" th:value="${param.minGamesPending}" /></label>
-      <button type="submit">Filtrar</button>
-      <a th:href="@{/web/campeonatos}">Limpiar</a>
-    </form>
-
-    <table border="1" cellpadding="5" cellspacing="0" style="margin-top:15px; width:100%;">
-      <thead>
-        <tr style="background:#ddd;">
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Modalidad</th>
-          <th>Formato</th>
-          <th>Participantes (IDs)</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr th:each="c : ${campeonatos}">
-          <td th:text="${c.id}"></td>
-          <td th:text="${c.nome}"></td>
-          <td th:text="${c.modalidade}"></td>
-          <td th:text="${c.formato}"></td>
-          <td>
-            <span th:each="pid : ${c.participantes}" th:text="${pid} + ' '"></span>
-          </td>
-          <td>
-            <a th:href="@{|/web/campeonatos/edit/${c.id}|}">Editar</a> |
-            <a th:href="@{|/web/campeonatos/delete/${c.id}|}"
-               th:onclick="|return confirm('¿Eliminar campeonato ID ' + ${c.id} + '?');|">
-              Eliminar
-            </a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
+      <table border="1" cellpadding="5" cellspacing="0" 
+             style="width:100%; margin-top:15px;">
+        <thead>
+          <tr style="background:#ddd;">
+            <th>ID</th><th>Nombre</th><th>Modalidad</th>
+            <th>Formato</th><th>Participantes (IDs)</th><th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="c : ${campeonatos}">
+            <td th:text="${c.id}"></td>
+            <td th:text="${c.nome}"></td>
+            <td th:text="${c.modalidade}"></td>
+            <td th:text="${c.formato}"></td>
+            <td>
+              <span th:each="pid : ${c.participantes}" 
+                    th:text="${pid} + ' '"></span>
+            </td>
+            <td>
+              <a th:href="@{/web/campeonatos/edit/{id}(id=${c.id})}">Editar</a> |
+              <a th:href="@{/web/campeonatos/delete/{id}(id=${c.id})}"
+                 th:onclick="|return confirm('¿Eliminar campeonato ID ' + ${c.id} + '?');|">
+                Eliminar
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
     <div th:replace="fragments/footer :: footer"></div>
   </body>
 </html>
