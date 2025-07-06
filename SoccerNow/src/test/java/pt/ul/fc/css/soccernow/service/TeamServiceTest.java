@@ -1,30 +1,21 @@
 // src/test/java/pt/ul/fc/css/soccernow/service/TeamServiceTest.java
 package pt.ul.fc.css.soccernow.service;
 
-import pt.ul.fc.css.soccernow.domain.Jogo;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.*;
 import pt.ul.fc.css.soccernow.domain.Player;
 import pt.ul.fc.css.soccernow.domain.Team;
-import pt.ul.fc.css.soccernow.domain.User.PreferredPosition;
 import pt.ul.fc.css.soccernow.dto.TeamDTO;
 import pt.ul.fc.css.soccernow.repository.PlayerRepository;
 import pt.ul.fc.css.soccernow.repository.TeamRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
-import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 class TeamServiceTest {
 
     @Mock
@@ -36,129 +27,139 @@ class TeamServiceTest {
     @InjectMocks
     private TeamService teamService;
 
-    private Team team;
-    private Player player;
-
     @BeforeEach
     void setUp() {
-        team = new Team();
-        team.setId(1L);
-        team.setName("Test Team");
-
-        player = new Player();
-        player.setId(1L);
-        // Cambiamos esto:
-        player.setPreferredPosition(PreferredPosition.DELANTERO);
-
-        team.setPlayers(new HashSet<>());
-        team.getPlayers().add(player);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void testCreateTeam() {
-        TeamDTO teamDTO = new TeamDTO();
-        teamDTO.setName("New Team");
-        teamDTO.setPlayerIds(Set.of(1L));
+    void createTeam_shouldSaveWithGivenPlayers() {
+        // dado
+        TeamDTO dto = new TeamDTO("EquipoX", Set.of(1L, 2L));
+        Player p1 = new Player(); p1.setId(1L);
+        Player p2 = new Player(); p2.setId(2L);
+        when(playerRepository.findById(1L)).thenReturn(Optional.of(p1));
+        when(playerRepository.findById(2L)).thenReturn(Optional.of(p2));
 
-        when(playerRepository.findById(1L)).thenReturn(Optional.of(player));
+        Team saved = new Team(); saved.setId(10L); saved.setName("EquipoX");
+        saved.setPlayers(Set.of(p1, p2));
+        when(teamRepository.save(any())).thenReturn(saved);
 
-        Team newTeam = new Team();
-        newTeam.setId(2L);
-        newTeam.setName("New Team");
-        newTeam.setPlayers(new HashSet<>());
-        newTeam.getPlayers().add(player);
+        // cuando
+        Team result = teamService.createTeam(dto);
 
-        when(teamRepository.save(any(Team.class))).thenReturn(newTeam);
-
-        Team createdTeam = teamService.createTeam(teamDTO);
-
-        assertNotNull(createdTeam);
-        assertEquals("New Team", createdTeam.getName());
-        assertEquals(1, createdTeam.getPlayers().size());
+        // entonces
+        assertEquals(10L, result.getId());
+        assertEquals("EquipoX", result.getName());
+        assertTrue(result.getPlayers().containsAll(List.of(p1, p2)));
+        verify(teamRepository).save(any(Team.class));
     }
 
     @Test
-    void testUpdateTeam() {
-        TeamDTO teamDTO = new TeamDTO();
-        teamDTO.setName("Updated Team");
-        teamDTO.setPlayerIds(Set.of(1L));
+    void updateTeam_existingId_shouldUpdateNameAndPlayers() {
+        // dado
+        Team existing = new Team(); existing.setId(5L); existing.setName("Old");
+        Player oldP = new Player(); oldP.setId(9L);
+        existing.setPlayers(Set.of(oldP));
+        when(teamRepository.findById(5L)).thenReturn(Optional.of(existing));
 
-        when(teamRepository.findById(1L)).thenReturn(Optional.of(team));
-        when(playerRepository.findById(1L)).thenReturn(Optional.of(player));
-        when(teamRepository.save(any(Team.class))).thenReturn(team);
+        TeamDTO dto = new TeamDTO("Nuevo", Set.of(7L));
+        Player newP = new Player(); newP.setId(7L);
+        when(playerRepository.findById(7L)).thenReturn(Optional.of(newP));
 
-        Optional<Team> updatedTeam = teamService.updateTeam(1L, teamDTO);
+        Team updated = new Team(); updated.setId(5L);
+        updated.setName("Nuevo");
+        updated.setPlayers(Set.of(newP));
+        when(teamRepository.save(any())).thenReturn(updated);
 
-        assertTrue(updatedTeam.isPresent());
-        assertEquals("Updated Team", updatedTeam.get().getName());
-        assertEquals(1, updatedTeam.get().getPlayers().size());
+        // cuando
+        Optional<Team> opt = teamService.updateTeam(5L, dto);
+
+        // entonces
+        assertTrue(opt.isPresent());
+        Team result = opt.get();
+        assertEquals("Nuevo", result.getName());
+        assertEquals(1, result.getPlayers().size());
+        assertTrue(result.getPlayers().contains(newP));
     }
 
     @Test
-    void testDeleteTeamWithGamesThrowsException() {
-        Long id = 1L;
-        Set<Jogo> jogos = new HashSet<>();
-        jogos.add(new Jogo());
-
-        team.setJogosComoVisitada(jogos);
-        team.setJogosComoVisitante(new HashSet<>());
-
-        when(teamRepository.findById(id)).thenReturn(Optional.of(team));
-
-        assertThrows(IllegalStateException.class, () -> teamService.deleteTeam(id));
+    void updateTeam_nonExistingId_shouldReturnEmpty() {
+        when(teamRepository.findById(99L)).thenReturn(Optional.empty());
+        Optional<Team> opt = teamService.updateTeam(99L, new TeamDTO("X", Set.of()));
+        assertTrue(opt.isEmpty());
     }
 
     @Test
-    void testDeleteTeamWithoutGames() {
-        Long id = 1L;
-
-        team.setJogosComoVisitada(new HashSet<>());
-        team.setJogosComoVisitante(new HashSet<>());
-
-        when(teamRepository.findById(id)).thenReturn(Optional.of(team));
-
-        boolean result = teamService.deleteTeam(id);
-
-        assertTrue(result);
-        verify(teamRepository, times(1)).delete(team);
+    void deleteTeam_nonExistingId_returnsFalse() {
+        when(teamRepository.findById(123L)).thenReturn(Optional.empty());
+        assertFalse(teamService.deleteTeam(123L));
     }
 
     @Test
-    void testGetTeamById() {
-        Long id = 1L;
-        when(teamRepository.findById(id)).thenReturn(Optional.of(team));
+    void deleteTeam_withGames_shouldThrowIllegalState() {
+        Team t = new Team(); t.setId(2L); t.setName("T");
+        // simulamos que tiene juegos en casa
+        t.setJogosComoVisitada(Set.of(mock(pt.ul.fc.css.soccernow.domain.Jogo.class)));
+        when(teamRepository.findById(2L)).thenReturn(Optional.of(t));
 
-        Optional<Team> foundTeam = teamService.getTeamById(id);
-
-        assertTrue(foundTeam.isPresent());
-        assertEquals(id, foundTeam.get().getId());
+        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> teamService.deleteTeam(2L));
+        assertEquals("No es posible eliminar un equipo con juegos asociados.", ex.getMessage());
     }
 
     @Test
-    void testGetAllTeams() {
-        List<Team> teams = new ArrayList<>();
-        teams.add(team);
+    void deleteTeam_noGames_clearsPlayersAndDeletes() {
+        Team t = new Team(); t.setId(3L);
+        t.setPlayers(new HashSet<>(List.of(new Player())));
+        when(teamRepository.findById(3L)).thenReturn(Optional.of(t));
 
-        when(teamRepository.findAll()).thenReturn(teams);
+        boolean res = teamService.deleteTeam(3L);
 
-        List<Team> allTeams = teamService.getAllTeams();
-
-        assertFalse(allTeams.isEmpty());
-        assertEquals(1, allTeams.size());
+        assertTrue(res);
+        assertTrue(t.getPlayers().isEmpty());
+        verify(teamRepository).delete(t);
     }
 
     @Test
-    void testAddPlayerToTeam() {
-        Long teamId = 1L;
-        Long playerId = 1L;
+    void addPlayerToTeam_missingTeamOrPlayer_returnsEmpty() {
+        when(teamRepository.findById(1L)).thenReturn(Optional.empty());
+        Optional<Team> r1 = teamService.addPlayerToTeam(1L, 42L);
+        assertTrue(r1.isEmpty());
 
-        when(teamRepository.findById(teamId)).thenReturn(Optional.of(team));
-        when(playerRepository.findById(playerId)).thenReturn(Optional.of(player));
-        when(teamRepository.save(any(Team.class))).thenReturn(team);
+        Team t = new Team(); t.setId(1L);
+        when(teamRepository.findById(1L)).thenReturn(Optional.of(t));
+        when(playerRepository.findById(42L)).thenReturn(Optional.empty());
+        Optional<Team> r2 = teamService.addPlayerToTeam(1L, 42L);
+        assertTrue(r2.isEmpty());
+    }
 
-        Optional<Team> updatedTeam = teamService.addPlayerToTeam(teamId, playerId);
+    @Test
+    void addPlayerToTeam_alreadyMember_shouldThrowApplicationException() {
+        Team t = new Team(); t.setId(5L);
+        Player p = new Player(); p.setId(8L);
+        t.setPlayers(new HashSet<>(List.of(p)));
+        when(teamRepository.findById(5L)).thenReturn(Optional.of(t));
+        when(playerRepository.findById(8L)).thenReturn(Optional.of(p));
 
-        assertTrue(updatedTeam.isPresent());
-        assertTrue(updatedTeam.get().getPlayers().contains(player));
+        ApplicationException ex = assertThrows(ApplicationException.class,
+            () -> teamService.addPlayerToTeam(5L, 8L));
+        assertEquals("El jugador ya forma parte del equipo.", ex.getMessage());
+    }
+
+    @Test
+    void addPlayerToTeam_happyPath_returnsReFetchedTeam() {
+        Team t = new Team(); t.setId(6L); t.setPlayers(new HashSet<>());
+        Player p = new Player(); p.setId(11L);
+        when(teamRepository.findById(6L)).thenReturn(Optional.of(t));
+        when(playerRepository.findById(11L)).thenReturn(Optional.of(p));
+
+        Team reloaded = new Team(); reloaded.setId(6L);
+        reloaded.setPlayers(Set.of(p));
+        when(teamRepository.findById(6L)).thenReturn(Optional.of(reloaded));
+
+        Optional<Team> opt = teamService.addPlayerToTeam(6L, 11L);
+        assertTrue(opt.isPresent());
+        Team result = opt.get();
+        assertTrue(result.getPlayers().contains(p));
     }
 }
