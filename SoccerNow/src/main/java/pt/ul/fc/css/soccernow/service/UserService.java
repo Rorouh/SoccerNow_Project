@@ -12,9 +12,8 @@ import pt.ul.fc.css.soccernow.dto.UserUpdateDTO;
 import pt.ul.fc.css.soccernow.repository.UserRepository;
 import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
+
 
 @Service
 public class UserService {

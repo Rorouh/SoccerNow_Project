@@ -7,7 +7,8 @@ import org.springframework.data.repository.query.Param;
 import pt.ul.fc.css.soccernow.domain.Referee;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.*;
+
 
 @Repository
 public interface RefereeRepository extends JpaRepository<Referee, Long> {

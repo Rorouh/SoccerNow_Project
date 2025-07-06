@@ -1,5 +1,8 @@
-// src\main\java\pt\ul\fc\css\soccernow\repository\UserRepository.java
+// src/main/java/pt/ul/fc/css/soccernow/repository/ResultadoRepository.java
 package pt.ul.fc.css.soccernow.repository;
+
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

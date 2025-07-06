@@ -9,6 +9,7 @@ import pt.ul.fc.css.soccernow.domain.Jogo;
 
 import java.util.List;
 
+
 @Repository
 public interface JogoRepository extends JpaRepository<Jogo, Long> { 
 

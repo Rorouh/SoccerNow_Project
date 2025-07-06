@@ -12,8 +12,9 @@ import pt.ul.fc.css.soccernow.service.UserService;
 import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 
 import java.net.URI;
-import java.util.List;
-import java.util.Map;
+import java.util.Optional;
+
+
 
 @RestController
 @RequestMapping("/api/users")

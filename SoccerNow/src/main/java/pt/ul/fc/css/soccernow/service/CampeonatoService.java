@@ -10,10 +10,10 @@ import pt.ul.fc.css.soccernow.repository.CampeonatoRepository;
 import pt.ul.fc.css.soccernow.repository.TeamRepository;
 import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.HashSet;
 
 @Service
 public class CampeonatoService {

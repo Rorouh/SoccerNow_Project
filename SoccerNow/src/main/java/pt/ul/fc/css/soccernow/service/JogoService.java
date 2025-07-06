@@ -15,7 +15,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Iterator;
 import java.util.stream.Collectors;
+
 
 @Service
 public class JogoService {

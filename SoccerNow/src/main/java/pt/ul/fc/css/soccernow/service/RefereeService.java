@@ -8,9 +8,8 @@ import pt.ul.fc.css.soccernow.repository.RefereeRepository;
 import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.Optional;
-import java.util.Set;
+
 
 @Service
 public class RefereeService {

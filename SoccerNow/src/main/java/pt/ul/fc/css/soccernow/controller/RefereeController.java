@@ -11,6 +11,8 @@ import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+
 @RestController
 @RequestMapping("/api/referees")
 public class RefereeController {

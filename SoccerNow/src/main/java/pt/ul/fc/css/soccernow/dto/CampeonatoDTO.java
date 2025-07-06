@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import java.util.Set;
 
+
 public class CampeonatoDTO {
 
     // Solo de lectura en respuestas

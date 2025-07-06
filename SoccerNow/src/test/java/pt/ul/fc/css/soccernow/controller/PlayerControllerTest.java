@@ -8,6 +8,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 import pt.ul.fc.css.soccernow.domain.Player;
 import pt.ul.fc.css.soccernow.dto.PlayerDTO;
+import pt.ul.fc.css.soccernow.dto.PlayerUpdateDTO;
 import pt.ul.fc.css.soccernow.service.PlayerService;
 import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 
@@ -46,6 +47,7 @@ class PlayerControllerTest {
 
         assertEquals(200, response.getStatusCodeValue());
         assertNotNull(response.getBody());
+        assertEquals(1L, response.getBody().getId());
         assertEquals("John", response.getBody().getName());
         assertEquals("DEFENSA", response.getBody().getPreferredPosition());
     }
@@ -62,30 +64,43 @@ class PlayerControllerTest {
 
     @Test
     void testUpdatePlayer_success() {
-        Player player = new Player();
-        player.setId(1L);
-        player.setName("UpdatedName");
-        player.setEmail("updated@example.com");
-        player.setPassword("newpass");
-        player.setPreferredPosition(Player.PreferredPosition.DELANTERO);
+        // Jugador que devuelve el servicio
+        Player updatedEntity = new Player();
+        updatedEntity.setId(1L);
+        updatedEntity.setName("UpdatedName");
+        updatedEntity.setEmail("updated@example.com");
+        updatedEntity.setPassword("newpass");
+        updatedEntity.setPreferredPosition(Player.PreferredPosition.DELANTERO);
 
-        PlayerDTO dto = new PlayerDTO(null, "UpdatedName", "updated@example.com", "newpass", "DELANTERO");
+        // DTO que pasamos al controlador
+        PlayerUpdateDTO dto = new PlayerUpdateDTO();
+        dto.setName("UpdatedName");
+        dto.setEmail("updated@example.com");
+        dto.setPassword("newpass");
+        dto.setPreferredPosition("DELANTERO");
 
-        when(playerService.updatePlayer(eq(1L), any(PlayerDTO.class))).thenReturn(Optional.of(player));
+        when(playerService.updatePlayer(eq(1L), any(PlayerUpdateDTO.class)))
+            .thenReturn(Optional.of(updatedEntity));
 
         ResponseEntity<PlayerDTO> response = playerController.updatePlayer(1L, dto);
 
         assertEquals(200, response.getStatusCodeValue());
         assertNotNull(response.getBody());
+        assertEquals(1L, response.getBody().getId());
         assertEquals("UpdatedName", response.getBody().getName());
         assertEquals("DELANTERO", response.getBody().getPreferredPosition());
     }
 
     @Test
     void testUpdatePlayer_notFound() {
-        PlayerDTO dto = new PlayerDTO(null, "UpdatedName", "updated@example.com", "newpass", "DELANTERO");
+        PlayerUpdateDTO dto = new PlayerUpdateDTO();
+        dto.setName("NoExiste");
+        dto.setEmail("no@exist.com");
+        dto.setPassword("pass");
+        dto.setPreferredPosition("PORTERO");
 
-        when(playerService.updatePlayer(eq(1L), any(PlayerDTO.class))).thenReturn(Optional.empty());
+        when(playerService.updatePlayer(eq(1L), any(PlayerUpdateDTO.class)))
+            .thenReturn(Optional.empty());
 
         ResponseEntity<PlayerDTO> response = playerController.updatePlayer(1L, dto);
 
@@ -95,10 +110,14 @@ class PlayerControllerTest {
 
     @Test
     void testUpdatePlayer_invalidPreferredPosition() {
-        PlayerDTO dto = new PlayerDTO(null, "Name", "email@example.com", "pass", "INVALID");
+        PlayerUpdateDTO dto = new PlayerUpdateDTO();
+        dto.setName("Name");
+        dto.setEmail("email@example.com");
+        dto.setPassword("pass");
+        dto.setPreferredPosition("INVALID");
 
-        when(playerService.updatePlayer(eq(1L), any(PlayerDTO.class)))
-                .thenThrow(new ApplicationException("Posição inválida"));
+        when(playerService.updatePlayer(eq(1L), any(PlayerUpdateDTO.class)))
+            .thenThrow(new ApplicationException("Posição inválida"));
 
         ResponseEntity<PlayerDTO> response = playerController.updatePlayer(1L, dto);
 
@@ -160,9 +179,11 @@ class PlayerControllerTest {
         p1.setPassword("pass1");
         p1.setPreferredPosition(Player.PreferredPosition.DEFENSA);
 
-        when(playerService.findByPosition(Player.PreferredPosition.DEFENSA)).thenReturn(List.of(p1));
+        when(playerService.findByPosition(Player.PreferredPosition.DEFENSA))
+            .thenReturn(List.of(p1));
 
-        ResponseEntity<List<PlayerDTO>> response = playerController.listPlayers(Player.PreferredPosition.DEFENSA, null, null, null);
+        ResponseEntity<List<PlayerDTO>> response =
+            playerController.listPlayers(Player.PreferredPosition.DEFENSA, null, null, null);
 
         assertEquals(200, response.getStatusCodeValue());
         assertNotNull(response.getBody());
@@ -181,7 +202,8 @@ class PlayerControllerTest {
 
         when(playerService.findByMinGoals(5L)).thenReturn(List.of(p1));
 
-        ResponseEntity<List<PlayerDTO>> response = playerController.listPlayers(null, 5L, null, null);
+        ResponseEntity<List<PlayerDTO>> response =
+            playerController.listPlayers(null, 5L, null, null);
 
         assertEquals(200, response.getStatusCodeValue());
         assertNotNull(response.getBody());
@@ -196,19 +218,21 @@ class PlayerControllerTest {
         p1.setEmail("carlos@example.com");
         p1.setPassword("pass1");
         p1.setPreferredPosition(Player.PreferredPosition.DELANTERO);
-
         p1.setGoals(10);
         p1.setCards(1);
 
-        when(playerService.findPlayersByName("Carlos")).thenReturn(List.of(p1));
+        when(playerService.findPlayersByName("Carlos"))
+            .thenReturn(List.of(p1));
 
-        ResponseEntity<List<PlayerDTO>> response = playerController.findPlayersByName("Carlos");
+        ResponseEntity<List<PlayerDTO>> response =
+            playerController.findPlayersByName("Carlos");
 
         assertEquals(200, response.getStatusCodeValue());
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().size());
-        assertEquals("Carlos", response.getBody().get(0).getName());
-        assertEquals(10, response.getBody().get(0).getGoals());
-        assertEquals(1, response.getBody().get(0).getCards());
+        PlayerDTO dto = response.getBody().get(0);
+        assertEquals("Carlos", dto.getName());
+        assertEquals(10, dto.getGoals());
+        assertEquals(1, dto.getCards());
     }
 }

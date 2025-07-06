@@ -5,15 +5,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pt.ul.fc.css.soccernow.domain.Player;
 import pt.ul.fc.css.soccernow.domain.User;
-import pt.ul.fc.css.soccernow.dto.PlayerDTO;
+import pt.ul.fc.css.soccernow.dto.PlayerCreateDTO;
+import pt.ul.fc.css.soccernow.dto.PlayerUpdateDTO;
 import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
 import pt.ul.fc.css.soccernow.repository.PlayerRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.HashSet;
+
 
 @Service
 public class PlayerService {
+    private final PlayerRepository playerRepository;
+    public PlayerService(PlayerRepository playerRepository) {
+        this.playerRepository = playerRepository;
+    }
 
     @Transactional
     public Player createPlayer(PlayerCreateDTO dto) {

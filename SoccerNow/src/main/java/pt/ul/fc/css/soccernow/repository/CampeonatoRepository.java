@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import pt.ul.fc.css.soccernow.domain.Campeonato;
 
-import java.util.List;
+import java.util.*;
 
 @Repository
 public interface CampeonatoRepository extends JpaRepository<Campeonato, Long> {

@@ -1,5 +1,22 @@
 package pt.ul.fc.css.soccernow.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import pt.ul.fc.css.soccernow.domain.Player;
+import pt.ul.fc.css.soccernow.domain.Team;
+import pt.ul.fc.css.soccernow.dto.TeamDTO;
+import pt.ul.fc.css.soccernow.service.TeamService;
+import pt.ul.fc.css.soccernow.service.exceptions.ApplicationException;
+
+import java.util.*;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -8,25 +25,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import pt.ul.fc.css.soccernow.domain.Player;
-import pt.ul.fc.css.soccernow.domain.Team;
-import pt.ul.fc.css.soccernow.dto.TeamDTO;
-import pt.ul.fc.css.soccernow.service.TeamService;
-
-import java.util.*;
 
 public class TeamControllerTest {
 
@@ -49,13 +47,16 @@ public class TeamControllerTest {
 
     @Test
     void testCreateTeam() throws Exception {
+        // DTO de entrada (id omitido)
         TeamDTO dto = new TeamDTO(null, "Team A", Set.of(1L, 2L));
+
+        // Equipo que devuelve el servicio
         Team saved = new Team();
         saved.setId(1L);
         saved.setName("Team A");
         saved.setPlayers(new HashSet<>(Arrays.asList(
-                createPlayer(1L),
-                createPlayer(2L)
+            createPlayer(1L),
+            createPlayer(2L)
         )));
 
         when(teamService.createTeam(any(TeamDTO.class))).thenReturn(saved);
@@ -69,6 +70,19 @@ public class TeamControllerTest {
                 .andExpect(jsonPath("$.name").value("Team A"))
                 .andExpect(jsonPath("$.playerIds").isArray())
                 .andExpect(jsonPath("$.playerIds.length()").value(2));
+    }
+
+    @Test
+    void testCreateTeam_badRequestOnBusinessError() throws Exception {
+        TeamDTO dto = new TeamDTO(null, "Team A", Set.of());
+        when(teamService.createTeam(any(TeamDTO.class)))
+            .thenThrow(new ApplicationException("Debe especificar al menos un jugador"));
+
+        mockMvc.perform(post("/api/teams")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("Debe especificar al menos un jugador"));
     }
 
     @Test
@@ -97,21 +111,25 @@ public class TeamControllerTest {
 
     @Test
     void testListTeams_withoutName() throws Exception {
-        Team t1 = new Team();
-        t1.setId(1L);
-        t1.setName("Team A");
-        t1.setPlayers(Set.of(createPlayer(1L)));
-
-        Team t2 = new Team();
-        t2.setId(2L);
-        t2.setName("Team B");
-        t2.setPlayers(Set.of(createPlayer(2L)));
+        Team t1 = new Team(); t1.setId(1L); t1.setName("Team A"); t1.setPlayers(Set.of(createPlayer(1L)));
+        Team t2 = new Team(); t2.setId(2L); t2.setName("Team B"); t2.setPlayers(Set.of(createPlayer(2L)));
 
         when(teamService.getAllTeams()).thenReturn(List.of(t1, t2));
 
         mockMvc.perform(get("/api/teams"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2));
+    }
+
+    @Test
+    void testListTeams_filterByName() throws Exception {
+        Team t = new Team(); t.setId(1L); t.setName("Alpha"); t.setPlayers(Set.of(createPlayer(1L)));
+        when(teamService.findByName("Al")).thenReturn(List.of(t));
+
+        mockMvc.perform(get("/api/teams").param("name", "Al"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].name").value("Alpha"));
     }
 
     @Test
@@ -135,7 +153,6 @@ public class TeamControllerTest {
     @Test
     void testUpdateTeam_notFound() throws Exception {
         TeamDTO dto = new TeamDTO(null, "Updated Team", Set.of(1L));
-
         when(teamService.updateTeam(eq(999L), any(TeamDTO.class))).thenReturn(Optional.empty());
 
         mockMvc.perform(put("/api/teams/999")
@@ -168,6 +185,7 @@ public class TeamControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    // Helper para crear un Player mínimo
     private Player createPlayer(Long id) {
         Player p = new Player();
         p.setId(id);
