@@ -7,6 +7,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public class UserCreateDTO {
+    /** Para que Thymeleaf pueda leer userDTO.id sin fallar */
+    private Long id;
+
     @NotBlank(message = "El nombre no puede estar vacío")
     private String name;
 
@@ -17,9 +20,8 @@ public class UserCreateDTO {
     @NotBlank(message = "La contraseña no puede estar vacía")
     private String password;
 
-    //public enum Role { PLAYER, REFEREE }
     @NotNull(message = "El rol no puede ser nulo")
-    private UserDTO.Role Role;
+    private pt.ul.fc.css.soccernow.dto.UserDTO.Role role;
 
     /** Obligatorio si role=PLAYER */
     private User.PreferredPosition preferredPosition;
@@ -27,9 +29,20 @@ public class UserCreateDTO {
     /** Obligatorio si role=REFEREE */
     private Boolean certified;
 
-    public UserCreateDTO() {}
-    
-    // Getters e Setters
+    public UserCreateDTO() {
+        // id queda a null aquí
+    }
+
+    // --- Getters & Setters ---
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
@@ -54,12 +67,12 @@ public class UserCreateDTO {
         this.password = password;
     }
 
-    public UserDTO.Role getRole() {
-        return Role;
+    public pt.ul.fc.css.soccernow.dto.UserDTO.Role getRole() {
+        return role;
     }
 
-    public void setRole(UserDTO.Role role) {
-        this.Role = role;
+    public void setRole(pt.ul.fc.css.soccernow.dto.UserDTO.Role role) {
+        this.role = role;
     }
 
     public User.PreferredPosition getPreferredPosition() {

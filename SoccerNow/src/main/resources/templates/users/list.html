@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-  <head th:replace="fragments/header :: head('Lista de Usuarios')"></head>
+  <head th:replace="fragments/header :: head('Lista de Usuarios')"/>
   <body th:replace="fragments/header :: content">
     <section>
       <h2>Gestión de Usuarios</h2>
@@ -18,7 +18,8 @@
             <th>Nombre</th>
             <th>Email</th>
             <th>Rol</th>
-            <th>Posición / Certificado</th>
+            <th>Posición Preferida</th>
+            <th>Certificado</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -28,10 +29,8 @@
             <td th:text="${u.name}"></td>
             <td th:text="${u.email}"></td>
             <td th:text="${u.role}"></td>
-            <td>
-              <span th:if="${u.role == 'PLAYER'}" th:text="${u.preferredPosition}"></span>
-              <span th:if="${u.role == 'REFEREE'}" th:text="${u.certified} ? 'Sí' : 'No'"></span>
-            </td>
+            <td th:text="${u.preferredPosition}"></td>
+            <td th:text="${u.certified} ? 'Sí' : 'No'"></td>
             <td>
               <a th:href="@{/web/users/edit/{id}(id=${u.id})}">Editar</a> |
               <a th:href="@{/web/users/delete/{id}(id=${u.id})}"

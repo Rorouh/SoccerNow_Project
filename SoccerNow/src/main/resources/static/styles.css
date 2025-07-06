@@ -1,0 +1,149 @@
+/* RESET BÁSICO ---------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html {
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  background: #f5f7fa;
+  color: #333;
+}
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* VARIABLES ------------------------------------------------------- */
+:root {
+  --primary: #4f46e5;
+  --primary-light: #6366f1;
+  --bg-card: #ffffff;
+  --bg-input: #f0f1f5;
+  --border: #d1d5db;
+  --text-light: #6b7280;
+  --radius: 6px;
+  --transition: 0.2s ease-in-out;
+}
+
+/* NAVEGACIÓN ------------------------------------------------------ */
+nav {
+  background: var(--primary);
+  padding: 1rem 2rem;
+  display: flex;
+  gap: 1rem;
+}
+nav a {
+  color: #fff;
+  font-weight: 500;
+  transition: color var(--transition);
+}
+nav a:hover {
+  color: var(--primary-light);
+}
+
+/* CONTENEDOR DE SECCIÓN ------------------------------------------- */
+section {
+  max-width: 960px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* CABECERAS ------------------------------------------------------- */
+h2 {
+  margin-bottom: 1rem;
+  font-size: 1.75rem;
+  color: var(--primary);
+}
+
+/* FORMULARIOS ----------------------------------------------------- */
+form {
+  display: grid;
+  gap: 1rem;
+}
+label {
+  display: block;
+  margin-bottom: .25rem;
+  font-weight: 500;
+}
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select {
+  width: 100%;
+  padding: .5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-input);
+  transition: border-color var(--transition);
+}
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: #fff;
+}
+input[type="checkbox"] {
+  transform: scale(1.2);
+  margin-right: .5rem;
+}
+
+/* BOTONES --------------------------------------------------------- */
+button {
+  padding: .6rem 1.2rem;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+button:hover {
+  background: var(--primary-light);
+}
+
+/* ENLACES DE CANCELAR --------------------------------------------- */
+a.cancel {
+  padding: .6rem 1.2rem;
+  background: #e5e7eb;
+  color: var(--text-light);
+  border-radius: var(--radius);
+  transition: background var(--transition);
+}
+a.cancel:hover {
+  background: #d1d5db;
+}
+
+/* TABLAS ---------------------------------------------------------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+th, td {
+  padding: .75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+thead th {
+  background: #f3f4f6;
+}
+tr:hover td {
+  background: #f9fafb;
+}
+
+/* MENSAJES DE ERROR ----------------------------------------------- */
+.error {
+  color: #dc2626;
+  margin-top: .5rem;
+}
