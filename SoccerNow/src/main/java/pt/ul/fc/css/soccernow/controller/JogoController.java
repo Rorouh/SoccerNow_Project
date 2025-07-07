@@ -16,6 +16,7 @@ import pt.ul.fc.css.soccernow.domain.Resultado;
 import pt.ul.fc.css.soccernow.dto.JogoCreateDTO;
 import pt.ul.fc.css.soccernow.dto.JogoDTO;
 import pt.ul.fc.css.soccernow.dto.JogoUpdateDTO;
+import pt.ul.fc.css.soccernow.dto.ResultadoDTO;
 import pt.ul.fc.css.soccernow.service.JogoService;
 import pt.ul.fc.css.soccernow.service.exceptions.*;
 
@@ -136,4 +137,6 @@ public class JogoController {
         var dtos = jogos.stream().map(JogoDTO::fromEntity).collect(Collectors.toList());
         return ResponseEntity.ok(dtos);
     }
+
+    
 }

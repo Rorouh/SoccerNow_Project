@@ -6,7 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import pt.ul.fc.css.soccernow.domain.*;
 import pt.ul.fc.css.soccernow.dto.JogoCreateDTO;
 import pt.ul.fc.css.soccernow.dto.JogoUpdateDTO;
+import pt.ul.fc.css.soccernow.dto.ResultadoDTO;
 import pt.ul.fc.css.soccernow.repository.JogoRepository;
+import pt.ul.fc.css.soccernow.repository.PlayerRepository;
 import pt.ul.fc.css.soccernow.repository.ResultadoRepository;
 import pt.ul.fc.css.soccernow.repository.TeamRepository;
 import pt.ul.fc.css.soccernow.repository.RefereeRepository;
@@ -32,6 +34,8 @@ public class JogoService {
     private TeamRepository teamRepository;  
     @Autowired
     private RefereeRepository refereeRepository;
+    @Autowired 
+    private PlayerRepository playerRepository;
 
     /**
      * Crea un juego a partir de un DTO.
@@ -390,5 +394,35 @@ public class JogoService {
     public Jogo criarJogo(Jogo jogo) throws ApplicationException {
         // ✅  aquí podrías reutilizar validaciones o simplemente guardar
         return jogoRepository.save(jogo);
+    }   
+
+    @Transactional
+    public Resultado registrarResultado(Long jogoId,
+                                        int home,
+                                        int away,
+                                        Long winnerId,
+                                        List<ResultadoDTO.CartaoDTO> cartoes)
+            throws NotFoundException, ApplicationException {
+
+        // ① Lógica existente (reutilizamos tu método que no lleva tarjetas)
+        Resultado res = registrarResultado(jogoId, home, away, winnerId);
+
+        // ② Añadir tarjetas si vienen en la petición
+        if (cartoes != null && !cartoes.isEmpty()) {
+            Jogo jogo = res.getJogo();               // ya cargado
+            for (ResultadoDTO.CartaoDTO dto : cartoes) {
+                Player p = playerRepository.findById(dto.playerId)
+                            .orElseThrow(() -> new NotFoundException(
+                                "Jugador "+dto.playerId+" no existe"));
+
+                Cartao card = new Cartao();
+                card.setPlayer(p);
+                card.setJogo(jogo);
+                card.setTipo(dto.tipo);
+                jogo.getCartoes().add(card);         // cascade = se guarda solo
+            }
+        }
+        return res;
     }
+
 }

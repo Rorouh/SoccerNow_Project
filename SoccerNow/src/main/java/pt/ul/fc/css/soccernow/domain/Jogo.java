@@ -3,6 +3,7 @@ package pt.ul.fc.css.soccernow.domain;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -35,8 +36,8 @@ public class Jogo {
     @ManyToOne
     private Referee primaryReferee;
 
-    @OneToMany(mappedBy = "jogo", cascade = CascadeType.ALL)
-    private Set<Cartao> cartoes;
+    @OneToMany(mappedBy = "jogo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Cartao> cartoes = new HashSet<>();
 
     @OneToMany(mappedBy = "jogo", cascade = CascadeType.ALL)
     private Set<Estatisticas> estatisticas;
@@ -117,4 +118,7 @@ public class Jogo {
         this.location = local;
         this.amigavel = amigavel;
     }
+
+
+
 }

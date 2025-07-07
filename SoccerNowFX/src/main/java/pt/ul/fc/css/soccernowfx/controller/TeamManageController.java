@@ -7,7 +7,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.net.URI;
@@ -16,144 +17,195 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TeamManageController {
 
-    /* FXML */
+    /* ---------- FXML ---------- */
     @FXML private TextField nameField;
     @FXML private TextField playersField;
-    @FXML private ListView<String> emailListView;
-    @FXML private Label infoLabel;
+    @FXML private Label     infoLabel;
 
-    /* infra */
-    private final HttpClient client = HttpClient.newHttpClient();
+    /* ---------- HTTP / JSON ---------- */
+    private final HttpClient   client = HttpClient.newHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
 
-    /* estado de la vista */
+    /* ---------- estado ---------- */
     private Long   currentId   = null;
+    private Long[] currentPIds = new Long[0];
 
-    /* ------------- BUSCAR ------------- */
+    /* ============================================================= */
+    /*                        BUSCAR EQUIPO                           */
+    /* ============================================================= */
     @FXML
     private void handleSearch() {
-        String query = nameField.getText().trim();
-        if (query.isEmpty()) { setError("Indica el nombre."); return; }
 
-        String url = "http://localhost:8080/api/teams?name=" +
-                     URLEncoder.encode(query, StandardCharsets.UTF_8);
+        String raw = nameField.getText().trim();
+        if (raw.isEmpty()) { setError("Indica el nombre."); return; }
 
-        HttpRequest req = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
+        String encoded = URLEncoder.encode(raw, StandardCharsets.UTF_8);
+        HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/teams?name=" + encoded))
+                .GET()
+                .build();
 
         client.sendAsync(req, HttpResponse.BodyHandlers.ofString())
-              .thenAcceptAsync(resp -> {
-                  if (resp.statusCode()!=200)       { setError("HTTP " + resp.statusCode()); return; }
+              .thenAccept(resp -> Platform.runLater(() -> {
                   try {
+                      if (resp.statusCode() != 200) { setError("HTTP " + resp.statusCode()); return; }
+
                       TeamVM[] arr = mapper.readValue(resp.body(), TeamVM[].class);
-                      if (arr.length==0)            { setInfo("Equipo no encontrado."); clear(); return; }
+                      if (arr.length == 0) { setInfo("Equipo no encontrado."); clear(); return; }
 
                       TeamVM t = arr[0];
-                      currentId = t.id;
-                      nameField.setText(t.name);
+                      currentId   = t.getId();
+                      currentPIds = t.getPlayerIds() != null ? t.getPlayerIds() : new Long[0];
 
-                      /* muestra e-mails */
-                      String csv = String.join(", ", t.playerEmails);
-                      playersField.setText(csv);
-                      emailListView.getItems().setAll(Arrays.asList(t.playerEmails));
+                      nameField.setText(t.getName());
+                      playersField.setText(
+                              t.getPlayerEmails() == null ? "" :
+                              String.join(",", t.getPlayerEmails())
+                      );
 
                       setOk("Equipo cargado.");
-                  } catch (Exception e) { setError("JSON: "+e.getMessage()); }
-              }, Platform::runLater)
+                  } catch (Exception e) { setError("JSON: " + e.getMessage()); }
+              }))
               .exceptionally(ex -> { Platform.runLater(() -> setError(ex.getMessage())); return null; });
     }
 
-    /* ------------- ACTUALIZAR ------------- */
+    /* ============================================================= */
+    /*                       ACTUALIZAR EQUIPO                       */
+    /* ============================================================= */
     @FXML
     private void handleUpdate() {
-        if (currentId==null) { setInfo("Busca antes un equipo."); return; }
 
-        String nuevoNombre = nameField.getText().trim();
-        if (nuevoNombre.isBlank()) { setError("El nombre no puede ser vacío."); return; }
+        if (currentId == null) { setInfo("Busca un equipo primero."); return; }
 
-        /* convertimos la caja de e-mails -> array de IDs */
+        String newName = nameField.getText().trim();
+        if (newName.isBlank()) { setError("El nombre no puede quedar vacío."); return; }
+
         String csv = playersField.getText().trim();
         Long[] ids;
         try {
-            if (csv.isBlank()) { ids = new Long[0]; }
-            else {
-                String[] mails = csv.split("\\s*,\\s*");
-                ids = new Long[mails.length];
-                for (int i=0;i<mails.length;i++) {
-                    String url = "http://localhost:8080/api/users/by-email/" +
-                                 URLEncoder.encode(mails[i], StandardCharsets.UTF_8);
-                    HttpRequest q = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
+            if (csv.isBlank()) {
+                ids = currentPIds;                  // sin cambios
+            } else {
+                String[] emails = csv.split("\\s*,\\s*");
+                List<Long> idList = new ArrayList<>();
+
+                for (String email : emails) {
+                    String enc = URLEncoder.encode(email, StandardCharsets.UTF_8);
+                    HttpRequest q = HttpRequest.newBuilder()
+                            .uri(URI.create("http://localhost:8080/api/users/by-email/" + enc))
+                            .GET()
+                            .build();
+
                     HttpResponse<String> r = client.send(q, HttpResponse.BodyHandlers.ofString());
-                    if (r.statusCode()!=200) throw new IllegalStateException("No existe "+mails[i]);
-                    ids[i] = mapper.readValue(r.body(), UserVM.class).id;
+                    if (r.statusCode() != 200) throw new RuntimeException("No existe " + email);
+
+                    UserVM u = mapper.readValue(r.body(), UserVM.class);
+                    idList.add(u.getId());
                 }
+                ids = idList.toArray(new Long[0]);
             }
-        } catch(Exception e){ setError(e.getMessage()); return; }
+        } catch (Exception e) { setError("Conv. IDs: " + e.getMessage()); return; }
 
         try {
-            String body = mapper.writeValueAsString(new TeamUpdPayload(nuevoNombre, ids));
-            String url  = "http://localhost:8080/api/teams/" + currentId;
+            String json = mapper.writeValueAsString(new TeamUpdPayload(newName, ids));
             HttpRequest req = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .header("Content-Type","application/json")
-                    .PUT(HttpRequest.BodyPublishers.ofString(body))
+                    .uri(URI.create("http://localhost:8080/api/teams/" + currentId))
+                    .header("Content-Type", "application/json")
+                    .PUT(HttpRequest.BodyPublishers.ofString(json))
                     .build();
 
             client.sendAsync(req, HttpResponse.BodyHandlers.ofString())
-                  .thenAcceptAsync(r -> {
-                      if (r.statusCode()==200) setOk("Actualizado.");
-                      else                      setError(r.body());
-                  }, Platform::runLater);
-        } catch (Exception e){ setError(e.getMessage()); }
+                  .thenAccept(r -> Platform.runLater(() ->
+                      { if (r.statusCode() == 200) setOk("Actualizado.");
+                        else setError(r.body().isBlank()
+                               ? "No se pudo actualizar (código "+r.statusCode()+')'
+                               : r.body()); }))
+                  .exceptionally(ex -> { Platform.runLater(() -> setError(ex.getMessage())); return null; });
+
+        } catch (Exception e) { setError("Serialización: " + e.getMessage()); }
     }
 
-    /* ------------- ELIMINAR ------------- */
+    /* ============================================================= */
+    /*                       ELIMINAR EQUIPO                         */
+    /* ============================================================= */
     @FXML
     private void handleRemove() {
-        if (currentId==null) { setInfo("Busca antes un equipo."); return; }
 
-        String url = "http://localhost:8080/api/teams/" + currentId;
-        HttpRequest req = HttpRequest.newBuilder().uri(URI.create(url)).DELETE().build();
+        if (currentId == null) { setInfo("Busca un equipo primero."); return; }
+
+        HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/teams/" + currentId))
+                .DELETE()
+                .build();
 
         client.sendAsync(req, HttpResponse.BodyHandlers.ofString())
-              .thenAcceptAsync(r -> {
-                  if (r.statusCode()==204) { clear(); setOk("Eliminado."); }
-                  else if (r.statusCode()==400) setError("No se puede eliminar: "+r.body());
-                  else setError("HTTP "+r.statusCode());
-              }, Platform::runLater);
+              .thenAccept(r -> Platform.runLater(() -> {
+                  if (r.statusCode() == 204) { setOk("Eliminado."); clear(); }
+                  else {
+                      String msg = r.body().isBlank()
+                                 ? "No se puede eliminar (código "+r.statusCode()+')'
+                                 : r.body();
+                      setError(msg);
+                  }
+              }))
+              .exceptionally(ex -> { Platform.runLater(() -> setError(ex.getMessage())); return null; });
     }
 
-    /* ------------- VOLVER ------------- */
+    /* ============================================================= */
+    /*                            VOLVER                             */
+    /* ============================================================= */
     @FXML
     private void handleBack() {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/menu.fxml"));
             Stage st = (Stage) infoLabel.getScene().getWindow();
             st.setScene(new Scene(root));
-        } catch(Exception e){ setError(e.getMessage()); }
+        } catch (Exception e) { setError("Al volver: " + e.getMessage()); }
     }
 
-    /* -------------------------------------------------------- */
-    private void clear(){
-        currentId=null; nameField.clear(); playersField.clear(); emailListView.getItems().clear();
+    /* ---------- helpers ---------- */
+    private void clear() {
+        currentId   = null;
+        currentPIds = new Long[0];
+        nameField.clear();
+        playersField.clear();
     }
-    private void setOk(String m){   infoLabel.setStyle("-fx-text-fill: green;"); infoLabel.setText(m); }
-    private void setInfo(String m){ infoLabel.setStyle("-fx-text-fill: black;"); infoLabel.setText(m); }
-    private void setError(String m){infoLabel.setStyle("-fx-text-fill: red;");   infoLabel.setText("Error: "+m); }
+    private void setOk   (String m){ infoLabel.setStyle("-fx-text-fill: green;"); infoLabel.setText(m); }
+    private void setInfo (String m){ infoLabel.setStyle("-fx-text-fill: black;"); infoLabel.setText(m); }
+    private void setError(String m){ infoLabel.setStyle("-fx-text-fill: red;");   infoLabel.setText("Error: " + m); }
 
-    /* DTOs auxiliares ------- */
+    /* ---------- DTO auxiliares ---------- */
     @JsonIgnoreProperties(ignoreUnknown = true)
-    private static class UserVM { public Long id; }
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    private static class TeamVM {
-        public Long     id;
-        public String   name;
-        public String[] playerEmails = new String[0];
+    public static class TeamVM {
+        private Long     id;
+        private String   name;
+        private String[] playerEmails;
+        private Long[]   playerIds;
+        public Long     getId()                { return id; }
+        public void     setId(Long id)         { this.id = id; }
+        public String   getName()              { return name; }
+        public void     setName(String n)      { this.name = n; }
+        public String[] getPlayerEmails()      { return playerEmails; }
+        public void     setPlayerEmails(String[] e){ this.playerEmails = e; }
+        public Long[]   getPlayerIds()         { return playerIds; }
+        public void     setPlayerIds(Long[] p) { this.playerIds = p; }
     }
-
-    private record TeamUpdPayload(String name, Long[] playerIds){}
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private static class UserVM {
+        private Long id;
+        public Long getId()            { return id; }
+        public void setId(Long id)     { this.id = id; }
+    }
+    private static class TeamUpdPayload {
+        private final String name;
+        private final Long[] playerIds;
+        TeamUpdPayload(String n, Long[] ids){ this.name = n; this.playerIds = ids; }
+        public String getName()      { return name; }
+        public Long[] getPlayerIds() { return playerIds; }
+    }
 }
