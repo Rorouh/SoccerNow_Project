@@ -1,11 +1,14 @@
 package pt.ul.fc.css.soccernow.service;
 
 import org.springframework.stereotype.Service;
+import pt.ul.fc.css.soccernow.domain.User;
 import pt.ul.fc.css.soccernow.repository.UserRepository;
 
 /**
- * Servicio que implementa un login “mock”. 
- * Simplemente comprobamos si existe un usuario con ese email en la BD.
+ * Servicio de autenticación.
+ * Comprueba que (a) el e-mail existe y (b) la contraseña coincide.
+ * (En esta demo las contraseñas se guardan en texto plano;
+ *  si las tienes con hash, haz el `matches()` correspondiente aquí).
  */
 @Service
 public class AuthService {
@@ -16,13 +19,17 @@ public class AuthService {
         this.userRepository = userRepository;
     }
 
-    /**
-     * “Logueo mock”:
-     * - Devuelve true si existe un usuario con ese email (ignoramos la contraseña).
-     * - Devuelve false en caso contrario.
-     */
+    /** Devuelve true si email + password son válidos. */
+    public boolean login(String email, String password) {
+        return userRepository.findByEmailIgnoreCase(email)
+               .map(u -> u.getPassword().equals(password))  // TODO hash/BCrypt si procede
+               .orElse(false);
+    }
+
+    /* ------------------------------------------------------------------
+       (¡opcional!) deja este método sólo si aún lo usan otros tests)      */
+    @Deprecated
     public boolean loginMock(String email, String password) {
-        // No validamos password: basta con que exista el email.
         return userRepository.existsByEmail(email);
     }
 }

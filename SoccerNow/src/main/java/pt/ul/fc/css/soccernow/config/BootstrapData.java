@@ -2,132 +2,144 @@
 package pt.ul.fc.css.soccernow.config;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
-
+import java.util.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import pt.ul.fc.css.soccernow.domain.Team;
+import pt.ul.fc.css.soccernow.domain.Campeonato;
 import pt.ul.fc.css.soccernow.domain.User.PreferredPosition;
 import pt.ul.fc.css.soccernow.dto.PlayerCreateDTO;
 import pt.ul.fc.css.soccernow.dto.TeamDTO;
 import pt.ul.fc.css.soccernow.repository.CampeonatoRepository;
-import pt.ul.fc.css.soccernow.domain.Campeonato;
 import pt.ul.fc.css.soccernow.service.*;
 
 /**
- * Genera datos de demo completos al arrancar la aplicación.
- * – 8 jugadores   – 3 equipos  
- * – 2 árbitros (1 sin certificar)  
- * – 1 campeonato con un partido oficial  
- * – 1 amistoso  
- * – 1 partido pasado con resultado
+ * Semilla de datos de demostración EXTENDIDA.
+ * – 16 jugadores   – 4 equipos equilibrados (1 x posición cada uno)
+ * – 3 árbitros     – 2 campeonatos con 4 partidos oficiales
+ * – 2 amistosos    – 1 partido pasado con resultado en cada tipo
  */
 @Configuration
 public class BootstrapData {
 
+  /* Tabla auxiliar de posiciones para el ciclo 0-1-2-3 */
+  private static final PreferredPosition[] POS = {
+      PreferredPosition.PORTERO,
+      PreferredPosition.DEFENSA,
+      PreferredPosition.CENTROCAMPISTA,
+      PreferredPosition.DELANTERO
+  };
+
   @Bean
   CommandLineRunner seedDatabase(
-      PlayerService      playerService,
-      TeamService        teamService,
-      RefereeService     refereeService,
-      JogoService        jogoService,
+      PlayerService        playerService,
+      TeamService          teamService,
+      RefereeService       refereeService,
+      JogoService          jogoService,
       CampeonatoRepository campeonatoRepo) {
 
     return args -> {
 
-      /* ─────────────  Jugadores  ───────────── */
-      List<Long> playerIds = List.of(
-          buildPlayer("Alice" , "alice@mail.com" , PreferredPosition.DELANTERO , playerService),
-          buildPlayer("Bob"   , "bob@mail.com"   , PreferredPosition.CENTROCAMPISTA , playerService),
-          buildPlayer("Cathy" , "cathy@mail.com" , PreferredPosition.DEFENSA   , playerService),
-          buildPlayer("Dan"   , "dan@mail.com"   , PreferredPosition.PORTERO   , playerService),
-          buildPlayer("Eve"   , "eve@mail.com"   , PreferredPosition.DELANTERO , playerService),
-          buildPlayer("Frank" , "frank@mail.com" , PreferredPosition.DEFENSA   , playerService),
-          buildPlayer("Grace" , "grace@mail.com" , PreferredPosition.CENTROCAMPISTA, playerService),
-          buildPlayer("Hugo"  , "hugo@mail.com"  , PreferredPosition.DEFENSA   , playerService)
+      /* ─────────────── 1. JUGADORES ─────────────── */
+      record Spec(String name, PreferredPosition pos) {}
+      List<Spec> specs = List.of(
+          new Spec("Alice", POS[0]), new Spec("Bob",   POS[1]),
+          new Spec("Cathy", POS[2]), new Spec("Dan",   POS[3]),
+
+          new Spec("Eve",   POS[0]), new Spec("Frank", POS[1]),
+          new Spec("Grace", POS[2]), new Spec("Hugo",  POS[3]),
+
+          new Spec("Ivy",   POS[0]), new Spec("Jack",  POS[1]),
+          new Spec("Kate",  POS[2]), new Spec("Leo",   POS[3]),
+
+          new Spec("Mia",   POS[0]), new Spec("Nick",  POS[1]),
+          new Spec("Olga",  POS[2]), new Spec("Pete",  POS[3])
       );
 
-      /* ─────────────  Equipos  ───────────── */
-      Long dragons = teamService.createTeam(
-              new TeamDTO("Dragones", Set.of(playerIds.get(0), playerIds.get(1), playerIds.get(2))))
-              .getId();
+      /* Se guardan EXACTAMENTE en este orden → id 1,2,3,4,… */
+      Map<String,Long> id = new LinkedHashMap<>();
+      for (Spec s : specs) {
+        Long pid = buildPlayer(
+            s.name(),
+            s.name().toLowerCase() + "@mail.com",
+            s.pos(),
+            playerService);
+        id.put(s.name().toLowerCase(), pid);
+      }
 
-      Long tigers  = teamService.createTeam(
-              new TeamDTO("Tigres", Set.of(playerIds.get(3), playerIds.get(4), playerIds.get(5))))
-              .getId();
+      /* ─────────────── 2. EQUIPOS (4 jugadores) ─────────────── */
+      Long dragones = teamService.createTeam(new TeamDTO(
+          "Dragones", Set.of(id.get("alice"), id.get("bob"),
+                             id.get("cathy"), id.get("dan")))).getId();
 
-      Long eagles  = teamService.createTeam(
-              new TeamDTO("Águilas", Set.of(playerIds.get(6), playerIds.get(7))))
-              .getId();
+      Long tigres = teamService.createTeam(new TeamDTO(
+          "Tigres",   Set.of(id.get("eve"),   id.get("frank"),
+                             id.get("grace"), id.get("hugo")))).getId();
 
-      /* ─────────────  Árbitros  ───────────── */
-      Long refLaura = refereeService.createReferee("Laura", "laura@mail.com", true ).getId(); // certificado
-      Long refMike  = refereeService.createReferee("Mike" , "mike@mail.com" , false).getId(); // NO certificado
+      Long aguilas = teamService.createTeam(new TeamDTO(
+          "Águilas",  Set.of(id.get("ivy"),  id.get("jack"),
+                             id.get("kate"), id.get("leo")))).getId();
 
-      /* ─────────────  Campeonato  ───────────── */
-      Campeonato liga = new Campeonato(
-              "Liga Primavera",         // nome
-              "Liga",                   // formato
-              "Fútbol",                 // modalidade
-              Set.of(                    // equipos participantes
-                      teamService.getTeamById(dragons).orElseThrow(),
-                      teamService.getTeamById(tigers ).orElseThrow())
-      );
-      campeonatoRepo.save(liga);
+      Long lobos = teamService.createTeam(new TeamDTO(
+          "Lobos",    Set.of(id.get("mia"),  id.get("nick"),
+                             id.get("olga"), id.get("pete")))).getId();
 
-      /* ─────────────  Partidos  ───────────── */
+      /* ─────────────── 3. ÁRBITROS ─────────────── */
+      Long laura = refereeService.createReferee("Laura", "laura@mail.com", true ).getId();
+      Long mike  = refereeService.createReferee("Mike",  "mike@mail.com",  false).getId();
+      Long sara  = refereeService.createReferee("Sara",  "sara@mail.com",  true ).getId();
 
-      // 1) Partido de campeonato (oficial) – sólo árbitros certificados
-      jogoService.criarJogo(
-          LocalDateTime.now().plusDays(3),
-          "Estadio Nacional",
-          false,                       // amigavel = false  → campeonato
-          dragons,
-          tigers,
-          Set.of(refLaura),            // árbitro certificado
-          refLaura
-      );
+      /* ─────────────── 4. CAMPEONATOS ─────────────── */
+      Campeonato primavera = new Campeonato(
+          "Liga Primavera", "Liga", "Fútbol",
+          Set.of(teamService.getTeamById(dragones).orElseThrow(),
+                 teamService.getTeamById(tigres).orElseThrow(),
+                 teamService.getTeamById(aguilas).orElseThrow()));
+      campeonatoRepo.save(primavera);
 
-      // 2) Amistoso futuro con árbitro sin certificar permitido
-      jogoService.criarJogo(
-          LocalDateTime.now().plusWeeks(1),
-          "Campo Municipal",
-          true,                        // amistoso
-          eagles,
-          dragons,
-          Set.of(refMike),
-          null
-      );
+      Campeonato verano = new Campeonato(
+          "Copa Verano", "Copa", "Fútbol-7",
+          Set.of(teamService.getTeamById(lobos).orElseThrow(),
+                 teamService.getTeamById(dragones).orElseThrow(),
+                 teamService.getTeamById(tigres).orElseThrow()));
+      campeonatoRepo.save(verano);
 
-      // 3) Partido pasado (hace 5 días) con resultado registrado
-      var jogoPasado = jogoService.criarJogo(
-          LocalDateTime.now().minusDays(5),
-          "Arena Central",
-          false,
-          dragons,
-          eagles,
-          Set.of(refLaura),
-          refLaura
-      );
-      jogoService.registrarResultado(
-          jogoPasado.getId(),
-          2, 1,                         // 2-1
-          dragons                       // vencedor
-      );
+      /* ─────────────── 5. PARTIDOS ─────────────── */
 
-      System.out.println("✅  Datos de demo cargados correctamente");
+      // Liga Primavera
+      jogoService.criarJogo(LocalDateTime.now().plusDays(2), "Estadio Nacional",
+          false, dragones, tigres, Set.of(laura), laura);
+
+      var jp1 = jogoService.criarJogo(LocalDateTime.now().minusDays(4), "Complejo Sur",
+          false, aguilas, dragones, Set.of(laura), laura);
+      jogoService.registrarResultado(jp1.getId(), 0, 3, dragones);
+
+      // Copa Verano
+      jogoService.criarJogo(LocalDateTime.now().plusDays(7), "Arena Playa",
+          false, lobos, tigres, Set.of(sara), sara);
+
+      var cv1 = jogoService.criarJogo(LocalDateTime.now().minusDays(1), "Mini-Stadium",
+          false, tigres, dragones, Set.of(sara), sara);
+      jogoService.registrarResultado(cv1.getId(), 1, 1, null);   // empate
+
+      // Amistosos
+      jogoService.criarJogo(LocalDateTime.now().plusWeeks(2), "Campo Municipal",
+          true, aguilas, lobos, Set.of(mike), null);
+
+      var amistosoPrevio = jogoService.criarJogo(LocalDateTime.now().minusWeeks(3), "Viejo Coliseo",
+          true, lobos, aguilas, Set.of(mike), null);
+      jogoService.registrarResultado(amistosoPrevio.getId(), 2, 0, lobos);
+
+      System.out.println("✅  Datos de demo extendidos cargados.");
     };
   }
 
-  /* helper para crear jugador */
-  private static Long buildPlayer(
-      String name,
-      String email,
-      PreferredPosition pos,
-      PlayerService playerService) {
+  /* ─────────── Helper para crear jugador ─────────── */
+  private static Long buildPlayer(String name,
+                                  String email,
+                                  PreferredPosition pos,
+                                  PlayerService playerService) {
 
     PlayerCreateDTO dto = new PlayerCreateDTO();
     dto.setName(name);

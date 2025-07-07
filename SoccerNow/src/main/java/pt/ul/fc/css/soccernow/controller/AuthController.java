@@ -28,11 +28,18 @@ public class AuthController {
      */
     @PostMapping("/login")
     public ResponseEntity<Void> login(@Valid @RequestBody LoginDTO dto) {
-        boolean exists = authService.loginMock(dto.getEmail(), dto.getPassword());
-        if (exists) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
+
+        boolean ok = authService.login(dto.getEmail(), dto.getPassword());
+
+        if (ok) {
+            return ResponseEntity.ok().build();                // 200 → login correcto
         }
+
+        /* averiguamos si el e-mail existe para dar respuesta adecuada */
+        boolean emailExiste = authService.loginMock(dto.getEmail(), "");
+        return emailExiste
+            ? ResponseEntity.status(401).build()               // contraseña incorrecta
+            : ResponseEntity.status(404).build();              // e-mail no encontrado
     }
+
 }
