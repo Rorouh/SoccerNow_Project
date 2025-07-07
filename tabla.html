@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Mapa de reglas de negocio • SoccerNow</title>
+  <style>
+    body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#f7f7f9;margin:0;padding:2rem;color:#222}
+    h1{font-size:1.8rem;margin-bottom:1.2rem;color:#444;text-align:center}
+    table{width:100%;border-collapse:collapse;font-size:.9rem;background:#fff;border-radius:0.75rem;box-shadow:0 2px 4px rgba(0,0,0,.05)}
+    thead{background:#2b75ff;color:#fff}
+    th,td{padding:.75rem 1rem;border:1px solid #e3e6ef;vertical-align:top}
+    tbody tr:nth-child(even){background:#fafbff}
+    th{font-weight:600;text-align:left}
+    code{background:#eef;font-size:.85em;padding:.1rem .3rem;border-radius:.3rem}
+    ul{margin:.25rem 0;padding-left:1.3rem}
+  </style>
+</head>
+<body>
+<h1>Mapa de reglas de negocio — SoccerNow</h1>
+<table>
+  <thead>
+    <tr>
+      <th>Entidad</th>
+      <th>Servicio principal</th>
+      <th>Operaciones expuestas</th>
+      <th>Reglas / Restricciones (lanzan&nbsp;<code>ApplicationException</code>)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Team</strong></td>
+      <td><code>TeamService</code></td>
+      <td>
+        <ul>
+          <li><code>createTeam</code></li>
+          <li><code>updateTeam</code></li>
+          <li><code>deleteTeam</code></li>
+          <li><code>addPlayerToTeam</code></li>
+          <li>Filtros&nbsp;de búsqueda</li>
+        </ul>
+      </td>
+      <td>
+        <ul>
+          <li>Nombre vacío o duplicado.</li>
+          <li><code>deleteTeam</code> → prohibido si el equipo ya tiene partidos (<code>jogosComoVisitada</code> / <code>jogosComoVisitante</code>).</li>
+          <li><code>addPlayerToTeam</code> → jugador ya pertenece al equipo.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td><strong>Player</strong></td>
+      <td><code>PlayerService</code></td>
+      <td>CRUD, búsqueda</td>
+      <td>Email único · posición preferida válida.</td>
+    </tr>
+    <tr>
+      <td><strong>User</strong></td>
+      <td><code>UserService</code></td>
+      <td>CRUD, autenticación</td>
+      <td>Email único · tipo (<code>PLAYER</code>|<code>REFEREE</code>) requerido.</td>
+    </tr>
+    <tr>
+      <td><strong>Referee</strong></td>
+      <td><code>RefereeService</code></td>
+      <td>Certificar / descertificar</td>
+      <td>Los árbitros de campeonato deben estar certificados.</td>
+    </tr>
+    <tr>
+      <td><strong>Jogo</strong> (Partido)</td>
+      <td><code>JogoService</code></td>
+      <td>
+        <ul>
+          <li><code>criarJogo</code></li>
+          <li><code>registrarResultado</code></li>
+          <li><code>atualizarJogo</code></li>
+          <li><code>eliminarJogo</code></li>
+        </ul>
+      </td>
+      <td>
+        <ul>
+          <li>Equipos local&nbsp;≠&nbsp;visitante.</li>
+          <li>En partidos no amistosos todos los árbitros deben estar certificados.</li>
+          <li><code>registrarResultado</code>:<br>
+            • no registrar dos veces;<br>
+            • ganador debe ser participante;<br>
+            • marcador coherente con ganador.</li>
+          <li><code>eliminarJogo</code>: prohibido si el juego ya tiene resultado.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td><strong>Resultado</strong></td>
+      <td>Creado vía <code>JogoService</code></td>
+      <td>— (Interno)</td>
+      <td>Coherencia marcador/ganador validada al crear.</td>
+    </tr>
+    <tr>
+      <td><strong>Cartao</strong> (Tarjeta)</td>
+      <td><code>CartaoService</code></td>
+      <td>Registrar tarjeta</td>
+      <td>• Jugador participa en el partido.<br>• Tipo ∈ {amarilla, roja}.</td>
+    </tr>
+    <tr>
+      <td><strong>Estatisticas</strong></td>
+      <td>Generado en <code>JogoService</code></td>
+      <td>— (Interno)</td>
+      <td>Se crea un registro por jugador con <code>gols = 0</code> al registrar resultado.</td>
+    </tr>
+    <tr>
+      <td><strong>Campeonato</strong></td>
+      <td><code>CampeonatoService</code></td>
+      <td>crear, update, delete, addGame</td>
+      <td>• Árbitros certificados.<br>• No borrar campeonato con juegos disputados.</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

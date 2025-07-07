@@ -1,31 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="pt.ul.fc.css.soccernowfx.controller.GameCreateController" hgap="10" vgap="12" alignment="CENTER">
-    <Label text="Creación de Partido" GridPane.columnSpan="2" style="-fx-font-size:18; -fx-font-weight:bold;" />
-    <Label text="Fecha:" GridPane.rowIndex="1" />
-    <DatePicker fx:id="dateField" GridPane.rowIndex="1" GridPane.columnIndex="1" />
-    <Label text="Horario:" GridPane.rowIndex="2" />
-    <TextField fx:id="timeField" GridPane.rowIndex="2" GridPane.columnIndex="1" promptText="HH:mm" />
-    <Label text="Lugar:" GridPane.rowIndex="3" />
-    <TextField fx:id="locationField" GridPane.rowIndex="3" GridPane.columnIndex="1" />
-    <Label text="Equipo 1:" GridPane.rowIndex="4" />
-    <TextField fx:id="team1Field" GridPane.rowIndex="4" GridPane.columnIndex="1" />
-    <Label text="Equipo 2:" GridPane.rowIndex="5" />
-    <TextField fx:id="team2Field" GridPane.rowIndex="5" GridPane.columnIndex="1" />
-    <Label text="Árbitros (emails, coma):" GridPane.rowIndex="6" />
-    <TextField fx:id="refereesField" GridPane.rowIndex="6" GridPane.columnIndex="1" />
-    <Label text="Tipo de Partido:" GridPane.rowIndex="7" />
-    <ChoiceBox fx:id="typeChoice" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
-    <Label text="Nombre del Campeonato (si aplica):" GridPane.rowIndex="8" />
-    <TextField fx:id="championshipField" GridPane.rowIndex="8" GridPane.columnIndex="1" />
-    <Button text="Crear Partido" onAction="#handleCreate" GridPane.rowIndex="9" GridPane.columnIndex="1" />
-    <Button text="Volver al Menú" onAction="#handleBack" GridPane.rowIndex="10" GridPane.columnIndex="1" />
-    <Label text="Portero Equipo 1 (email):" GridPane.rowIndex="11" />
-    <TextField fx:id="goalkeeper1Field" GridPane.rowIndex="11" GridPane.columnIndex="1" />
-    <Label text="Portero Equipo 2 (email):" GridPane.rowIndex="12" />
-    <TextField fx:id="goalkeeper2Field" GridPane.rowIndex="12" GridPane.columnIndex="1" />
-    <Label text="Árbitro Principal (email):" GridPane.rowIndex="13" />
-    <TextField fx:id="mainRefereeField" GridPane.rowIndex="13" GridPane.columnIndex="1" />
-    <Label fx:id="infoLabel" textFill="blue" GridPane.rowIndex="14" GridPane.columnSpan="2" />
+
+<GridPane xmlns:fx="http://javafx.com/fxml"
+          fx:controller="pt.ul.fc.css.soccernowfx.controller.GameCreateController"
+          hgap="10" vgap="12" alignment="CENTER">
+
+    <Label text="Creación de Partido"
+           GridPane.columnSpan="2"
+           style="-fx-font-size:18; -fx-font-weight:bold;"/>
+
+    <!-- ────────── Campos ────────── -->
+    <Label text="Fecha:"/>
+    <DatePicker fx:id="datePicker"                 GridPane.columnIndex="1"/>
+
+    <Label text="Horario:"              GridPane.rowIndex="1"/>
+    <TextField fx:id="timeField"        GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="HH:mm"/>
+
+    <Label text="Lugar:"                GridPane.rowIndex="2"/>
+    <TextField fx:id="locationField"    GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+    <Label text="Equipo 1:"             GridPane.rowIndex="3"/>
+    <TextField fx:id="team1Field"       GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+    <Label text="Equipo 2:"             GridPane.rowIndex="4"/>
+    <TextField fx:id="team2Field"       GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+    <Label text="Árbitros (emails, coma):" GridPane.rowIndex="5"/>
+    <TextField fx:id="refereesField"    GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+    <Label text="Tipo de Partido:"      GridPane.rowIndex="6"/>
+    <ComboBox fx:id="typeCombo"         GridPane.rowIndex="6" GridPane.columnIndex="1">
+        <items>
+            <FXCollections fx:factory="observableArrayList">
+                <String fx:value="Amistoso"/>
+                <String fx:value="Campeonato"/>
+            </FXCollections>
+        </items>
+    </ComboBox>
+
+    <Label text="Nombre del Campeonato (si aplica):" GridPane.rowIndex="7"/>
+    <TextField fx:id="championshipField" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+
+    <!-- ────────── Botones ────────── -->
+    <Button text="Crear Partido" onAction="#handleCreate" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+    <Button text="Volver al Menú" onAction="#handleBack"  GridPane.rowIndex="9" GridPane.columnIndex="1"/>
+
+    <!-- Mensaje de estado -->
+    <Label fx:id="infoLabel" textFill="blue" GridPane.rowIndex="10" GridPane.columnSpan="2"/>
+
 </GridPane>
