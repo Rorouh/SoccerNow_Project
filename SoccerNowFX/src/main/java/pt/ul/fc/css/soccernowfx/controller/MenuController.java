@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 
 public class MenuController {
 
+    @FXML private Label infoLabel;
 
     @FXML
     private void handleCreateChampionship() {
@@ -17,7 +18,7 @@ public class MenuController {
             javafx.stage.Stage stage = (javafx.stage.Stage) infoLabel.getScene().getWindow();
             stage.setScene(new javafx.scene.Scene(root));
         } catch (Exception e) {
-            infoLabel.setText("Erro ao abrir criação de campeonato: " + e.getMessage());
+            infoLabel.setText("Error al abrir creación de campeonato: " + e.getMessage());
         }
     }
 
@@ -28,7 +29,7 @@ public class MenuController {
             javafx.stage.Stage stage = (javafx.stage.Stage) infoLabel.getScene().getWindow();
             stage.setScene(new javafx.scene.Scene(root));
         } catch (Exception e) {
-            infoLabel.setText("Erro ao abrir cadastro: " + e.getMessage());
+            infoLabel.setText("Error al abrir el registro: " + e.getMessage());
         }
     }
 
@@ -39,21 +40,18 @@ public class MenuController {
             Stage stage = (Stage) infoLabel.getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (Exception e) {
-            infoLabel.setText("Erro ao abrir criação de equipa: " + e.getMessage());
+            infoLabel.setText("Error al abrir creación de equipo: " + e.getMessage());
         }
     }
 
-    @FXML private Label infoLabel;
-
     @FXML
     private void handleManageUsers() {
-
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/user_manage.fxml"));
             Stage stage = (Stage) infoLabel.getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (Exception e) {
-            infoLabel.setText("Erro ao abrir gestão de utilizadores: " + e.getMessage());
+            infoLabel.setText("Error al abrir gestión de usuarios: " + e.getMessage());
         }
     }
 
@@ -64,7 +62,7 @@ public class MenuController {
             Stage stage = (Stage) infoLabel.getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (Exception e) {
-            infoLabel.setText("Erro ao abrir gestão de equipas: " + e.getMessage());
+            infoLabel.setText("Error al abrir gestión de equipos: " + e.getMessage());
         }
     }
 
@@ -75,7 +73,7 @@ public class MenuController {
             Stage stage = (Stage) infoLabel.getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (Exception e) {
-            infoLabel.setText("Erro ao abrir gestão de campeonatos: " + e.getMessage());
+            infoLabel.setText("Error al abrir gestión de campeonatos: " + e.getMessage());
         }
     }
 
@@ -86,7 +84,7 @@ public class MenuController {
             Stage stage = (Stage) infoLabel.getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (Exception e) {
-            infoLabel.setText("Erro ao abrir gestão de jogos: " + e.getMessage());
+            infoLabel.setText("Error al abrir gestión de partidos: " + e.getMessage());
         }
     }
 
@@ -97,7 +95,7 @@ public class MenuController {
             Stage stage = (Stage) infoLabel.getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (Exception e) {
-            infoLabel.setText("Erro ao abrir registo de resultado: " + e.getMessage());
+            infoLabel.setText("Error al abrir registro de resultado: " + e.getMessage());
         }
     }
 
@@ -108,7 +106,7 @@ public class MenuController {
             Stage stage = (Stage) infoLabel.getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (Exception e) {
-            infoLabel.setText("Erro ao abrir cancelamento de jogo: " + e.getMessage());
+            infoLabel.setText("Error al abrir cancelación de partido: " + e.getMessage());
         }
     }
 
@@ -119,7 +117,7 @@ public class MenuController {
             Stage stage = (Stage) infoLabel.getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (Exception e) {
-            infoLabel.setText("Erro ao fazer logout: " + e.getMessage());
+            infoLabel.setText("Error al cerrar sesión: " + e.getMessage());
         }
     }
 }

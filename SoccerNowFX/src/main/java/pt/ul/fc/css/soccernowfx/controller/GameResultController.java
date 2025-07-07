@@ -8,7 +8,6 @@ import java.net.URI;
 
 public class GameResultController {
 
-
     @FXML
     private void handleBack() {
         try {
@@ -17,7 +16,7 @@ public class GameResultController {
             javafx.stage.Stage stage = (javafx.stage.Stage) gameIdField.getScene().getWindow();
             stage.getScene().setRoot(root);
         } catch (Exception e) {
-            infoLabel.setText("Erro ao voltar ao menu: " + e.getMessage());
+            infoLabel.setText("Error al volver al menú: " + e.getMessage());
         }
     }
 
@@ -34,10 +33,10 @@ public class GameResultController {
         String vencedora = winnerField.getText();
         String cartoes = cardsField.getText();
         if (gameId.isBlank() || placar.isBlank() || vencedora.isBlank()) {
-            infoLabel.setText("Preencha os campos obrigatórios.");
+            infoLabel.setText("Complete los campos obligatorios.");
             return;
         }
-        // Cartões: email:tipo, separados por vírgula
+        // Tarjetas: email:tipo, separados por comas
         String[] cartoesArr = cartoes.isBlank() ? new String[0] : cartoes.split(",");
         StringBuilder sb = new StringBuilder();
 
@@ -61,21 +60,20 @@ public class GameResultController {
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
             .thenAccept(response -> Platform.runLater(() -> {
                 if (response.statusCode() == 200) {
-                    infoLabel.setText("Resultado registado com sucesso!");
+                    infoLabel.setText("¡Resultado registrado con éxito!");
 
-                    // Atualizar histórico de conquistas se for jogo de campeonato
+                    // Actualizar historial de logros si es partido de campeonato
                     atualizarPodioSeCampeonato(gameId, vencedora);
 
                 } else {
-                    infoLabel.setText("Erro ao registar resultado: " + response.body());
+                    infoLabel.setText("Error al registrar el resultado: " + response.body());
                 }
             }))
-            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Erro: " + e.getMessage())); return null; });
+            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Error: " + e.getMessage())); return null; });
     }
 
-
     private void atualizarPodioSeCampeonato(String gameId, String vencedora) {
-        // Busca info do jogo para saber se é campeonato e quem ficou em 2º/3º, etc.
+        // Obtiene info del partido para saber si es campeonato y quién quedó 2º/3º, etc.
         HttpClient client = HttpClient.newHttpClient();
         try {
             HttpRequest req = HttpRequest.newBuilder()
@@ -84,15 +82,15 @@ public class GameResultController {
                     .build();
             HttpResponse<String> resp = client.send(req, HttpResponse.BodyHandlers.ofString());
             if (resp.statusCode() == 200 && resp.body().contains("\"tipo\":\"Campeonato\"")) {
-                // Atualiza pódio da equipa vencedora (1º lugar)
+                // Actualiza podio del equipo ganador (1er lugar)
                 atualizarPodioEquipe(vencedora, "primeiro");
-                // Opcional: buscar equipa perdedora e atualizar como segundo lugar
+                // Opcional: obtener equipo perdedor y actualizar como segundo lugar
                 String equipa2 = extrairCampo(resp.body(), "equipa1").equals(vencedora) ? extrairCampo(resp.body(), "equipa2") : extrairCampo(resp.body(), "equipa1");
                 atualizarPodioEquipe(equipa2, "segundo");
-                // Opcional: se houver playoff para 3º, adicione aqui
+                // Opcional: si hay playoff para 3º, añadir aquí
             }
         } catch (Exception e) {
-            Platform.runLater(() -> infoLabel.setText("Resultado registado, mas falha ao atualizar conquistas: " + e.getMessage()));
+            Platform.runLater(() -> infoLabel.setText("Resultado registrado, pero fallo al actualizar logros: " + e.getMessage()));
         }
     }
 
@@ -107,16 +105,16 @@ public class GameResultController {
                     .build();
             HttpResponse<String> resp = client.send(req, HttpResponse.BodyHandlers.ofString());
             if (resp.statusCode() == 200) {
-                Platform.runLater(() -> infoLabel.setText("Conquistas atualizadas para a equipa " + equipa + "."));
+                Platform.runLater(() -> infoLabel.setText("Logros actualizados para el equipo " + equipa + "."));
             } else {
-                Platform.runLater(() -> infoLabel.setText("Falha ao atualizar conquistas para " + equipa + ": " + resp.body()));
+                Platform.runLater(() -> infoLabel.setText("Fallo al actualizar logros para " + equipa + ": " + resp.body()));
             }
         } catch (Exception e) {
-            Platform.runLater(() -> infoLabel.setText("Erro ao atualizar conquistas para " + equipa + ": " + e.getMessage()));
+            Platform.runLater(() -> infoLabel.setText("Error al actualizar logros para " + equipa + ": " + e.getMessage()));
         }
     }
 
-    // Utilitário simples para extrair valor de campo JSON
+    // Utilitario simple para extraer valor de campo JSON
     private String extrairCampo(String json, String campo) {
         String search = "\"" + campo + "\":";
         int idx = json.indexOf(search);

@@ -8,11 +8,10 @@ import java.net.URI;
 
 public class GameCreateController {
 
-
     @FXML
     public void initialize() {
-        typeChoice.getItems().addAll("Amigável", "Campeonato");
-        typeChoice.setValue("Amigável"); // valor padrão
+        typeChoice.getItems().addAll("Amistoso", "Campeonato");
+        typeChoice.setValue("Amistoso"); // valor predeterminado
     }
 
     @FXML
@@ -23,7 +22,7 @@ public class GameCreateController {
             javafx.stage.Stage stage = (javafx.stage.Stage) dateField.getScene().getWindow();
             stage.getScene().setRoot(root);
         } catch (Exception e) {
-            infoLabel.setText("Erro ao voltar ao menu: " + e.getMessage());
+            infoLabel.setText("Error al volver al menú: " + e.getMessage());
         }
     }
 
@@ -57,48 +56,49 @@ public class GameCreateController {
         String goalkeeper2 = goalkeeper2Field.getText();
         String mainReferee = mainRefereeField.getText();
         if (data.isBlank() || hora.isBlank() || local.isBlank() || equipa1.isBlank() || equipa2.isBlank() || arbitros.isBlank() || tipo == null || goalkeeper1.isBlank() || goalkeeper2.isBlank() || mainReferee.isBlank()) {
-            infoLabel.setText("Preencha todos os campos obrigatórios.");
+            infoLabel.setText("Complete todos los campos obligatorios.");
             return;
         }
-        // Validação: 5 jogadores por equipa
+        // Validación: 5 jugadores por equipo
         String[] jogadores1 = equipa1.split(",");
         String[] jogadores2 = equipa2.split(",");
         if (jogadores1.length != 5) {
-            infoLabel.setText("A Equipa 1 deve ter exatamente 5 jogadores.");
+            infoLabel.setText("El Equipo 1 debe tener exactamente 5 jugadores.");
             return;
         }
         if (jogadores2.length != 5) {
-            infoLabel.setText("A Equipa 2 deve ter exatamente 5 jogadores.");
+            infoLabel.setText("El Equipo 2 debe tener exactamente 5 jugadores.");
             return;
         }
-        // Validação: guarda-redes está entre os jogadores
+        // Validación: el portero del Equipo 1 debe estar entre los jugadores informados
         boolean gk1ok = false;
         for (String email : jogadores1) {
             if (email.trim().equalsIgnoreCase(goalkeeper1.trim())) gk1ok = true;
         }
         if (!gk1ok) {
-            infoLabel.setText("O guarda-redes da Equipa 1 deve estar entre os jogadores informados.");
+            infoLabel.setText("El portero del Equipo 1 debe estar entre los jugadores informados.");
             return;
         }
+        // Validación: el portero del Equipo 2 debe estar entre los jugadores informados
         boolean gk2ok = false;
         for (String email : jogadores2) {
             if (email.trim().equalsIgnoreCase(goalkeeper2.trim())) gk2ok = true;
         }
         if (!gk2ok) {
-            infoLabel.setText("O guarda-redes da Equipa 2 deve estar entre os jogadores informados.");
+            infoLabel.setText("El portero del Equipo 2 debe estar entre los jugadores informados.");
             return;
         }
-        // Validação: árbitro principal está entre os árbitros
+        // Validación: el árbitro principal debe estar entre los árbitros informados
         String[] arbitrosArr = arbitros.split(",");
         boolean mainRefOk = false;
         for (String email : arbitrosArr) {
             if (email.trim().equalsIgnoreCase(mainReferee.trim())) mainRefOk = true;
         }
         if (!mainRefOk) {
-            infoLabel.setText("O árbitro principal deve estar entre os árbitros informados.");
+            infoLabel.setText("El árbitro principal debe estar entre los árbitros informados.");
             return;
         }
-        // Se for jogo de campeonato, árbitro principal deve ser certificado
+        // Si es partido de campeonato, el árbitro principal debe estar certificado
         if (tipo.equalsIgnoreCase("Campeonato")) {
             try {
                 HttpClient client = HttpClient.newHttpClient();
@@ -108,20 +108,15 @@ public class GameCreateController {
                         .build();
                 HttpResponse<String> resp = client.send(req, HttpResponse.BodyHandlers.ofString());
                 if (resp.statusCode() != 200 || !resp.body().contains("\"role\":\"REFEREE\"") || !resp.body().contains("\"certified\":true")) {
-                    infoLabel.setText("O árbitro principal deve ser certificado para jogos de campeonato.");
+                    infoLabel.setText("El árbitro principal debe estar certificado para partidos de campeonato.");
                     return;
                 }
             } catch (Exception ex) {
-                infoLabel.setText("Erro ao validar árbitro principal: " + mainReferee);
+                infoLabel.setText("Error al validar el árbitro principal: " + mainReferee);
                 return;
             }
         }
-        // Monta JSON incluindo guarda-redes e árbitro principal
-
-        if (data.isBlank() || hora.isBlank() || local.isBlank() || equipa1.isBlank() || equipa2.isBlank() || arbitros.isBlank() || tipo == null) {
-            infoLabel.setText("Preencha todos os campos obrigatórios.");
-            return;
-        }
+        // Construye JSON incluyendo porteros y árbitro principal
         StringBuilder sb = new StringBuilder();
         sb.append("{\"data\":\"").append(data).append("\",")
           .append("\"hora\":\"").append(hora).append("\",")
@@ -149,11 +144,11 @@ public class GameCreateController {
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
             .thenAccept(response -> Platform.runLater(() -> {
                 if (response.statusCode() == 201 || response.statusCode() == 200) {
-                    infoLabel.setText("Jogo criado com sucesso!");
+                    infoLabel.setText("¡Partido creado con éxito!");
                 } else {
-                    infoLabel.setText("Erro ao criar jogo: " + response.body());
+                    infoLabel.setText("Error al crear el partido: " + response.body());
                 }
             }))
-            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Erro: " + e.getMessage())); return null; });
+            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Error: " + e.getMessage())); return null; });
     }
 }

@@ -13,12 +13,11 @@ public class ChampionshipManageController {
     @FXML private TextField refereesField;
     @FXML private Label infoLabel;
 
-
     @FXML
     private void handleSearch() {
         String nome = nameField.getText();
         if (nome.isBlank()) {
-            infoLabel.setText("Informe o nome do campeonato para buscar.");
+            infoLabel.setText("Indica el nombre del campeonato para buscar.");
             return;
         }
         HttpClient client = HttpClient.newHttpClient();
@@ -38,10 +37,10 @@ public class ChampionshipManageController {
                     refereesField.setText(arbitros);
                     infoLabel.setText("Campeonato encontrado.");
                 } else {
-                    infoLabel.setText("Campeonato não encontrado.");
+                    infoLabel.setText("Campeonato no encontrado.");
                 }
             }))
-            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Erro: " + e.getMessage())); return null; });
+            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Error: " + e.getMessage())); return null; });
     }
 
     @FXML
@@ -51,7 +50,7 @@ public class ChampionshipManageController {
         String equipas = teamsField.getText();
         String arbitros = refereesField.getText();
         if (nome.isBlank() || modalidade.isBlank() || equipas.isBlank() || arbitros.isBlank()) {
-            infoLabel.setText("Preencha todos os campos obrigatórios.");
+            infoLabel.setText("Complete todos los campos obligatorios.");
             return;
         }
         String[] equipasArr = equipas.split(",");
@@ -78,19 +77,19 @@ public class ChampionshipManageController {
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
             .thenAccept(response -> Platform.runLater(() -> {
                 if (response.statusCode() == 200) {
-                    infoLabel.setText("Campeonato atualizado com sucesso!");
+                    infoLabel.setText("¡Campeonato actualizado con éxito!");
                 } else {
-                    infoLabel.setText("Erro ao atualizar: " + response.body());
+                    infoLabel.setText("Error al actualizar: " + response.body());
                 }
             }))
-            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Erro: " + e.getMessage())); return null; });
+            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Error: " + e.getMessage())); return null; });
     }
 
     @FXML
     private void handleRemove() {
         String nome = nameField.getText();
         if (nome.isBlank()) {
-            infoLabel.setText("Informe o nome do campeonato para remover.");
+            infoLabel.setText("Indica el nombre del campeonato para eliminar.");
             return;
         }
         HttpClient client = HttpClient.newHttpClient();
@@ -101,18 +100,18 @@ public class ChampionshipManageController {
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
             .thenAccept(response -> Platform.runLater(() -> {
                 if (response.statusCode() == 200) {
-                    infoLabel.setText("Campeonato removido com sucesso!");
+                    infoLabel.setText("¡Campeonato eliminado con éxito!");
                     modalityField.setText("");
                     teamsField.setText("");
                     refereesField.setText("");
                 } else {
-                    infoLabel.setText("Erro ao remover: " + response.body());
+                    infoLabel.setText("Error al eliminar: " + response.body());
                 }
             }))
-            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Erro: " + e.getMessage())); return null; });
+            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Error: " + e.getMessage())); return null; });
     }
 
-    // Navegação para o menu principal
+    // Navegación al menú principal
     @FXML
     private void handleBack() {
         try {
@@ -121,11 +120,11 @@ public class ChampionshipManageController {
             stage.setScene(new javafx.scene.Scene(root));
         } catch (Exception e) {
             infoLabel.setStyle("-fx-text-fill: red;");
-            infoLabel.setText("Erro ao voltar ao menu: " + e.getMessage());
+            infoLabel.setText("Error al volver al menú: " + e.getMessage());
         }
     }
 
-    // Utilitário simples para extrair valor de campo JSON (sem dependência externa)
+    // Utilitario simple para extraer valor de campo JSON (sin dependencia externa)
     private String extractJson(String json, String field) {
         String search = "\"" + field + "\":";
         int idx = json.indexOf(search);
@@ -134,7 +133,7 @@ public class ChampionshipManageController {
         int end = json.indexOf('"', start + 1);
         return (start != -1 && end != -1) ? json.substring(start + 1, end) : "";
     }
-    // Extrai array JSON como string separada por vírgula
+    // Extrae array JSON como cadena separada por comas
     private String extractArrayJson(String json, String field) {
         String search = "\"" + field + "\":[";
         int idx = json.indexOf(search);

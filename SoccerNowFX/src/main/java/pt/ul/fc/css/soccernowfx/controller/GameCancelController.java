@@ -14,7 +14,7 @@ public class GameCancelController {
     private void handleCancel() {
         String gameId = gameIdField.getText();
         if (gameId.isBlank()) {
-            infoLabel.setText("Informe o ID do jogo.");
+            infoLabel.setText("Indica el ID del partido.");
             return;
         }
         HttpClient client = HttpClient.newHttpClient();
@@ -25,11 +25,11 @@ public class GameCancelController {
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
             .thenAccept(response -> Platform.runLater(() -> {
                 if (response.statusCode() == 200) {
-                    infoLabel.setText("Jogo cancelado com sucesso!");
+                    infoLabel.setText("¡Partido cancelado con éxito!");
                 } else {
-                    infoLabel.setText("Erro ao cancelar jogo: " + response.body());
+                    infoLabel.setText("Error al cancelar el partido: " + response.body());
                 }
             }))
-            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Erro: " + e.getMessage())); return null; });
+            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Error: " + e.getMessage())); return null; });
     }
 }

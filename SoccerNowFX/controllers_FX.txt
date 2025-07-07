@@ -1,0 +1,1279 @@
+﻿=====  C:\Users\super\Desktop\CSS proyecto\soccernow\SoccerNowFX\src\main\java\pt\ul\fc\css\soccernowfx\controller\ChampionshipCreateController.java  =====
+package pt.ul.fc.css.soccernowfx.controller;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.application.Platform;
+import java.net.http.*;
+import java.net.URI;
+
+public class ChampionshipCreateController {
+    @FXML private TextField nameField;
+    @FXML private TextField modalityField;
+    @FXML private TextField formatField;
+    @FXML private TextField teamsField;
+    @FXML private TextField refereesField;
+    @FXML private Label infoLabel;
+
+    @FXML
+    private void handleBack() {
+        try {
+            javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("/fxml/menu.fxml"));
+            javafx.stage.Stage stage = (javafx.stage.Stage) infoLabel.getScene().getWindow();
+            stage.setScene(new javafx.scene.Scene(root));
+        } catch (Exception e) {
+            infoLabel.setText("Erro ao voltar ao menu: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleCreate() {
+        String nome = nameField.getText();
+        String modalidade = modalityField.getText();
+        String formato = formatField.getText();
+        String equipas = teamsField.getText();
+        String arbitros = refereesField.getText();
+        if (nome.isBlank() || modalidade.isBlank() || formato.isBlank() || equipas.isBlank() || arbitros.isBlank()) {
+            infoLabel.setText("Preencha todos os campos obrigatÃ³rios.");
+            return;
+        }
+        String[] equipasArr = equipas.split(",");
+        String[] arbitrosArr = arbitros.split(",");
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"nome\":\"").append(nome).append("\",\"modalidade\":\"").append(modalidade).append("\",\"formato\":\"").append(formato).append("\",\"equipas\":[");
+        for (int i = 0; i < equipasArr.length; i++) {
+            sb.append("\"").append(equipasArr[i].trim()).append("\"");
+            if (i < equipasArr.length - 1) sb.append(",");
+        }
+        sb.append("],\"arbitrosCertificados\":[");
+        for (int i = 0; i < arbitrosArr.length; i++) {
+            sb.append("\"").append(arbitrosArr[i].trim()).append("\"");
+            if (i < arbitrosArr.length - 1) sb.append(",");
+        }
+        sb.append("]}");
+        String json = sb.toString();
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/championships"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+            .thenAccept(response -> Platform.runLater(() -> {
+                if (response.statusCode() == 201 || response.statusCode() == 200) {
+                    infoLabel.setText("Campeonato criado com sucesso!");
+                } else {
+                    infoLabel.setText("Erro ao criar campeonato: " + response.body());
+                }
+            }))
+            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Erro: " + e.getMessage())); return null; });
+    }
+
+}
+
+=====  C:\Users\super\Desktop\CSS proyecto\soccernow\SoccerNowFX\src\main\java\pt\ul\fc\css\soccernowfx\controller\ChampionshipManageController.java  =====
+package pt.ul.fc.css.soccernowfx.controller;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.application.Platform;
+import java.net.http.*;
+import java.net.URI;
+
+public class ChampionshipManageController {
+    @FXML private TextField nameField;
+    @FXML private TextField modalityField;
+    @FXML private TextField teamsField;
+    @FXML private TextField refereesField;
+    @FXML private Label infoLabel;
+
+
+    @FXML
+    private void handleSearch() {
+        String nome = nameField.getText();
+        if (nome.isBlank()) {
+            infoLabel.setText("Informe o nome do campeonato para buscar.");
+            return;
+        }
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/championships/" + nome))
+                .GET()
+                .build();
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+            .thenAccept(response -> Platform.runLater(() -> {
+                if (response.statusCode() == 200) {
+                    String body = response.body();
+                    String modalidade = extractJson(body, "modalidade");
+                    String equipas = extractArrayJson(body, "equipas");
+                    String arbitros = extractArrayJson(body, "arbitrosCertificados");
+                    modalityField.setText(modalidade);
+                    teamsField.setText(equipas);
+                    refereesField.setText(arbitros);
+                    infoLabel.setText("Campeonato encontrado.");
+                } else {
+                    infoLabel.setText("Campeonato nÃ£o encontrado.");
+                }
+            }))
+            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Erro: " + e.getMessage())); return null; });
+    }
+
+    @FXML
+    private void handleUpdate() {
+        String nome = nameField.getText();
+        String modalidade = modalityField.getText();
+        String equipas = teamsField.getText();
+        String arbitros = refereesField.getText();
+        if (nome.isBlank() || modalidade.isBlank() || equipas.isBlank() || arbitros.isBlank()) {
+            infoLabel.setText("Preencha todos os campos obrigatÃ³rios.");
+            return;
+        }
+        String[] equipasArr = equipas.split(",");
+        String[] arbitrosArr = arbitros.split(",");
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"nome\":\"").append(nome).append("\",\"modalidade\":\"").append(modalidade).append("\",\"equipas\":[");
+        for (int i = 0; i < equipasArr.length; i++) {
+            sb.append("\"").append(equipasArr[i].trim()).append("\"");
+            if (i < equipasArr.length - 1) sb.append(",");
+        }
+        sb.append("],\"arbitrosCertificados\":[");
+        for (int i = 0; i < arbitrosArr.length; i++) {
+            sb.append("\"").append(arbitrosArr[i].trim()).append("\"");
+            if (i < arbitrosArr.length - 1) sb.append(",");
+        }
+        sb.append("]}");
+        String json = sb.toString();
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/championships/" + nome))
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+            .thenAccept(response -> Platform.runLater(() -> {
+                if (response.statusCode() == 200) {
+                    infoLabel.setText("Campeonato atualizado com sucesso!");
+                } else {
+                    infoLabel.setText("Erro ao atualizar: " + response.body());
+                }
+            }))
+            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Erro: " + e.getMessage())); return null; });
+    }
+
+    @FXML
+    private void handleRemove() {
+        String nome = nameField.getText();
+        if (nome.isBlank()) {
+            infoLabel.setText("Informe o nome do campeonato para remover.");
+            return;
+        }
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/championships/" + nome))
+                .DELETE()
+                .build();
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+            .thenAccept(response -> Platform.runLater(() -> {
+                if (response.statusCode() == 200) {
+                    infoLabel.setText("Campeonato removido com sucesso!");
+                    modalityField.setText("");
+                    teamsField.setText("");
+                    refereesField.setText("");
+                } else {
+                    infoLabel.setText("Erro ao remover: " + response.body());
+                }
+            }))
+            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Erro: " + e.getMessage())); return null; });
+    }
+
+    // NavegaÃ§Ã£o para o menu principal
+    @FXML
+    private void handleBack() {
+        try {
+            javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("/fxml/menu.fxml"));
+            javafx.stage.Stage stage = (javafx.stage.Stage) infoLabel.getScene().getWindow();
+            stage.setScene(new javafx.scene.Scene(root));
+        } catch (Exception e) {
+            infoLabel.setStyle("-fx-text-fill: red;");
+            infoLabel.setText("Erro ao voltar ao menu: " + e.getMessage());
+        }
+    }
+
+    // UtilitÃ¡rio simples para extrair valor de campo JSON (sem dependÃªncia externa)
+    private String extractJson(String json, String field) {
+        String search = "\"" + field + "\":";
+        int idx = json.indexOf(search);
+        if (idx == -1) return "";
+        int start = json.indexOf('"', idx + search.length());
+        int end = json.indexOf('"', start + 1);
+        return (start != -1 && end != -1) ? json.substring(start + 1, end) : "";
+    }
+    // Extrai array JSON como string separada por vÃ­rgula
+    private String extractArrayJson(String json, String field) {
+        String search = "\"" + field + "\":[";
+        int idx = json.indexOf(search);
+        if (idx == -1) return "";
+        int start = idx + search.length();
+        int end = json.indexOf(']', start);
+        if (end == -1) return "";
+        String arr = json.substring(start, end);
+        return arr.replaceAll("\"", "").replaceAll(",", ", ");
+    }
+}
+
+=====  C:\Users\super\Desktop\CSS proyecto\soccernow\SoccerNowFX\src\main\java\pt\ul\fc\css\soccernowfx\controller\GameCancelController.java  =====
+package pt.ul.fc.css.soccernowfx.controller;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.application.Platform;
+import java.net.http.*;
+import java.net.URI;
+
+public class GameCancelController {
+    @FXML private TextField gameIdField;
+    @FXML private Label infoLabel;
+
+    @FXML
+    private void handleCancel() {
+        String gameId = gameIdField.getText();
+        if (gameId.isBlank()) {
+            infoLabel.setText("Informe o ID do jogo.");
+            return;
+        }
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/games/" + gameId + "/cancel"))
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+            .thenAccept(response -> Platform.runLater(() -> {
+                if (response.statusCode() == 200) {
+                    infoLabel.setText("Jogo cancelado com sucesso!");
+                } else {
+                    infoLabel.setText("Erro ao cancelar jogo: " + response.body());
+                }
+            }))
+            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Erro: " + e.getMessage())); return null; });
+    }
+}
+
+=====  C:\Users\super\Desktop\CSS proyecto\soccernow\SoccerNowFX\src\main\java\pt\ul\fc\css\soccernowfx\controller\GameCreateController.java  =====
+package pt.ul.fc.css.soccernowfx.controller;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.application.Platform;
+import java.net.http.*;
+import java.net.URI;
+
+public class GameCreateController {
+
+
+    @FXML
+    public void initialize() {
+        typeChoice.getItems().addAll("AmigÃ¡vel", "Campeonato");
+        typeChoice.setValue("AmigÃ¡vel"); // valor padrÃ£o
+    }
+
+    @FXML
+    private void handleBack() {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/menu.fxml"));
+            javafx.scene.Parent root = loader.load();
+            javafx.stage.Stage stage = (javafx.stage.Stage) dateField.getScene().getWindow();
+            stage.getScene().setRoot(root);
+        } catch (Exception e) {
+            infoLabel.setText("Erro ao voltar ao menu: " + e.getMessage());
+        }
+    }
+
+    @FXML private DatePicker dateField;
+    @FXML private TextField timeField;
+    @FXML private TextField locationField;
+    @FXML private TextField team1Field;
+    @FXML private TextField team2Field;
+    @FXML private TextField refereesField;
+    @FXML private ChoiceBox<String> typeChoice;
+    @FXML private TextField championshipField;
+
+    @FXML private TextField goalkeeper1Field;
+    @FXML private TextField goalkeeper2Field;
+    @FXML private TextField mainRefereeField;
+
+    @FXML private Label infoLabel;
+
+    @FXML
+    private void handleCreate() {
+        String data = dateField.getValue() != null ? dateField.getValue().toString() : "";
+        String hora = timeField.getText();
+        String local = locationField.getText();
+        String equipa1 = team1Field.getText();
+        String equipa2 = team2Field.getText();
+        String arbitros = refereesField.getText();
+        String tipo = typeChoice.getValue();
+        String campeonato = championshipField.getText();
+
+        String goalkeeper1 = goalkeeper1Field.getText();
+        String goalkeeper2 = goalkeeper2Field.getText();
+        String mainReferee = mainRefereeField.getText();
+        if (data.isBlank() || hora.isBlank() || local.isBlank() || equipa1.isBlank() || equipa2.isBlank() || arbitros.isBlank() || tipo == null || goalkeeper1.isBlank() || goalkeeper2.isBlank() || mainReferee.isBlank()) {
+            infoLabel.setText("Preencha todos os campos obrigatÃ³rios.");
+            return;
+        }
+        // ValidaÃ§Ã£o: 5 jogadores por equipa
+        String[] jogadores1 = equipa1.split(",");
+        String[] jogadores2 = equipa2.split(",");
+        if (jogadores1.length != 5) {
+            infoLabel.setText("A Equipa 1 deve ter exatamente 5 jogadores.");
+            return;
+        }
+        if (jogadores2.length != 5) {
+            infoLabel.setText("A Equipa 2 deve ter exatamente 5 jogadores.");
+            return;
+        }
+        // ValidaÃ§Ã£o: guarda-redes estÃ¡ entre os jogadores
+        boolean gk1ok = false;
+        for (String email : jogadores1) {
+            if (email.trim().equalsIgnoreCase(goalkeeper1.trim())) gk1ok = true;
+        }
+        if (!gk1ok) {
+            infoLabel.setText("O guarda-redes da Equipa 1 deve estar entre os jogadores informados.");
+            return;
+        }
+        boolean gk2ok = false;
+        for (String email : jogadores2) {
+            if (email.trim().equalsIgnoreCase(goalkeeper2.trim())) gk2ok = true;
+        }
+        if (!gk2ok) {
+            infoLabel.setText("O guarda-redes da Equipa 2 deve estar entre os jogadores informados.");
+            return;
+        }
+        // ValidaÃ§Ã£o: Ã¡rbitro principal estÃ¡ entre os Ã¡rbitros
+        String[] arbitrosArr = arbitros.split(",");
+        boolean mainRefOk = false;
+        for (String email : arbitrosArr) {
+            if (email.trim().equalsIgnoreCase(mainReferee.trim())) mainRefOk = true;
+        }
+        if (!mainRefOk) {
+            infoLabel.setText("O Ã¡rbitro principal deve estar entre os Ã¡rbitros informados.");
+            return;
+        }
+        // Se for jogo de campeonato, Ã¡rbitro principal deve ser certificado
+        if (tipo.equalsIgnoreCase("Campeonato")) {
+            try {
+                HttpClient client = HttpClient.newHttpClient();
+                HttpRequest req = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8080/api/users/by-email/" + mainReferee.trim()))
+                        .GET()
+                        .build();
+                HttpResponse<String> resp = client.send(req, HttpResponse.BodyHandlers.ofString());
+                if (resp.statusCode() != 200 || !resp.body().contains("\"role\":\"REFEREE\"") || !resp.body().contains("\"certified\":true")) {
+                    infoLabel.setText("O Ã¡rbitro principal deve ser certificado para jogos de campeonato.");
+                    return;
+                }
+            } catch (Exception ex) {
+                infoLabel.setText("Erro ao validar Ã¡rbitro principal: " + mainReferee);
+                return;
+            }
+        }
+        // Monta JSON incluindo guarda-redes e Ã¡rbitro principal
+
+        if (data.isBlank() || hora.isBlank() || local.isBlank() || equipa1.isBlank() || equipa2.isBlank() || arbitros.isBlank() || tipo == null) {
+            infoLabel.setText("Preencha todos os campos obrigatÃ³rios.");
+            return;
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"data\":\"").append(data).append("\",")
+          .append("\"hora\":\"").append(hora).append("\",")
+          .append("\"local\":\"").append(local).append("\",")
+          .append("\"equipa1\":\"").append(equipa1).append("\",")
+          .append("\"equipa2\":\"").append(equipa2).append("\",")
+          .append("\"arbitros\":[");
+        for (int i = 0; i < arbitrosArr.length; i++) {
+            sb.append("\"").append(arbitrosArr[i].trim()).append("\"");
+            if (i < arbitrosArr.length - 1) sb.append(",");
+        }
+        sb.append("]");
+        if ("Campeonato".equals(tipo) && !campeonato.isBlank()) {
+            sb.append(",\"campeonato\":\"").append(campeonato).append("\"");
+        }
+        sb.append("}");
+        String json = sb.toString();
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/games"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+            .thenAccept(response -> Platform.runLater(() -> {
+                if (response.statusCode() == 201 || response.statusCode() == 200) {
+                    infoLabel.setText("Jogo criado com sucesso!");
+                } else {
+                    infoLabel.setText("Erro ao criar jogo: " + response.body());
+                }
+            }))
+            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Erro: " + e.getMessage())); return null; });
+    }
+}
+
+=====  C:\Users\super\Desktop\CSS proyecto\soccernow\SoccerNowFX\src\main\java\pt\ul\fc\css\soccernowfx\controller\GameResultController.java  =====
+package pt.ul.fc.css.soccernowfx.controller;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.application.Platform;
+import java.net.http.*;
+import java.net.URI;
+
+public class GameResultController {
+
+
+    @FXML
+    private void handleBack() {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/menu.fxml"));
+            javafx.scene.Parent root = loader.load();
+            javafx.stage.Stage stage = (javafx.stage.Stage) gameIdField.getScene().getWindow();
+            stage.getScene().setRoot(root);
+        } catch (Exception e) {
+            infoLabel.setText("Erro ao voltar ao menu: " + e.getMessage());
+        }
+    }
+
+    @FXML private TextField gameIdField;
+    @FXML private TextField scoreField;
+    @FXML private TextField winnerField;
+    @FXML private TextField cardsField;
+    @FXML private Label infoLabel;
+
+    @FXML
+    private void handleRegister() {
+        String gameId = gameIdField.getText();
+        String placar = scoreField.getText();
+        String vencedora = winnerField.getText();
+        String cartoes = cardsField.getText();
+        if (gameId.isBlank() || placar.isBlank() || vencedora.isBlank()) {
+            infoLabel.setText("Preencha os campos obrigatÃ³rios.");
+            return;
+        }
+        // CartÃµes: email:tipo, separados por vÃ­rgula
+        String[] cartoesArr = cartoes.isBlank() ? new String[0] : cartoes.split(",");
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("{\"gameId\":\"").append(gameId).append("\",\"placar\":\"").append(placar).append("\",\"vencedora\":\"").append(vencedora).append("\",\"cartoes\":[");
+        for (int i = 0; i < cartoesArr.length; i++) {
+            String[] partes = cartoesArr[i].trim().split(":");
+            if (partes.length == 2) {
+                sb.append("{\"email\":\"").append(partes[0].trim()).append("\",\"tipo\":\"").append(partes[1].trim()).append("\"}");
+                if (i < cartoesArr.length - 1) sb.append(",");
+            }
+        }
+        sb.append("]}");
+        String json = sb.toString();
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+
+                .uri(URI.create("http://localhost:8080/api/games/" + gameId + "/result"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+            .thenAccept(response -> Platform.runLater(() -> {
+                if (response.statusCode() == 200) {
+                    infoLabel.setText("Resultado registado com sucesso!");
+
+                    // Atualizar histÃ³rico de conquistas se for jogo de campeonato
+                    atualizarPodioSeCampeonato(gameId, vencedora);
+
+                } else {
+                    infoLabel.setText("Erro ao registar resultado: " + response.body());
+                }
+            }))
+            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Erro: " + e.getMessage())); return null; });
+    }
+
+
+    private void atualizarPodioSeCampeonato(String gameId, String vencedora) {
+        // Busca info do jogo para saber se Ã© campeonato e quem ficou em 2Âº/3Âº, etc.
+        HttpClient client = HttpClient.newHttpClient();
+        try {
+            HttpRequest req = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8080/api/games/" + gameId))
+                    .GET()
+                    .build();
+            HttpResponse<String> resp = client.send(req, HttpResponse.BodyHandlers.ofString());
+            if (resp.statusCode() == 200 && resp.body().contains("\"tipo\":\"Campeonato\"")) {
+                // Atualiza pÃ³dio da equipa vencedora (1Âº lugar)
+                atualizarPodioEquipe(vencedora, "primeiro");
+                // Opcional: buscar equipa perdedora e atualizar como segundo lugar
+                String equipa2 = extrairCampo(resp.body(), "equipa1").equals(vencedora) ? extrairCampo(resp.body(), "equipa2") : extrairCampo(resp.body(), "equipa1");
+                atualizarPodioEquipe(equipa2, "segundo");
+                // Opcional: se houver playoff para 3Âº, adicione aqui
+            }
+        } catch (Exception e) {
+            Platform.runLater(() -> infoLabel.setText("Resultado registado, mas falha ao atualizar conquistas: " + e.getMessage()));
+        }
+    }
+
+    private void atualizarPodioEquipe(String equipa, String posicao) {
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            String json = String.format("{\"posicao\":\"%s\"}", posicao);
+            HttpRequest req = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8080/api/teams/" + equipa + "/podium"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+            HttpResponse<String> resp = client.send(req, HttpResponse.BodyHandlers.ofString());
+            if (resp.statusCode() == 200) {
+                Platform.runLater(() -> infoLabel.setText("Conquistas atualizadas para a equipa " + equipa + "."));
+            } else {
+                Platform.runLater(() -> infoLabel.setText("Falha ao atualizar conquistas para " + equipa + ": " + resp.body()));
+            }
+        } catch (Exception e) {
+            Platform.runLater(() -> infoLabel.setText("Erro ao atualizar conquistas para " + equipa + ": " + e.getMessage()));
+        }
+    }
+
+    // UtilitÃ¡rio simples para extrair valor de campo JSON
+    private String extrairCampo(String json, String campo) {
+        String search = "\"" + campo + "\":";
+        int idx = json.indexOf(search);
+        if (idx == -1) return "";
+        int start = json.indexOf('"', idx + search.length());
+        int end = json.indexOf('"', start + 1);
+        return (start != -1 && end != -1) ? json.substring(start + 1, end) : "";
+    }
+
+}
+
+=====  C:\Users\super\Desktop\CSS proyecto\soccernow\SoccerNowFX\src\main\java\pt\ul\fc\css\soccernowfx\controller\LoginController.java  =====
+package pt.ul.fc.css.soccernowfx.controller;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+
+public class LoginController {
+    @FXML private TextField emailField;
+    @FXML private PasswordField passwordField;
+    @FXML private Label errorLabel;
+    @FXML private Hyperlink registerLink;
+
+    @FXML
+    private void handleLogin() {
+        String email = emailField.getText();
+        String password = passwordField.getText();
+        // Aqui vocÃª pode adicionar lÃ³gica real de autenticaÃ§Ã£o
+        if (email.isBlank()) {
+            errorLabel.setText("Por favor, insira o email.");
+            return;
+        }
+        // Aceita qualquer senha (mock)
+        errorLabel.setText("");
+        try {
+            javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("/fxml/menu.fxml"));
+            javafx.stage.Stage stage = (javafx.stage.Stage) emailField.getScene().getWindow();
+            stage.setScene(new javafx.scene.Scene(root));
+        } catch (Exception e) {
+            errorLabel.setText("Erro ao abrir menu: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleShowRegister() {
+        try {
+            javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("/fxml/register.fxml"));
+            javafx.stage.Stage stage = (javafx.stage.Stage) emailField.getScene().getWindow();
+            stage.setScene(new javafx.scene.Scene(root));
+        } catch (Exception e) {
+            errorLabel.setText("Erro ao abrir cadastro: " + e.getMessage());
+        }
+    }
+}
+
+=====  C:\Users\super\Desktop\CSS proyecto\soccernow\SoccerNowFX\src\main\java\pt\ul\fc\css\soccernowfx\controller\MenuController.java  =====
+package pt.ul.fc.css.soccernowfx.controller;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.Parent;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.fxml.FXMLLoader;
+
+public class MenuController {
+
+
+    @FXML
+    private void handleCreateChampionship() {
+        try {
+            javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("/fxml/championship_create.fxml"));
+            javafx.stage.Stage stage = (javafx.stage.Stage) infoLabel.getScene().getWindow();
+            stage.setScene(new javafx.scene.Scene(root));
+        } catch (Exception e) {
+            infoLabel.setText("Erro ao abrir criaÃ§Ã£o de campeonato: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleRegisterUser() {
+        try {
+            javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("/fxml/register.fxml"));
+            javafx.stage.Stage stage = (javafx.stage.Stage) infoLabel.getScene().getWindow();
+            stage.setScene(new javafx.scene.Scene(root));
+        } catch (Exception e) {
+            infoLabel.setText("Erro ao abrir cadastro: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleCreateTeam() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/team_create.fxml"));
+            Stage stage = (Stage) infoLabel.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            infoLabel.setText("Erro ao abrir criaÃ§Ã£o de equipa: " + e.getMessage());
+        }
+    }
+
+    @FXML private Label infoLabel;
+
+    @FXML
+    private void handleManageUsers() {
+
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/user_manage.fxml"));
+            Stage stage = (Stage) infoLabel.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            infoLabel.setText("Erro ao abrir gestÃ£o de utilizadores: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleManageTeams() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/team_manage.fxml"));
+            Stage stage = (Stage) infoLabel.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            infoLabel.setText("Erro ao abrir gestÃ£o de equipas: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleManageChampionships() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/championship_manage.fxml"));
+            Stage stage = (Stage) infoLabel.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            infoLabel.setText("Erro ao abrir gestÃ£o de campeonatos: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleManageGames() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/game_create.fxml"));
+            Stage stage = (Stage) infoLabel.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            infoLabel.setText("Erro ao abrir gestÃ£o de jogos: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleRegisterResult() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/game_result.fxml"));
+            Stage stage = (Stage) infoLabel.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            infoLabel.setText("Erro ao abrir registo de resultado: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleCancelGame() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/game_cancel.fxml"));
+            Stage stage = (Stage) infoLabel.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            infoLabel.setText("Erro ao abrir cancelamento de jogo: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleLogout() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/login.fxml"));
+            Stage stage = (Stage) infoLabel.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            infoLabel.setText("Erro ao fazer logout: " + e.getMessage());
+        }
+    }
+}
+
+=====  C:\Users\super\Desktop\CSS proyecto\soccernow\SoccerNowFX\src\main\java\pt\ul\fc\css\soccernowfx\controller\RegisterController.java  =====
+package pt.ul.fc.css.soccernowfx.controller;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+
+public class RegisterController {
+
+    @FXML
+    public void initialize() {
+        typeChoice.getItems().addAll("JOGADOR", "ARBITRO");
+        // Popular opÃ§Ãµes iniciais
+        typeChoice.setOnAction(e -> updateExtraOptions());
+        updateExtraOptions();
+    }
+
+    private void updateExtraOptions() {
+        extraField.getItems().clear();
+        String tipo = typeChoice.getValue();
+        if ("JOGADOR".equalsIgnoreCase(tipo)) {
+            // SÃ³ os valores aceitos pelo Enum do backend
+            extraField.getItems().addAll(
+                "PORTERO", "DEFENSA", "CENTROCAMPISTA", "DELANTERO"
+            );
+        } else if ("ARBITRO".equalsIgnoreCase(tipo)) {
+            // Apenas opÃ§Ãµes vÃ¡lidas para certified=true
+            extraField.getItems().addAll(
+                "NACIONAL", "INTERNACIONAL"
+            );
+            // Se quiser permitir Ã¡rbitros nÃ£o certificados, adicione opÃ§Ã£o "REGIONAL", "ESTADUAL" como false
+            extraField.getItems().addAll("REGIONAL", "ESTADUAL");
+        }
+        if (!extraField.getItems().isEmpty()) {
+            extraField.setValue(extraField.getItems().get(0));
+        }
+    }
+
+    @FXML private TextField nameField;
+    @FXML private TextField emailField;
+    @FXML private PasswordField passwordField;
+    @FXML private ChoiceBox<String> typeChoice;
+
+    @FXML private ChoiceBox<String> extraField; // Agora Ã© ChoiceBox
+
+    @FXML private Label errorLabel;
+    @FXML private Button backButton;
+
+    @FXML
+    private void handleRegister() {
+        errorLabel.setText("");
+        errorLabel.setStyle("");
+        String nome = nameField.getText();
+        String email = emailField.getText();
+        String senha = passwordField.getText();
+        String tipo = typeChoice.getValue();
+
+        String extra = extraField.getValue();
+        // ValidaÃ§Ã£o de campos obrigatÃ³rios
+        if (nome.isBlank() || email.isBlank() || senha.isBlank() || tipo == null) {
+            errorLabel.setText("Preencha todos os campos obrigatÃ³rios.");
+            return;
+        }
+
+        // ValidaÃ§Ã£o de formato de email
+        if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+            errorLabel.setText("Email invÃ¡lido.");
+            return;
+        }
+        // NÃ£o permitir jogador e Ã¡rbitro ao mesmo tempo (tipo ChoiceBox sÃ³ permite um, entÃ£o nÃ£o hÃ¡ conflito, mas validaÃ§Ã£o extra)
+        if (!tipo.equals("JOGADOR") && !tipo.equals("ARBITRO")) {
+            errorLabel.setText("Tipo de utilizador invÃ¡lido.");
+            return;
+        }
+        // Montar JSON
+        String roleBackend;
+        if (tipo.equals("JOGADOR")) {
+            roleBackend = "PLAYER";
+        } else if (tipo.equals("ARBITRO")) {
+            roleBackend = "REFEREE";
+        } else {
+            roleBackend = tipo;
+        }
+        String json;
+        if (tipo.equals("JOGADOR")) {
+            json = String.format("{\"name\":\"%s\",\"email\":\"%s\",\"password\":\"%s\",\"role\":\"%s\",\"preferredPosition\":\"%s\"}",
+                nome, email, senha, roleBackend, extra);
+        } else if (tipo.equals("ARBITRO")) {
+            // Mapear opÃ§Ãµes para booleano: NACIONAL/INTERNACIONAL = true (certified), REGIONAL/ESTADUAL = false
+            boolean certified = "NACIONAL".equalsIgnoreCase(extra) || "INTERNACIONAL".equalsIgnoreCase(extra);
+            json = String.format("{\"name\":\"%s\",\"email\":\"%s\",\"password\":\"%s\",\"role\":\"%s\",\"certified\":%s}",
+                nome, email, senha, roleBackend, certified);
+        } else {
+            json = String.format("{\"name\":\"%s\",\"email\":\"%s\",\"password\":\"%s\",\"role\":\"%s\"}",
+                nome, email, senha, roleBackend);
+        }
+        try {
+            java.net.http.HttpClient client = java.net.http.HttpClient.newHttpClient();
+            java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                    .uri(java.net.URI.create("http://localhost:8080/api/users"))
+                    .header("Content-Type", "application/json")
+                    .POST(java.net.http.HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+            client.sendAsync(request, java.net.http.HttpResponse.BodyHandlers.ofString())
+                .thenAccept(response -> javafx.application.Platform.runLater(() -> {
+                    if (response.statusCode() == 201 || response.statusCode() == 200) {
+
+                        errorLabel.setStyle("-fx-text-fill: green;");
+                        errorLabel.setText("Utilizador registado com sucesso! Voltando ao menu...");
+                        // ApÃ³s 1s, volta ao menu principal
+                        new Thread(() -> {
+                            try { Thread.sleep(1000); } catch (InterruptedException ignored) {}
+                            javafx.application.Platform.runLater(() -> handleBack());
+                        }).start();
+                    } else {
+                        errorLabel.setStyle("-fx-text-fill: red;");
+                        errorLabel.setText("Erro ao registar utilizador (status: " + response.statusCode() + "): " + response.body());
+                        System.out.println("[DEBUG] Erro ao registar utilizador (status: " + response.statusCode() + "): " + response.body());
+                    }
+                }))
+                .exceptionally(e -> { javafx.application.Platform.runLater(() -> { errorLabel.setStyle("-fx-text-fill: red;"); errorLabel.setText("Erro: " + e.getMessage()); }); return null; });
+        } catch (Exception ex) {
+            errorLabel.setStyle("-fx-text-fill: red;");
+            errorLabel.setText("Erro ao enviar requisiÃ§Ã£o: " + ex.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleBack() {
+        try {
+
+            javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("/fxml/menu.fxml"));
+            javafx.stage.Stage stage = (javafx.stage.Stage) backButton.getScene().getWindow();
+            stage.setScene(new javafx.scene.Scene(root));
+        } catch (Exception e) {
+            errorLabel.setStyle("-fx-text-fill: red;");
+            errorLabel.setText("Erro ao voltar ao menu: " + e.getMessage());
+        }
+    }
+}
+
+=====  C:\Users\super\Desktop\CSS proyecto\soccernow\SoccerNowFX\src\main\java\pt\ul\fc\css\soccernowfx\controller\TeamCreateController.java  =====
+package pt.ul.fc.css.soccernowfx.controller;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+
+import java.net.http.*;
+import java.net.URI;
+
+public class TeamCreateController {
+    @FXML private TextField nameField;
+    @FXML private TextField playersField;
+    @FXML private Label infoLabel;
+
+    @FXML private Button backButton;
+    @FXML private ListView<String> emailListView;
+
+    @FXML
+    private void handleCreate() {
+        // Limpa validaÃ§Ã£o visual
+        infoLabel.setText("");
+        playersField.setStyle("");
+        if (emailListView != null) emailListView.getItems().clear();
+
+        String nome = nameField.getText();
+        String jogadores = playersField.getText();
+        if (nome.isBlank()) {
+            infoLabel.setText("Nome da equipa obrigatÃ³rio.");
+            return;
+        }
+
+        // ValidaÃ§Ã£o de jogadores
+        String[] jogadoresArr = jogadores.isBlank() ? new String[0] : jogadores.split(",");
+        if (jogadoresArr.length == 0) {
+            infoLabel.setText("Informe pelo menos um jogador.");
+            return;
+        }
+        // ValidaÃ§Ã£o visual de emails
+        boolean algumInvalido = false;
+        StringBuilder invalidos = new StringBuilder();
+        if (emailListView != null) emailListView.getItems().clear();
+        for (String email : jogadoresArr) {
+            email = email.trim();
+            boolean valido = false;
+            try {
+                HttpClient client = HttpClient.newHttpClient();
+                HttpRequest req = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8080/api/users/by-email/" + email))
+                        .GET()
+                        .build();
+                HttpResponse<String> resp = client.send(req, HttpResponse.BodyHandlers.ofString());
+                String body = resp.body().toLowerCase();
+                if (resp.statusCode() == 200 &&
+                    (body.contains("\"tipo\":\"jogador\"") || body.contains("\"role\":\"jogador\"") || body.contains("\"role\":\"player\""))) {
+                    valido = true;
+                }
+            } catch (Exception ex) {
+                // erro de conexÃ£o ou servidor
+            }
+            if (emailListView != null) {
+                emailListView.getItems().add(email + (valido ? " âœ“" : " âœ—"));
+            }
+            if (!valido) {
+                algumInvalido = true;
+                invalidos.append(email).append(", ");
+            }
+        }
+        if (algumInvalido) {
+            playersField.setStyle("-fx-border-color: red;");
+            infoLabel.setStyle("-fx-text-fill: red;");
+            infoLabel.setText("Os seguintes emails nÃ£o sÃ£o vÃ¡lidos: " + invalidos.toString());
+            return;
+        }
+        playersField.setStyle("");
+        infoLabel.setStyle("-fx-text-fill: green;");
+        // Monta JSON: {"nome":"...","jogadores":["email1","email2",...]}
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"nome\":\"").append(nome).append("\",\"jogadores\":[");
+        for (int i = 0; i < jogadoresArr.length; i++) {
+            sb.append("\"").append(jogadoresArr[i].trim()).append("\"");
+            if (i < jogadoresArr.length - 1) sb.append(",");
+        }
+        sb.append("]}");
+        String json = sb.toString();
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/teams"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+            .thenAccept(response -> Platform.runLater(() -> {
+                if (response.statusCode() == 201 || response.statusCode() == 200) {
+                    infoLabel.setStyle("-fx-text-fill: green;");
+                    infoLabel.setText("Equipa criada com sucesso!");
+                } else {
+                    infoLabel.setStyle("-fx-text-fill: red;");
+                    infoLabel.setText("Erro ao criar equipa: " + response.body());
+                }
+            }))
+            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Erro: " + e.getMessage())); return null; });
+    }
+
+    @FXML
+    private void handleBack() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/login.fxml"));
+            Stage stage = (Stage) infoLabel.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            infoLabel.setText("Erro ao voltar: " + e.getMessage());
+        }
+    }
+}
+
+=====  C:\Users\super\Desktop\CSS proyecto\soccernow\SoccerNowFX\src\main\java\pt\ul\fc\css\soccernowfx\controller\TeamManageController.java  =====
+package pt.ul.fc.css.soccernowfx.controller;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.application.Platform;
+
+
+import java.net.http.*;
+import java.net.URI;
+
+public class TeamManageController {
+
+    @FXML
+    private void handleBack() {
+        try {
+            javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("/fxml/menu.fxml"));
+            javafx.stage.Stage stage = (javafx.stage.Stage) infoLabel.getScene().getWindow();
+            stage.setScene(new javafx.scene.Scene(root));
+        } catch (Exception e) {
+            infoLabel.setText("Erro ao voltar ao menu: " + e.getMessage());
+        }
+    }
+
+    @FXML private TextField nameField;
+    @FXML private TextField playersField;
+    @FXML private Label infoLabel;
+
+    @FXML
+    private void handleSearch() {
+        String nome = nameField.getText();
+        if (nome.isBlank()) {
+            infoLabel.setText("Informe o nome da equipa para buscar.");
+            return;
+        }
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/teams?name=" + nome))
+                .GET()
+                .build();
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+            .thenAccept(response -> Platform.runLater(() -> {
+
+                if (response.statusCode() == 200 && response.body().contains("\"id\":")) {
+                    String body = response.body();
+                    String jogadores = extractPlayersJson(body);
+                    playersField.setText(jogadores);
+                    infoLabel.setText("Equipa encontrada.");
+                } else {
+                    infoLabel.setText("Equipa nÃ£o encontrada.");
+                }
+            }))
+            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Erro: " + e.getMessage())); return null; });
+    }
+
+    @FXML
+    private void handleUpdate() {
+        String nome = nameField.getText();
+        String jogadores = playersField.getText();
+        if (nome.isBlank()) {
+            infoLabel.setText("Preencha o nome da equipa.");
+            return;
+        }
+        String[] jogadoresArr = jogadores.isBlank() ? new String[0] : jogadores.split(",");
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("{\"nome\":\"").append(nome).append("\",\"jogadores\":[");
+        for (int i = 0; i < jogadoresArr.length; i++) {
+            sb.append("\"").append(jogadoresArr[i].trim()).append("\"");
+            if (i < jogadoresArr.length - 1) sb.append(",");
+        }
+        sb.append("]}");
+        String json = sb.toString();
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/teams/" + nome))
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+            .thenAccept(response -> Platform.runLater(() -> {
+                if (response.statusCode() == 200) {
+                    infoLabel.setText("Equipa atualizada com sucesso!");
+                } else {
+                    infoLabel.setText("Erro ao atualizar: " + response.body());
+                }
+            }))
+            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Erro: " + e.getMessage())); return null; });
+    }
+
+    @FXML
+    private void handleRemove() {
+        String nome = nameField.getText();
+        if (nome.isBlank()) {
+            infoLabel.setText("Informe o nome da equipa para remover.");
+            return;
+        }
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/teams/" + nome))
+                .DELETE()
+                .build();
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+            .thenAccept(response -> Platform.runLater(() -> {
+                if (response.statusCode() == 200) {
+                    infoLabel.setText("Equipa removida com sucesso!");
+                    playersField.setText("");
+                } else {
+                    infoLabel.setText("Erro ao remover: " + response.body());
+                }
+            }))
+            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Erro: " + e.getMessage())); return null; });
+    }
+
+    // UtilitÃ¡rio simples para extrair lista de jogadores do JSON (sem dependÃªncia externa)
+    private String extractPlayersJson(String json) {
+        String search = "\"jogadores\":[";
+        int idx = json.indexOf(search);
+        if (idx == -1) return "";
+        int start = idx + search.length();
+        int end = json.indexOf(']', start);
+        if (end == -1) return "";
+        String arr = json.substring(start, end);
+        return arr.replaceAll("\"", "").replaceAll(",", ", ");
+    }
+}
+
+=====  C:\Users\super\Desktop\CSS proyecto\soccernow\SoccerNowFX\src\main\java\pt\ul\fc\css\soccernowfx\controller\UserManageController.java  =====
+package pt.ul.fc.css.soccernowfx.controller;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+
+import java.net.http.*;
+import java.net.URI;
+
+public class UserManageController {
+    @FXML private TextField emailField;
+    @FXML private TextField nameField;
+
+    @FXML private ChoiceBox<String> typeChoice;
+    @FXML private ChoiceBox<String> extraField;
+    @FXML private Label infoLabel;
+
+    @FXML
+    public void initialize() {
+        typeChoice.getItems().addAll("JOGADOR", "ARBITRO");
+        typeChoice.setOnAction(e -> updateExtraOptions());
+        updateExtraOptions();
+    }
+
+    private void updateExtraOptions() {
+        extraField.getItems().clear();
+        String tipo = typeChoice.getValue();
+        if ("JOGADOR".equalsIgnoreCase(tipo)) {
+            extraField.getItems().addAll(
+                "PORTERO", "DEFENSA", "CENTROCAMPISTA", "DELANTERO"
+            );
+        } else if ("ARBITRO".equalsIgnoreCase(tipo)) {
+            extraField.getItems().addAll(
+                "NACIONAL", "INTERNACIONAL", "REGIONAL", "ESTADUAL"
+            );
+        }
+        if (!extraField.getItems().isEmpty()) {
+            extraField.setValue(extraField.getItems().get(0));
+        }
+    }
+
+    @FXML
+    private void handleSearch() {
+        String email = emailField.getText();
+        if (email.isBlank()) {
+            infoLabel.setText("Informe o email para buscar.");
+            return;
+        }
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/users/by-email/" + email))
+                .GET()
+                .build();
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+            .thenAccept(response -> Platform.runLater(() -> {
+                if (response.statusCode() == 200) {
+                    // Espera JSON: {"nome":"...","email":"...","tipo":"...","extra":"..."}
+                    String body = response.body();
+                    String nome = extractJson(body, "nome");
+                    String tipo = extractJson(body, "tipo");
+                    String extra = extractJson(body, "extra");
+                    nameField.setText(nome);
+                    typeChoice.setValue(tipo);
+                    updateExtraOptions();
+                    extraField.setValue(extra);
+                    infoLabel.setText("UsuÃ¡rio encontrado.");
+                } else {
+                    infoLabel.setText("UsuÃ¡rio nÃ£o encontrado.");
+                }
+            }))
+            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Erro: " + e.getMessage())); return null; });
+    }
+
+    @FXML
+    private void handleUpdate() {
+        String email = emailField.getText();
+        String nome = nameField.getText();
+        String tipo = typeChoice.getValue();
+        String extra = extraField.getValue();
+        if (email.isBlank() || nome.isBlank() || tipo == null || tipo.isBlank()) {
+            infoLabel.setText("Preencha todos os campos obrigatÃ³rios.");
+            return;
+        }
+        String json;
+        if ("JOGADOR".equalsIgnoreCase(tipo)) {
+            json = String.format("{\"nome\":\"%s\",\"email\":\"%s\",\"tipo\":\"%s\",\"preferredPosition\":\"%s\"}", nome, email, tipo, extra);
+        } else if ("ARBITRO".equalsIgnoreCase(tipo)) {
+            json = String.format("{\"nome\":\"%s\",\"email\":\"%s\",\"tipo\":\"%s\",\"certification\":\"%s\"}", nome, email, tipo, extra);
+        } else {
+            json = String.format("{\"nome\":\"%s\",\"email\":\"%s\",\"tipo\":\"%s\"}", nome, email, tipo);
+        }
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/users/by-email/" + email))
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+            .thenAccept(response -> Platform.runLater(() -> {
+                if (response.statusCode() == 200) {
+                    infoLabel.setText("UsuÃ¡rio atualizado com sucesso!");
+                } else {
+                    infoLabel.setText("Erro ao atualizar: " + response.body());
+                }
+            }))
+            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Erro: " + e.getMessage())); return null; });
+    }
+
+    @FXML
+    private void handleRemove() {
+        String email = emailField.getText();
+        if (email.isBlank()) {
+            infoLabel.setText("Informe o email para remover.");
+            return;
+        }
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/users/by-email/" + email))
+                .DELETE()
+                .build();
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+            .thenAccept(response -> Platform.runLater(() -> {
+                if (response.statusCode() == 200 || response.statusCode() == 204) {
+                    infoLabel.setText("UsuÃ¡rio removido com sucesso!");
+                    nameField.setText("");
+                    typeChoice.setValue(null);
+                    extraField.getItems().clear();
+                } else if (response.statusCode() == 404) {
+                    infoLabel.setText("UsuÃ¡rio nÃ£o encontrado.");
+                } else {
+                    infoLabel.setText("Erro ao remover: " + response.body());
+                }
+            }))
+            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Erro: " + e.getMessage())); return null; });
+    }
+
+    @FXML
+    private void handleBack() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/menu.fxml"));
+            Stage stage = (Stage) infoLabel.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            infoLabel.setText("Erro ao voltar ao menu: " + e.getMessage());
+        }
+    }
+
+    // UtilitÃ¡rio simples para extrair valor de campo JSON (sem dependÃªncia externa)
+    private String extractJson(String json, String field) {
+        String search = "\"" + field + "\":";
+        int idx = json.indexOf(search);
+        if (idx == -1) return "";
+        int start = json.indexOf('"', idx + search.length());
+        int end = json.indexOf('"', start + 1);
+        return (start != -1 && end != -1) ? json.substring(start + 1, end) : "";
+    }
+}
+

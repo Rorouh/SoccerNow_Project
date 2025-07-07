@@ -21,7 +21,7 @@ public class ChampionshipCreateController {
             javafx.stage.Stage stage = (javafx.stage.Stage) infoLabel.getScene().getWindow();
             stage.setScene(new javafx.scene.Scene(root));
         } catch (Exception e) {
-            infoLabel.setText("Erro ao voltar ao menu: " + e.getMessage());
+            infoLabel.setText("Error al volver al menú: " + e.getMessage());
         }
     }
 
@@ -33,7 +33,7 @@ public class ChampionshipCreateController {
         String equipas = teamsField.getText();
         String arbitros = refereesField.getText();
         if (nome.isBlank() || modalidade.isBlank() || formato.isBlank() || equipas.isBlank() || arbitros.isBlank()) {
-            infoLabel.setText("Preencha todos os campos obrigatórios.");
+            infoLabel.setText("Complete todos los campos obligatorios.");
             return;
         }
         String[] equipasArr = equipas.split(",");
@@ -60,12 +60,12 @@ public class ChampionshipCreateController {
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
             .thenAccept(response -> Platform.runLater(() -> {
                 if (response.statusCode() == 201 || response.statusCode() == 200) {
-                    infoLabel.setText("Campeonato criado com sucesso!");
+                    infoLabel.setText("¡Campeonato creado con éxito!");
                 } else {
-                    infoLabel.setText("Erro ao criar campeonato: " + response.body());
+                    infoLabel.setText("Error al crear el campeonato: " + response.body());
                 }
             }))
-            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Erro: " + e.getMessage())); return null; });
+            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Error: " + e.getMessage())); return null; });
     }
 
 }
