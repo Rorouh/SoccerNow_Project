@@ -16,19 +16,19 @@ public class LoginController {
     private void handleLogin() {
         String email = emailField.getText();
         String password = passwordField.getText();
-        // Aqui você pode adicionar lógica real de autenticação
+        // Aquí puedes añadir lógica real de autenticación
         if (email.isBlank()) {
-            errorLabel.setText("Por favor, insira o email.");
+            errorLabel.setText("Por favor, introduce el correo electrónico.");
             return;
         }
-        // Aceita qualquer senha (mock)
+        // Acepta cualquier contraseña (mock)
         errorLabel.setText("");
         try {
             javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("/fxml/menu.fxml"));
             javafx.stage.Stage stage = (javafx.stage.Stage) emailField.getScene().getWindow();
             stage.setScene(new javafx.scene.Scene(root));
         } catch (Exception e) {
-            errorLabel.setText("Erro ao abrir menu: " + e.getMessage());
+            errorLabel.setText("Error al abrir el menú: " + e.getMessage());
         }
     }
 
@@ -39,7 +39,7 @@ public class LoginController {
             javafx.stage.Stage stage = (javafx.stage.Stage) emailField.getScene().getWindow();
             stage.setScene(new javafx.scene.Scene(root));
         } catch (Exception e) {
-            errorLabel.setText("Erro ao abrir cadastro: " + e.getMessage());
+            errorLabel.setText("Error al abrir el registro: " + e.getMessage());
         }
     }
 }

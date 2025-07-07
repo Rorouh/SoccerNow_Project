@@ -2,6 +2,8 @@
 package pt.ul.fc.css.soccernow.controller;
 
 import jakarta.validation.Valid;
+
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.ul.fc.css.soccernow.domain.User;
@@ -88,4 +90,42 @@ public class UserController {
                           .toList();
         return ResponseEntity.ok(dtos);
     }
+
+   // ——— CRUD por e-mail ——————————————————————
+
+    @GetMapping("/by-email/{email}")
+    public ResponseEntity<UserDTO> getByEmail(@PathVariable String email) {
+        return userService.getUserByEmail(email)
+            .map(u -> ResponseEntity.ok(UserDTO.fromEntity(u)))
+            .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/by-email/{email}")
+    public ResponseEntity<?> updateByEmail(
+            @PathVariable String email,
+            @Valid @RequestBody UserUpdateDTO dto) {
+        try {
+            return userService.updateUserByEmail(email, dto)
+                .map(u -> ResponseEntity.ok(UserDTO.fromEntity(u)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (ApplicationException ex) {
+            return ResponseEntity.badRequest()
+                                .body(Map.of("error", ex.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/by-email/{email}")
+    public ResponseEntity<Void> deleteByEmail(@PathVariable String email) {
+        return userService.deleteUserByEmail(email)
+            ? ResponseEntity.noContent().build()
+            : ResponseEntity.notFound().build();
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<?> handleFK(DataIntegrityViolationException ex) {
+        return ResponseEntity.status(409)
+                .body(Map.of("error",
+                            "No se puede eliminar: el usuario está referenciado en otros registros."));
+    }
+
 }

@@ -24,6 +24,8 @@ public class TeamDTO {
     private int draws;
     private int losses;
     private int achievements;
+
+    private String[] playerEmails;
     /* ───────────────────────── */
 
     /* ---------- Constructores ---------- */
@@ -54,6 +56,10 @@ public class TeamDTO {
     }
 
     /* ---------- Getters / Setters ---------- */
+
+    public String[] getPlayerEmails()            { return playerEmails; }
+    public void     setPlayerEmails(String[] em) { this.playerEmails = em; }
+
     public Long getId()                { return id; }
     public void setId(Long id)         { this.id = id; }
 
@@ -78,19 +84,20 @@ public class TeamDTO {
     public int getAchievements()                 { return achievements; }
     public void setAchievements(int achievements){ this.achievements = achievements; }
 
-    /* ---------- Helper de mapeo ---------- */
+   /* ---------- Helper de mapeo ---------- */
     public static TeamDTO fromEntity(Team t) {
-        return new TeamDTO(
-            t.getId(),
-            t.getName(),
-            t.getPlayers() != null
-                ? t.getPlayers().stream().map(Player::getId).collect(Collectors.toSet())
-                : Set.of(),
-            t.getPlayers() == null ? 0 : t.getPlayers().size(),
-            t.getWins(),
-            t.getDraws(),
-            t.getLosses(),
-            t.getAchievements()
+        Set<Long> ids   = t.getPlayers()==null ? Set.of()
+                    : t.getPlayers().stream().map(Player::getId).collect(Collectors.toSet());
+        String[] mails  = t.getPlayers()==null ? new String[0]
+                    : t.getPlayers().stream().map(Player::getEmail).toArray(String[]::new);
+
+        TeamDTO dto = new TeamDTO(
+            t.getId(), t.getName(), ids,
+            ids.size(),
+            t.getWins(), t.getDraws(), t.getLosses(), t.getAchievements()
         );
+        dto.setPlayerEmails(mails);             
+        return dto;
     }
+
 }

@@ -2,14 +2,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="pt.ul.fc.css.soccernowfx.controller.TeamManageController" hgap="10" vgap="12" alignment="CENTER">
-    <Label text="Gestão de Equipa" GridPane.columnSpan="2" style="-fx-font-size:18; -fx-font-weight:bold;" />
-    <Label text="Nome da Equipa:" GridPane.rowIndex="1" />
-    <TextField fx:id="nameField" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="Buscar por nome" />
+    <Label text="Gestión de Equipo" GridPane.columnSpan="2" style="-fx-font-size:18; -fx-font-weight:bold;" />
+    <Label text="Nombre del Equipo:" GridPane.rowIndex="1" />
+    <TextField fx:id="nameField" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="Buscar por nombre" />
     <Button text="Buscar" onAction="#handleSearch" GridPane.rowIndex="2" GridPane.columnIndex="1" />
-    <Label text="Jogadores (emails separados por vírgula):" GridPane.rowIndex="3" />
+    <Label text="Jugadores (emails separados por coma):" GridPane.rowIndex="3" />
     <TextField fx:id="playersField" GridPane.rowIndex="3" GridPane.columnIndex="1" />
-    <Button text="Atualizar" onAction="#handleUpdate" GridPane.rowIndex="4" GridPane.columnIndex="1" />
-    <Button text="Remover" onAction="#handleRemove" GridPane.rowIndex="5" GridPane.columnIndex="1" />
-    <Button text="Voltar" onAction="#handleBack" GridPane.rowIndex="6" GridPane.columnIndex="1" />
+    <Button text="Actualizar" onAction="#handleUpdate" GridPane.rowIndex="4" GridPane.columnIndex="1" />
+    <Button text="Eliminar" onAction="#handleRemove" GridPane.rowIndex="5" GridPane.columnIndex="1" />
+    <Button text="Volver" onAction="#handleBack" GridPane.rowIndex="6" GridPane.columnIndex="1" />
     <Label fx:id="infoLabel" textFill="blue" GridPane.rowIndex="7" GridPane.columnSpan="2" />
 </GridPane>

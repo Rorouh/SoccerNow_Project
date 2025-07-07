@@ -2,18 +2,18 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="pt.ul.fc.css.soccernowfx.controller.RegisterController" hgap="10" vgap="10" alignment="CENTER">
-    <Label text="Cadastro de Usuário" GridPane.columnSpan="2" style="-fx-font-size:18; -fx-font-weight:bold;" />
-    <Label text="Nome:" GridPane.rowIndex="1" />
+    <Label text="Registro de Usuario" GridPane.columnSpan="2" style="-fx-font-size:18; -fx-font-weight:bold;" />
+    <Label text="Nombre:" GridPane.rowIndex="1" />
     <TextField fx:id="nameField" GridPane.rowIndex="1" GridPane.columnIndex="1" />
-    <Label text="Email:" GridPane.rowIndex="2" />
+    <Label text="Correo electrónico:" GridPane.rowIndex="2" />
     <TextField fx:id="emailField" GridPane.rowIndex="2" GridPane.columnIndex="1" />
-    <Label text="Senha:" GridPane.rowIndex="3" />
+    <Label text="Contraseña:" GridPane.rowIndex="3" />
     <PasswordField fx:id="passwordField" GridPane.rowIndex="3" GridPane.columnIndex="1" />
     <Label text="Tipo:" GridPane.rowIndex="4" />
     <ChoiceBox fx:id="typeChoice" GridPane.rowIndex="4" GridPane.columnIndex="1" />
-    <Label text="Posição/Certificação:" GridPane.rowIndex="5" />
+    <Label text="Posición/Certificación:" GridPane.rowIndex="5" />
     <ChoiceBox fx:id="extraField" GridPane.rowIndex="5" GridPane.columnIndex="1" />
-    <Button text="Cadastrar" onAction="#handleRegister" GridPane.rowIndex="6" GridPane.columnIndex="1" />
-    <Button fx:id="backButton" text="Voltar ao Menu" onAction="#handleBack" GridPane.rowIndex="7" GridPane.columnIndex="1" />
+    <Button text="Registrar" onAction="#handleRegister" GridPane.rowIndex="6" GridPane.columnIndex="1" />
+    <Button fx:id="backButton" text="Volver al Menú" onAction="#handleBack" GridPane.rowIndex="7" GridPane.columnIndex="1" />
     <Label fx:id="errorLabel" textFill="red" GridPane.rowIndex="8" GridPane.columnSpan="2" />
 </GridPane>

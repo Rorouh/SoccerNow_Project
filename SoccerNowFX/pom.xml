@@ -9,8 +9,9 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.release>17</maven.compiler.release>   <!-- ◄◄  una sola propiedad -->
+    <maven.compiler.release>17</maven.compiler.release>          <!-- ① J 17 -->
     <javafx.version>19.0.2.1</javafx.version>
+    <jackson.version>2.17.1</jackson.version>
   </properties>
 
   <dependencies>
@@ -26,28 +27,40 @@
       <version>${javafx.version}</version>
     </dependency>
 
-    <!-- Cliente HTTP para hablar con tu backend Spring (si lo necesitas) -->
+    <!-- HTTP Client  (si prefieres seguir con Apache) -->
     <dependency>
       <groupId>org.apache.httpcomponents.client5</groupId>
       <artifactId>httpclient5</artifactId>
       <version>5.2.1</version>
     </dependency>
+
+    <!-- ② Jackson → parseo/generación JSON -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+    <!-- soporte java.time en JSON -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
     <plugins>
-      <!-- Compilador: usamos release-17 -->
+      <!-- ③ Compilador – usando “release 17” -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.11.0</version>
         <configuration>
-          <!-- con “release” no necesitas source/target -->
           <release>${maven.compiler.release}</release>
         </configuration>
       </plugin>
 
-      <!-- Plugin JavaFX -->
+      <!-- JavaFX run/packager -->
       <plugin>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-maven-plugin</artifactId>

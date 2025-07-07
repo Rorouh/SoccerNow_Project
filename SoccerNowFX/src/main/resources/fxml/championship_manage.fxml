@@ -1,19 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="pt.ul.fc.css.soccernowfx.controller.ChampionshipManageController" hgap="10" vgap="12" alignment="CENTER">
-    <Label text="Gestão de Campeonato" GridPane.columnSpan="2" style="-fx-font-size:18; -fx-font-weight:bold;" />
-    <Label text="Nome do Campeonato:" GridPane.rowIndex="1" />
-    <TextField fx:id="nameField" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="Buscar por nome" />
-    <Button text="Buscar" onAction="#handleSearch" GridPane.rowIndex="2" GridPane.columnIndex="1" />
-    <Label text="Modalidade:" GridPane.rowIndex="3" />
-    <TextField fx:id="modalityField" GridPane.rowIndex="3" GridPane.columnIndex="1" />
-    <Label text="Equipas participantes (vírgula):" GridPane.rowIndex="4" />
-    <TextField fx:id="teamsField" GridPane.rowIndex="4" GridPane.columnIndex="1" />
-    <Label text="Árbitros certificados (vírgula):" GridPane.rowIndex="5" />
-    <TextField fx:id="refereesField" GridPane.rowIndex="5" GridPane.columnIndex="1" />
-    <Button text="Atualizar" onAction="#handleUpdate" GridPane.rowIndex="6" GridPane.columnIndex="1" />
-    <Button text="Remover" onAction="#handleRemove" GridPane.rowIndex="7" GridPane.columnIndex="1" />
-    <Button fx:id="backButton" text="Voltar ao Menu" onAction="#handleBack" GridPane.rowIndex="8" GridPane.columnIndex="1" />
-    <Label fx:id="infoLabel" textFill="blue" GridPane.rowIndex="9" GridPane.columnSpan="2" />
+
+<GridPane xmlns:fx="http://javafx.com/fxml"
+          fx:controller="pt.ul.fc.css.soccernowfx.controller.ChampionshipManageController"
+          hgap="10" vgap="12" alignment="CENTER">
+
+    <Label text="Gestión de Campeonato" GridPane.columnSpan="2"
+           style="-fx-font-size:18; -fx-font-weight:bold;" />
+
+    <Label text="Nombre del Campeonato:" GridPane.rowIndex="1" />
+    <TextField fx:id="nameField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+    <Label text="Modalidad:" GridPane.rowIndex="2" />
+    <TextField fx:id="modalityField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+    <!-- NUEVA FILA  -->
+    <Label text="Formato:" GridPane.rowIndex="3" />
+    <TextField fx:id="formatField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+    <Label text="Equipos participantes (coma):" GridPane.rowIndex="4" />
+    <TextField fx:id="teamsField" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+    <Label text="Árbitros certificados (coma):" GridPane.rowIndex="5" />
+    <TextField fx:id="refereesField" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+    <Button text="Buscar"    onAction="#handleSearch" GridPane.rowIndex="6"/>
+    <Button text="Actualizar" onAction="#handleUpdate" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+    <Button text="Eliminar"   onAction="#handleRemove" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+    <Button text="Volver al Menú" onAction="#handleBack" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+
+    <Label fx:id="infoLabel" textFill="blue" GridPane.rowIndex="9" GridPane.columnSpan="2"/>
+
 </GridPane>

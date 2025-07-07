@@ -1,127 +1,100 @@
+// src/main/java/pt/ul/fc/css/soccernowfx/controller/GameResultController.java
 package pt.ul.fc.css.soccernowfx.controller;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
-import java.net.http.*;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+
 import java.net.URI;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class GameResultController {
 
-    @FXML
-    private void handleBack() {
-        try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/fxml/menu.fxml"));
-            javafx.scene.Parent root = loader.load();
-            javafx.stage.Stage stage = (javafx.stage.Stage) gameIdField.getScene().getWindow();
-            stage.getScene().setRoot(root);
-        } catch (Exception e) {
-            infoLabel.setText("Error al volver al menú: " + e.getMessage());
-        }
-    }
-
+    /* ---------- nodos ---------- */
     @FXML private TextField gameIdField;
     @FXML private TextField scoreField;
     @FXML private TextField winnerField;
     @FXML private TextField cardsField;
-    @FXML private Label infoLabel;
+    @FXML private Label     infoLabel;
 
+    private final HttpClient   client = HttpClient.newHttpClient();
+    private final ObjectMapper mapper = new ObjectMapper();
+
+    /* ---------- volver ---------- */
+    @FXML
+    private void handleBack() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/menu.fxml"));
+            Stage st    = (Stage) infoLabel.getScene().getWindow();
+            st.setScene(new Scene(root));
+        } catch (Exception e) { infoLabel.setText("Error al volver: " + e.getMessage()); }
+    }
+
+    /* ---------- registrar resultado ---------- */
     @FXML
     private void handleRegister() {
-        String gameId = gameIdField.getText();
-        String placar = scoreField.getText();
-        String vencedora = winnerField.getText();
-        String cartoes = cardsField.getText();
-        if (gameId.isBlank() || placar.isBlank() || vencedora.isBlank()) {
+
+        String idTxt   = gameIdField.getText().trim();
+        String score   = scoreField.getText().trim();
+        String winner  = winnerField.getText().trim();
+        String cards   = cardsField.getText().trim();
+
+        if (idTxt.isBlank() || score.isBlank() || winner.isBlank()) {
             infoLabel.setText("Complete los campos obligatorios.");
             return;
         }
-        // Tarjetas: email:tipo, separados por comas
-        String[] cartoesArr = cartoes.isBlank() ? new String[0] : cartoes.split(",");
-        StringBuilder sb = new StringBuilder();
 
-        sb.append("{\"gameId\":\"").append(gameId).append("\",\"placar\":\"").append(placar).append("\",\"vencedora\":\"").append(vencedora).append("\",\"cartoes\":[");
-        for (int i = 0; i < cartoesArr.length; i++) {
-            String[] partes = cartoesArr[i].trim().split(":");
-            if (partes.length == 2) {
-                sb.append("{\"email\":\"").append(partes[0].trim()).append("\",\"tipo\":\"").append(partes[1].trim()).append("\"}");
-                if (i < cartoesArr.length - 1) sb.append(",");
-            }
-        }
-        sb.append("]}");
-        String json = sb.toString();
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-
-                .uri(URI.create("http://localhost:8080/api/games/" + gameId + "/result"))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(json))
-                .build();
-        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-            .thenAccept(response -> Platform.runLater(() -> {
-                if (response.statusCode() == 200) {
-                    infoLabel.setText("¡Resultado registrado con éxito!");
-
-                    // Actualizar historial de logros si es partido de campeonato
-                    atualizarPodioSeCampeonato(gameId, vencedora);
-
-                } else {
-                    infoLabel.setText("Error al registrar el resultado: " + response.body());
+        /* --- tarjetas: email:tipo -> List<Map<String,String>> --- */
+        List<Map<String,String>> cardsList = new ArrayList<>();
+        if (!cards.isBlank()) {
+            String[] arr = cards.split("\\s*,\\s*");
+            for (String c : arr) {
+                String[] p = c.split(":");
+                if (p.length == 2) {
+                    cardsList.add(Map.of("email", p[0].trim(),
+                                         "type" , p[1].trim()));
                 }
-            }))
-            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Error: " + e.getMessage())); return null; });
-    }
-
-    private void atualizarPodioSeCampeonato(String gameId, String vencedora) {
-        // Obtiene info del partido para saber si es campeonato y quién quedó 2º/3º, etc.
-        HttpClient client = HttpClient.newHttpClient();
-        try {
-            HttpRequest req = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/api/games/" + gameId))
-                    .GET()
-                    .build();
-            HttpResponse<String> resp = client.send(req, HttpResponse.BodyHandlers.ofString());
-            if (resp.statusCode() == 200 && resp.body().contains("\"tipo\":\"Campeonato\"")) {
-                // Actualiza podio del equipo ganador (1er lugar)
-                atualizarPodioEquipe(vencedora, "primeiro");
-                // Opcional: obtener equipo perdedor y actualizar como segundo lugar
-                String equipa2 = extrairCampo(resp.body(), "equipa1").equals(vencedora) ? extrairCampo(resp.body(), "equipa2") : extrairCampo(resp.body(), "equipa1");
-                atualizarPodioEquipe(equipa2, "segundo");
-                // Opcional: si hay playoff para 3º, añadir aquí
             }
-        } catch (Exception e) {
-            Platform.runLater(() -> infoLabel.setText("Resultado registrado, pero fallo al actualizar logros: " + e.getMessage()));
         }
-    }
 
-    private void atualizarPodioEquipe(String equipa, String posicao) {
         try {
-            HttpClient client = HttpClient.newHttpClient();
-            String json = String.format("{\"posicao\":\"%s\"}", posicao);
+            String body = mapper.writeValueAsString(
+                    Map.of("score" , score,
+                           "winner", winner,
+                           "cards" , cardsList));
+
+            String encId = URLEncoder.encode(idTxt, StandardCharsets.UTF_8);
             HttpRequest req = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/api/teams/" + equipa + "/podium"))
+                    .uri(URI.create("http://localhost:8080/api/games/" + encId + "/result"))
                     .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .PUT(HttpRequest.BodyPublishers.ofString(body))     // ← PUT en vez de POST
                     .build();
-            HttpResponse<String> resp = client.send(req, HttpResponse.BodyHandlers.ofString());
-            if (resp.statusCode() == 200) {
-                Platform.runLater(() -> infoLabel.setText("Logros actualizados para el equipo " + equipa + "."));
-            } else {
-                Platform.runLater(() -> infoLabel.setText("Fallo al actualizar logros para " + equipa + ": " + resp.body()));
-            }
-        } catch (Exception e) {
-            Platform.runLater(() -> infoLabel.setText("Error al actualizar logros para " + equipa + ": " + e.getMessage()));
-        }
-    }
 
-    // Utilitario simple para extraer valor de campo JSON
-    private String extrairCampo(String json, String campo) {
-        String search = "\"" + campo + "\":";
-        int idx = json.indexOf(search);
-        if (idx == -1) return "";
-        int start = json.indexOf('"', idx + search.length());
-        int end = json.indexOf('"', start + 1);
-        return (start != -1 && end != -1) ? json.substring(start + 1, end) : "";
-    }
+            client.sendAsync(req, HttpResponse.BodyHandlers.ofString())
+                  .thenAccept(r -> Platform.runLater(() -> {
+                      if (r.statusCode() == 200) {
+                          infoLabel.setText("¡Resultado registrado!");
+                      } else if (r.statusCode() == 404) {
+                          infoLabel.setText("Partido no encontrado.");
+                      } else {
+                          infoLabel.setText("Error (" + r.statusCode() + "): " + r.body());
+                      }
+                  }))
+                  .exceptionally(ex -> { Platform.runLater(() -> infoLabel.setText("Error: " + ex.getMessage())); return null; });
 
+        } catch (Exception e) { infoLabel.setText("Error: " + e.getMessage()); }
+    }
 }

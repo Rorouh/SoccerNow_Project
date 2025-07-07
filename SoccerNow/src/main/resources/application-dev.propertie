@@ -1,0 +1,12 @@
+# ──────────────────────────
+#  B D   D E S A R R O L L O
+# ──────────────────────────
+spring.datasource.url=jdbc:h2:mem:soccernowdb;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false
+spring.datasource.driver-class-name=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.jpa.hibernate.ddl-auto=create-drop   # recrea tablas en cada arranque
+
+spring.h2.console.enabled=true              # opcional: ver BD en /h2-console

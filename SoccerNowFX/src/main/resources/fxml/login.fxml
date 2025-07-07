@@ -2,12 +2,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="pt.ul.fc.css.soccernowfx.controller.LoginController" hgap="10" vgap="10" alignment="CENTER">
-    <Label text="SoccerNow - Login" GridPane.columnSpan="2" style="-fx-font-size:18; -fx-font-weight:bold;" />
-    <Label text="Email:" GridPane.rowIndex="1" />
+    <Label text="SoccerNow – Inicio de sesión" GridPane.columnSpan="2" style="-fx-font-size:18; -fx-font-weight:bold;" />
+    <Label text="Correo electrónico:" GridPane.rowIndex="1" />
     <TextField fx:id="emailField" GridPane.rowIndex="1" GridPane.columnIndex="1" />
-    <Label text="Senha:" GridPane.rowIndex="2" />
+    <Label text="Contraseña:" GridPane.rowIndex="2" />
     <PasswordField fx:id="passwordField" GridPane.rowIndex="2" GridPane.columnIndex="1" />
-    <Button text="Entrar" onAction="#handleLogin" GridPane.rowIndex="3" GridPane.columnIndex="1" />
-    <Hyperlink text="Criar conta" onAction="#handleShowRegister" GridPane.rowIndex="4" GridPane.columnIndex="1" />
+    <Button text="Iniciar sesión" onAction="#handleLogin" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+    <Hyperlink text="Crear cuenta" onAction="#handleShowRegister" GridPane.rowIndex="4" GridPane.columnIndex="1" />
     <Label fx:id="errorLabel" textFill="red" GridPane.rowIndex="5" GridPane.columnSpan="2" />
 </GridPane>

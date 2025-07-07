@@ -2,16 +2,16 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <VBox xmlns:fx="http://javafx.com/fxml" fx:controller="pt.ul.fc.css.soccernowfx.controller.MenuController" spacing="15" alignment="CENTER" style="-fx-padding: 40;">
-    <Label text="SoccerNow - Menu Principal" style="-fx-font-size: 22; -fx-font-weight: bold;" />
-    <Button text="Gerir Utilizadores" onAction="#handleManageUsers" minWidth="250" />
-    <Button text="Criar Conta" onAction="#handleRegisterUser" minWidth="250" />
-    <Button text="Criar Equipa" onAction="#handleCreateTeam" minWidth="250" />
-    <Button text="Criar Campeonato" onAction="#handleCreateChampionship" minWidth="250" />
-    <Button text="Gerir Equipas" onAction="#handleManageTeams" minWidth="250" />
-    <Button text="Gerir Campeonatos" onAction="#handleManageChampionships" minWidth="250" />
-    <Button text="Gerir Jogos" onAction="#handleManageGames" minWidth="250" />
-    <Button text="Registar Resultado de Jogo" onAction="#handleRegisterResult" minWidth="250" />
-    <Button text="Cancelar Jogo de Campeonato" onAction="#handleCancelGame" minWidth="250" />
-    <Button text="Logout" onAction="#handleLogout" minWidth="250" />
+    <Label text="SoccerNow – Menú Principal" style="-fx-font-size: 22; -fx-font-weight: bold;" />
+    <Button text="Administrar Usuarios" onAction="#handleManageUsers" minWidth="250" />
+    <Button text="Crear Cuenta" onAction="#handleRegisterUser" minWidth="250" />
+    <Button text="Crear Equipo" onAction="#handleCreateTeam" minWidth="250" />
+    <Button text="Crear Campeonato" onAction="#handleCreateChampionship" minWidth="250" />
+    <Button text="Administrar Equipos" onAction="#handleManageTeams" minWidth="250" />
+    <Button text="Administrar Campeonatos" onAction="#handleManageChampionships" minWidth="250" />
+    <Button text="Administrar Partidos" onAction="#handleManageGames" minWidth="250" />
+    <Button text="Registrar Resultado de Partido" onAction="#handleRegisterResult" minWidth="250" />
+    <Button text="Cancelar Partido de Campeonato" onAction="#handleCancelGame" minWidth="250" />
+    <Button text="Cerrar sesión" onAction="#handleLogout" minWidth="250" />
     <Label fx:id="infoLabel" textFill="blue" />
 </VBox>

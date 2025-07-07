@@ -16,7 +16,7 @@ public class UserUpdateDTO {
     private String password;
 
     /** Ahora usamos el Role de UserDTO */
-    @NotNull(message = "El rol no puede ser nulo")
+    //@NotNull(message = "El rol no puede ser nulo")
     private UserDTO.Role role;
 
     private User.PreferredPosition preferredPosition;

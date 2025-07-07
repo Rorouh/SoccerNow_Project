@@ -1,71 +1,103 @@
 package pt.ul.fc.css.soccernowfx.controller;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.application.Platform;
-import java.net.http.*;
-import java.net.URI;
+import pt.ul.fc.css.soccernowfx.util.RestClient;
+import pt.ul.fc.css.soccernowfx.util.SceneNavigator;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ChampionshipCreateController {
+
     @FXML private TextField nameField;
     @FXML private TextField modalityField;
     @FXML private TextField formatField;
     @FXML private TextField teamsField;
     @FXML private TextField refereesField;
-    @FXML private Label infoLabel;
+    @FXML private Label     infoLabel;
 
-    @FXML
-    private void handleBack() {
-        try {
-            javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(getClass().getResource("/fxml/menu.fxml"));
-            javafx.stage.Stage stage = (javafx.stage.Stage) infoLabel.getScene().getWindow();
-            stage.setScene(new javafx.scene.Scene(root));
-        } catch (Exception e) {
-            infoLabel.setText("Error al volver al menú: " + e.getMessage());
+    /* --- Vista mínima de TeamDTO --- */
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class TeamVM {
+        public Long id;
+        public String name;
+    }
+
+    public static final class CampePayload {
+        public String   nome;
+        public String   modalidade;
+        public String   formato;
+        public Set<Long> participanteIds = new HashSet<>();
+        CampePayload(String n, String m, String f, Collection<Long> ids) {
+            nome=n; modalidade=m; formato=f; participanteIds.addAll(ids);
         }
     }
 
+    /* ---------- acciones ---------- */
     @FXML
     private void handleCreate() {
-        String nome = nameField.getText();
-        String modalidade = modalityField.getText();
-        String formato = formatField.getText();
-        String equipas = teamsField.getText();
-        String arbitros = refereesField.getText();
-        if (nome.isBlank() || modalidade.isBlank() || formato.isBlank() || equipas.isBlank() || arbitros.isBlank()) {
-            infoLabel.setText("Complete todos los campos obligatorios.");
+        infoLabel.setStyle("-fx-text-fill: red;");
+        infoLabel.setText("");
+
+        String nome       = nameField.getText().trim();
+        String modalidade = modalityField.getText().trim();
+        String formato    = formatField.getText().trim();
+        List<String> teamNames = parseComma(teamsField.getText());
+
+        if (nome.isBlank() || modalidade.isBlank() || formato.isBlank() || teamNames.isEmpty()) {
+            infoLabel.setText("Todos los campos (menos árbitros) son obligatorios.");
             return;
         }
-        String[] equipasArr = equipas.split(",");
-        String[] arbitrosArr = arbitros.split(",");
-        StringBuilder sb = new StringBuilder();
-        sb.append("{\"nome\":\"").append(nome).append("\",\"modalidade\":\"").append(modalidade).append("\",\"formato\":\"").append(formato).append("\",\"equipas\":[");
-        for (int i = 0; i < equipasArr.length; i++) {
-            sb.append("\"").append(equipasArr[i].trim()).append("\"");
-            if (i < equipasArr.length - 1) sb.append(",");
-        }
-        sb.append("],\"arbitrosCertificados\":[");
-        for (int i = 0; i < arbitrosArr.length; i++) {
-            sb.append("\"").append(arbitrosArr[i].trim()).append("\"");
-            if (i < arbitrosArr.length - 1) sb.append(",");
-        }
-        sb.append("]}");
-        String json = sb.toString();
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/championships"))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(json))
-                .build();
-        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-            .thenAccept(response -> Platform.runLater(() -> {
-                if (response.statusCode() == 201 || response.statusCode() == 200) {
-                    infoLabel.setText("¡Campeonato creado con éxito!");
-                } else {
-                    infoLabel.setText("Error al crear el campeonato: " + response.body());
+
+        Set<Long> ids = new HashSet<>();
+        for (String tName : teamNames) {
+            try {
+                String enc = URLEncoder.encode(tName, StandardCharsets.UTF_8);
+                TeamVM[] list = RestClient.get("/api/teams?name=" + enc, TeamVM[].class);
+                Optional<TeamVM> match = Arrays.stream(list)
+                                               .filter(t -> t.name.equalsIgnoreCase(tName))
+                                               .findFirst();
+                if (match.isEmpty()) {
+                    infoLabel.setText("Equipo no encontrado: " + tName);
+                    return;
                 }
-            }))
-            .exceptionally(e -> { Platform.runLater(() -> infoLabel.setText("Error: " + e.getMessage())); return null; });
+                ids.add(match.get().id);
+            } catch (Exception ex) {
+                infoLabel.setText("Error buscando equipo " + tName + ": " + ex.getMessage());
+                return;
+            }
+        }
+
+        try {
+            RestClient.post("/api/campeonatos", new CampePayload(nome, modalidade, formato, ids), Map.class);
+            infoLabel.setStyle("-fx-text-fill: green;");
+            infoLabel.setText("¡Campeonato creado con éxito!");
+            clearForm();
+        } catch (Exception ex) {
+            infoLabel.setText("Error al crear campeonato: " + ex.getMessage());
+        }
     }
 
+    @FXML
+    private void handleBack() { SceneNavigator.switchScene(infoLabel, "/fxml/menu.fxml"); }
+
+    /* ---------- util ---------- */
+    private List<String> parseComma(String raw) {
+        if (raw == null) return List.of();
+        return Arrays.stream(raw.split(","))
+                     .map(String::trim)
+                     .filter(s -> !s.isBlank())
+                     .collect(Collectors.toList());
+    }
+    private void clearForm() {
+        Platform.runLater(() -> {
+            nameField.clear(); modalityField.clear(); formatField.clear();
+            teamsField.clear(); refereesField.clear();
+        });
+    }
 }

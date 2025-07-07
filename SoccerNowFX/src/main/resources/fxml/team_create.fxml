@@ -2,13 +2,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="pt.ul.fc.css.soccernowfx.controller.TeamCreateController" hgap="10" vgap="12" alignment="CENTER">
-    <Label text="Criação de Equipa" GridPane.columnSpan="2" style="-fx-font-size:18; -fx-font-weight:bold;" />
-    <Label text="Nome da Equipa:" GridPane.rowIndex="1" />
+    <Label text="Creación de Equipo" GridPane.columnSpan="2" style="-fx-font-size:18; -fx-font-weight:bold;" />
+    <Label text="Nombre del Equipo:" GridPane.rowIndex="1" />
     <TextField fx:id="nameField" GridPane.rowIndex="1" GridPane.columnIndex="1" />
-    <Label text="Jogadores (emails separados por vírgula):" GridPane.rowIndex="2" />
-    <TextField fx:id="playersField" GridPane.rowIndex="2" GridPane.columnIndex="1" promptText="ex: user1@email.com, user2@email.com" />
+    <Label text="Jugadores (emails separados por coma):" GridPane.rowIndex="2" />
+    <TextField fx:id="playersField" GridPane.rowIndex="2" GridPane.columnIndex="1" promptText="p. ej.: user1@email.com, user2  
+@email.com" />
     <ListView fx:id="emailListView" GridPane.rowIndex="3" GridPane.columnIndex="1" prefHeight="80" />
-    <Button text="Criar Equipa" onAction="#handleCreate" GridPane.rowIndex="4" GridPane.columnIndex="1" />
-    <Button fx:id="backButton" text="Voltar ao Menu" onAction="#handleBack" GridPane.rowIndex="5" GridPane.columnIndex="1" />
+    <Button text="Crear Equipo" onAction="#handleCreate" GridPane.rowIndex="4" GridPane.columnIndex="1" />
+    <Button fx:id="backButton" text="Volver al Menú" onAction="#handleBack" GridPane.rowIndex="5" GridPane.columnIndex="1" />
     <Label fx:id="infoLabel" textFill="blue" GridPane.rowIndex="6" GridPane.columnSpan="2" />
 </GridPane>

@@ -130,4 +130,26 @@ public class UserService {
             return getAllUsers();
         }
     }
+
+    //JavaFX
+    @Transactional(readOnly = true)
+    public Optional<User> getUserByEmail(String email) {
+        return userRepository.findByEmailIgnoreCase(email);
+    }
+
+    @Transactional
+    public Optional<User> updateUserByEmail(String email, UserUpdateDTO dto) {
+        return userRepository.findByEmailIgnoreCase(email)
+            .flatMap(u -> updateUser(u.getId(), dto));
+    }
+
+    @Transactional
+    public boolean deleteUserByEmail(String email) {
+        return userRepository.findByEmailIgnoreCase(email)
+            .map(u -> {
+                userRepository.delete(u);
+                return true;
+            })
+            .orElse(false);
+    }
 }
