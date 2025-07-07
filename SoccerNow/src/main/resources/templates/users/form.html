@@ -21,6 +21,9 @@
             method="post"
             style="margin-top:15px;">
 
+        <!-- para que Thymeleaf vea userDTO.id -->
+        <input type="hidden" th:field="*{id}" />
+
         <!-- Nombre -->
         <div style="margin-bottom:10px;">
           <label>Nombre:</label>
@@ -67,7 +70,7 @@
 
         <!-- Certificado -->
         <div style="margin-bottom:10px;">
-          <label>Certificado:</label>
+          <label>Certificado (Solo para Referee):</label>
           <input type="checkbox" th:field="*{certified}" />
         </div>
 

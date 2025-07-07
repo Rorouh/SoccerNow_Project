@@ -12,9 +12,15 @@
           <input type="text" name="name" th:value="${param.name}"/>
         </label>
         <label>Posición:
-          <input type="text" name="preferredPosition" 
-                 th:value="${param.preferredPosition}"/>
-        </label>
+          <select name="preferredPosition">
+            <option value="">Todos</option>
+            <option th:each="pos : ${positions}"
+                    th:value="${pos}"
+                    th:text="${pos}"
+                    th:selected="${param.preferredPosition} == ${pos}">
+            </option>
+          </select>
+        </label>        
         <label>Mín. Goles:
           <input type="number" name="minGoals" min="0" 
                  th:value="${param.minGoals}"/>

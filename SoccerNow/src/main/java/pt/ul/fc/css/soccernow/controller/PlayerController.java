@@ -99,12 +99,12 @@ public class PlayerController {
     @GetMapping("/filter")
     public ResponseEntity<List<PlayerDTO>> filterPlayers(
             @RequestParam(value = "name",             required = false) String name,
-            @RequestParam(value = "preferredPosition", required = false) String preferredPosition,
+            @RequestParam(value = "preferredPosition", required = false) PreferredPosition preferredPosition,
             @RequestParam(value = "minGoals",         required = false) Integer minGoals,
             @RequestParam(value = "minCards",         required = false) Integer minCards,
             @RequestParam(value = "minGames",         required = false) Integer minGames
     ) {
-        List<Player> results = playerService.filterPlayers(name, preferredPosition, minGoals, minCards, minGames);
+        List<Player> results = playerService.searchPlayers(name, preferredPosition, minGoals, minCards, minGames);
         List<PlayerDTO> dtos = results.stream()
                                        .map(PlayerDTO::fromEntity)
                                        .collect(Collectors.toList());

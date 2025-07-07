@@ -69,10 +69,21 @@ public class UserService {
     @Transactional
     public Optional<User> updateUser(Long id, UserUpdateDTO dto) {
         return userRepository.findById(id).map(existing -> {
-            if (dto.getName() != null)     existing.setName(dto.getName());
-            if (dto.getEmail() != null)    existing.setEmail(dto.getEmail());
-            if (dto.getPassword() != null) existing.setPassword(dto.getPassword());
-            // No permitimos cambiar rol...
+            if (dto.getEmail() != null && !dto.getEmail().equals(existing.getEmail())) {
+                if (userRepository.existsByEmail(dto.getEmail())) {
+                    throw new ApplicationException("Ya existe un usuario con ese email.");
+                }
+                existing.setEmail(dto.getEmail());
+            }
+            // nombre y contraseña como antes
+            if (dto.getName() != null) {
+                existing.setName(dto.getName());
+            }
+            if (dto.getPassword() != null) {
+                existing.setPassword(dto.getPassword());
+            }
+    
+            // campos específicos de cada subclase
             if (existing instanceof Player p && dto.getPreferredPosition() != null) {
                 p.setPreferredPosition(dto.getPreferredPosition());
             }
@@ -82,6 +93,7 @@ public class UserService {
             return userRepository.save(existing);
         });
     }
+    
 
     @Transactional
     public boolean deleteUser(Long id) {

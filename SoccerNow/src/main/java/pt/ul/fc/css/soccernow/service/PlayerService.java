@@ -58,6 +58,51 @@ public class PlayerService {
         return playerRepository.findById(id);
     }
 
+    // src/main/java/pt/ul/fc/css/soccernow/service/PlayerService.java
+    @Transactional(readOnly = true)
+    public List<Player> searchPlayers(String name,
+                                    User.PreferredPosition preferredPosition,
+                                    Integer minGoals,
+                                    Integer minCards,
+                                    Integer minGames) {
+
+        List<Player> result = playerRepository.findAll();        // base
+
+        if (name != null && !name.isBlank()) {
+            result = result.stream()
+                        .filter(p -> p.getName().toLowerCase()
+                                        .contains(name.toLowerCase()))
+                        .toList();
+        }
+
+        if (preferredPosition != null) {
+            result = result.stream()
+                        .filter(p -> p.getPreferredPosition() == preferredPosition)
+                        .toList();
+        }
+
+        if (minGoals != null) {
+            result = result.stream()
+                        .filter(p -> p.getGoals() >= minGoals)
+                        .toList();
+        }
+
+        if (minCards != null) {
+            result = result.stream()
+                        .filter(p -> p.getCards() >= minCards)
+                        .toList();
+        }
+
+        if (minGames != null) {
+            result = result.stream()
+                        .filter(p -> p.getGames() >= minGames)   // ← tu método getGames()
+                        .toList();
+        }
+
+        return result;
+    }
+
+
     @Transactional
     public Optional<Player> updatePlayer(Long id, PlayerUpdateDTO dto) {
         return playerRepository.findById(id).map(existing -> {
@@ -127,7 +172,7 @@ public class PlayerService {
 
     /**
      * Filtro avançado de jogadores: nome, posição, minGoals, minCards
-     */
+     
     @Transactional(readOnly = true)
     public List<Player> filterPlayers(String name, String preferredPosition, Integer minGoals, Integer minCards, Integer minGames) {
         List<Player> all = playerRepository.findAll();
@@ -139,4 +184,5 @@ public class PlayerService {
             .filter(p -> minGames == null || Integer.valueOf(p.getGames()) >= minGames)
             .toList();
     }
-}
+    */
+    }

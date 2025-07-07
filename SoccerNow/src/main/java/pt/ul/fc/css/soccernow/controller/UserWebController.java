@@ -75,6 +75,7 @@ public class UserWebController {
 
     User u = opt.get();
     UserUpdateDTO dto = new UserUpdateDTO();
+    dto.setId(u.getId());
     dto.setName(u.getName());
     dto.setEmail(u.getEmail());
     dto.setRole(u instanceof pt.ul.fc.css.soccernow.domain.Player
