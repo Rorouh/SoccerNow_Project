@@ -1,7 +1,6 @@
 package pt.ul.fc.css.soccernow.domain;
 
 import jakarta.persistence.*;
-
 import java.util.Set;
 
 @Entity
@@ -14,48 +13,44 @@ public class Team {
 
     private String name;
 
+    /** NUEVOS CAMPOS persistentes -------------------- */
+    private int wins;
+    private int draws;
+    private int losses;
+    private int achievements;
+    /** ------------------------------------------------ */
+
     @ManyToMany
     @JoinTable(
-            name = "team_players",
-            joinColumns = @JoinColumn(name = "team_id"),
-            inverseJoinColumns = @JoinColumn(name = "player_id")
-    )
+        name = "team_players",
+        joinColumns = @JoinColumn(name = "team_id"),
+        inverseJoinColumns = @JoinColumn(name = "player_id"))
     private Set<Player> players;
 
-    @OneToMany(mappedBy = "homeTeam")
-    private Set<Jogo> jogosComoVisitada;
+    @OneToMany(mappedBy = "homeTeam")  private Set<Jogo> jogosComoVisitada;
+    @OneToMany(mappedBy = "awayTeam")  private Set<Jogo> jogosComoVisitante;
 
-    @OneToMany(mappedBy = "awayTeam")
-    private Set<Jogo> jogosComoVisitante;
+    /* ---------- getters / setters ---------- */
+    public Long getId()                { return id; }
+    public void setId(Long id)         { this.id = id; }
 
-    public Team() {}
+    public String getName()            { return name; }
+    public void setName(String name)   { this.name = name; }
 
-    public Team(String name) {
-        this.name = name;
-    }
+    public int getWins()               { return wins; }
+    public void setWins(int wins)      { this.wins = wins; }
 
-    // Getters e Setters
-    public Long getId() {
-        return id;
-    }
+    public int getDraws()              { return draws; }
+    public void setDraws(int draws)    { this.draws = draws; }
 
-    public void setId(Long id) { this.id = id; }
+    public int getLosses()             { return losses; }
+    public void setLosses(int losses)  { this.losses = losses; }
 
-    public String getName() {
-        return name;
-    }
+    public int getAchievements()       { return achievements; }
+    public void setAchievements(int achievements) { this.achievements = achievements; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Set<Player> getPlayers() {
-        return players;
-    }
-
-    public void setPlayers(Set<Player> players) {
-        this.players = players;
-    }
+    public Set<Player> getPlayers()    { return players; }
+    public void setPlayers(Set<Player> players) { this.players = players; }
 
     public Set<Jogo> getJogosComoVisitada() {
         return jogosComoVisitada;
@@ -73,87 +68,13 @@ public class Team {
     public void setJogosComoVisitante(Set<Jogo> jogosComoVisitante) {
         this.jogosComoVisitante = jogosComoVisitante;
     }
-
-    //SI quisiera acceder a los campeonatos que esta un equipo inscrito desde equipo, utilizariamos esto:
-//@ManyToMany(mappedBy = "participantes")
-//private Set<Campeonato> campeonatos = new HashSet<>();
-
-    /**
-     * Calcula o número de vitórias do time (considerando jogos como mandante e visitante)
-     */
-    public int getWins() {
-        int wins = 0;
-        if (jogosComoVisitada != null) {
-            for (Jogo jogo : jogosComoVisitada) {
-                if (jogo.getResultado() != null && jogo.getResultado().getEquipaVitoriosa() != null &&
-                    this.equals(jogo.getResultado().getEquipaVitoriosa())) {
-                    wins++;
-                }
-            }
-        }
-        if (jogosComoVisitante != null) {
-            for (Jogo jogo : jogosComoVisitante) {
-                if (jogo.getResultado() != null && jogo.getResultado().getEquipaVitoriosa() != null &&
-                    this.equals(jogo.getResultado().getEquipaVitoriosa())) {
-                    wins++;
-                }
-            }
-        }
-        return wins;
-    }
-
-    /**
-     * Calcula o número de empates do time
-     */
-    public int getDraws() {
-        int draws = 0;
-        if (jogosComoVisitada != null) {
-            for (Jogo jogo : jogosComoVisitada) {
-                if (jogo.getResultado() != null && jogo.getResultado().isEmpate()) {
-                    draws++;
-                }
-            }
-        }
-        if (jogosComoVisitante != null) {
-            for (Jogo jogo : jogosComoVisitante) {
-                if (jogo.getResultado() != null && jogo.getResultado().isEmpate()) {
-                    draws++;
-                }
-            }
-        }
-        return draws;
-    }
-
-    /**
-     * Calcula o número de derrotas do time
-     */
-    public int getLosses() {
-        int losses = 0;
-        if (jogosComoVisitada != null) {
-            for (Jogo jogo : jogosComoVisitada) {
-                if (jogo.getResultado() != null && jogo.getResultado().getEquipaVitoriosa() != null &&
-                    !this.equals(jogo.getResultado().getEquipaVitoriosa())) {
-                    losses++;
-                }
-            }
-        }
-        if (jogosComoVisitante != null) {
-            for (Jogo jogo : jogosComoVisitante) {
-                if (jogo.getResultado() != null && jogo.getResultado().getEquipaVitoriosa() != null &&
-                    !this.equals(jogo.getResultado().getEquipaVitoriosa())) {
-                    losses++;
-                }
-            }
-        }
-        return losses;
-    }
-
-    /**
-     * Retorna a quantidade de conquistas (exemplo: pódios em campeonatos)
-     * Ajuste conforme sua modelagem de conquistas.
-     */
-    public int getAchievements() {
-        // TODO: Ajuste conforme sua modelagem real de conquistas
-        return 0;
+ 
+    /** Utilidad: nº jugadores */
+    @Transient                         // no se persiste; solo para UI
+    public int getPlayerCount() {
+        return players == null ? 0 : players.size();
+    } 
+    public boolean isMissingPosition(Player.PreferredPosition pos) {
+        return players.stream().noneMatch(p -> p.getPreferredPosition() == pos);
     }
 }

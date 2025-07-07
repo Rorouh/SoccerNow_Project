@@ -30,28 +30,35 @@ public class TeamService {
 
     @Transactional
     public Team createTeam(TeamDTO dto) {
-        Set<Player> players = new HashSet<>();
-        for (Long playerId : dto.getPlayerIds()) {
-            playerRepository.findById(playerId).ifPresent(players::add);
-        }
         Team team = new Team();
-        team.setName(dto.getName());
-        team.setPlayers(players);
+        mapBasicFields(dto, team);
         return teamRepository.save(team);
     }
 
     @Transactional
     public Optional<Team> updateTeam(Long id, TeamDTO dto) {
-        return teamRepository.findById(id)
-            .map(existing -> {
-                existing.setName(dto.getName());
-                Set<Player> players = new HashSet<>();
-                for (Long playerId : dto.getPlayerIds()) {
-                    playerRepository.findById(playerId).ifPresent(players::add);
-                }
-                existing.setPlayers(players);
-                return teamRepository.save(existing);
-            });
+        return teamRepository.findById(id).map(existing -> {
+            mapBasicFields(dto, existing);
+            return teamRepository.save(existing);
+        });
+    }
+
+    /* ===== helper privado que rellena todos los campos ===== */
+    private void mapBasicFields(TeamDTO dto, Team team) {
+        team.setName(dto.getName());
+
+        // jugadores
+        Set<Player> players = new HashSet<>();
+        for (Long playerId : dto.getPlayerIds()) {
+            playerRepository.findById(playerId).ifPresent(players::add);
+        }
+        team.setPlayers(players);
+
+        // nuevas estadísticas
+        team.setWins(dto.getWins());
+        team.setDraws(dto.getDraws());
+        team.setLosses(dto.getLosses());
+        team.setAchievements(dto.getAchievements());
     }
 
     @Transactional
@@ -125,21 +132,83 @@ public class TeamService {
     public List<Team> findWithNoPlayerInPosition(Player.PreferredPosition pos) {
         return teamRepository.findTeamsWithNoPlayerInPosition(pos);
     }
+    
     /**
-     * Filtro avançado de equipas: nome, minPlayers, minWins, minDraws, minLosses, minAchievements, missingPosition
+     * Búsqueda avanzada de equipos: name, minPlayers, minWins, minDraws,
+     * minLosses, minAchievements, missingPosition (posición que NO debe
+     * estar cubierta).  Sigue el mismo patrón que searchPlayers().
      */
     @Transactional(readOnly = true)
-    public List<Team> filterTeams(String name, Integer minPlayers, Integer minWins, Integer minDraws, Integer minLosses, Integer minAchievements, String missingPosition) {
-        List<Team> all = teamRepository.findAll();
-        return all.stream()
-            .filter(t -> name == null || t.getName().toLowerCase().contains(name.toLowerCase()))
-            .filter(t -> minPlayers == null || (t.getPlayers() != null && t.getPlayers().size() >= minPlayers))
-            // Métodos getWins(), getDraws(), getLosses(), getAchievements() agora retornam int
-            .filter(t -> minWins == null || t.getWins() >= minWins)
-            .filter(t -> minDraws == null || t.getDraws() >= minDraws)
-            .filter(t -> minLosses == null || t.getLosses() >= minLosses)
-            .filter(t -> minAchievements == null || t.getAchievements() >= minAchievements)
-            .filter(t -> missingPosition == null || t.getPlayers().stream().noneMatch(p -> p.getPreferredPosition().name().equalsIgnoreCase(missingPosition)))
-            .toList();
+    public List<Team> filterTeams(String name,
+                                Integer minPlayers,
+                                Integer minWins,
+                                Integer minDraws,
+                                Integer minLosses,
+                                Integer minAchievements,
+                                String missingPosition) {
+
+        // 1) lista base
+        List<Team> result = teamRepository.findAll();
+
+        // 2) nombre (usamos el repo dedicado)
+        if (name != null && !name.isBlank()) {
+            result = teamRepository.findByNameContainingIgnoreCase(name);
+        }
+
+        // 3) min-Players (filtrado en memoria ―es rápido―)
+        if (minPlayers != null) {
+            final int threshold = minPlayers;
+            result = result.stream()
+                        .filter(t -> t.getPlayers() != null
+                                    && t.getPlayers().size() >= threshold)
+                        .toList();
+        }
+
+        // 4) min-Victorias – hay JPQL optimizado
+        if (minWins != null) {
+            result = teamRepository.findTeamsWithMinWins(minWins);
+        }
+
+        // 5) min-Empates (en memoria)
+        if (minDraws != null) {
+            final int threshold = minDraws;
+            result = result.stream()
+                        .filter(t -> t.getDraws() >= threshold)
+                        .toList();
+        }
+
+        // 6) min-Derrotas (en memoria)
+        if (minLosses != null) {
+            final int threshold = minLosses;
+            result = result.stream()
+                        .filter(t -> t.getLosses() >= threshold)
+                        .toList();
+        }
+
+        // 7) min-Conquistas / Logros (en memoria)
+        if (minAchievements != null) {
+            final int threshold = minAchievements;
+            result = result.stream()
+                        .filter(t -> t.getAchievements() >= threshold)
+                        .toList();
+        }
+
+        // 8) posición ausente (igual que players.missingPosition)
+        if (missingPosition != null && !missingPosition.isBlank()) {
+            try {
+                var posEnum = Player.PreferredPosition.valueOf(missingPosition.trim().toUpperCase());
+                result = result.stream()
+                            .filter(t -> t.getPlayers()
+                                            .stream()
+                                            .noneMatch(p -> p.getPreferredPosition() == posEnum))
+                            .toList();
+            } catch (IllegalArgumentException ex) {
+                throw new ApplicationException(
+                    "Posición inválida. Valores: PORTERO, DEFENSA, CENTROCAMPISTA, DELANTERO."
+                );
+            }
+        }
+
+        return result;
     }
 }

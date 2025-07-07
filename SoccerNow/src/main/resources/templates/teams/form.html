@@ -2,51 +2,91 @@
 <html xmlns:th="http://www.thymeleaf.org">
   <head
     th:replace="fragments/header :: head(
-      ${teamDTO.id} != null 
-        ? 'Editar Equipo ' + ${teamDTO.id} 
+      ${teamDTO.id} != null
+        ? 'Editar Equipo ' + ${teamDTO.id}
         : 'Crear Nuevo Equipo')">
   </head>
-  <body th:replace="fragments/header :: content">
-    <section>
-      <h2 th:text="${teamDTO.id} != null 
-                      ? 'Editar Equipo ' + ${teamDTO.id} 
-                      : 'Crear Nuevo Equipo'"></h2>
 
-      <div th:if="${error}" style="color:red; margin-bottom:1em;">
+  <body th:replace="fragments/header :: content">
+    <section class="container mx-auto max-w-3xl px-4">
+      <h2 class="text-2xl font-semibold mb-4"
+          th:text="${teamDTO.id} != null
+                     ? 'Editar Equipo ' + ${teamDTO.id}
+                     : 'Crear Nuevo Equipo'"></h2>
+
+      <!-- error -->
+      <div th:if="${error}" class="mb-4 text-red-600">
         <p th:text="${error}"></p>
       </div>
 
       <form th:action="${teamDTO.id} != null
                         ? @{/web/teams/update/{id}(id=${teamDTO.id})}
                         : @{/web/teams/save}"
-            th:object="${teamDTO}" method="post">
+            th:object="${teamDTO}"
+            method="post"
+            class="space-y-4">
 
+        <!-- nombre -->
         <div>
-          <label for="name">Nombre:</label>
-          <input type="text" id="name" th:field="*{name}" required/>
+          <label for="name" class="block font-medium">Nombre:</label>
+          <input id="name" type="text" th:field="*{name}"
+                 class="border rounded p-1 w-64" required>
         </div>
 
-        <div style="margin-top:1em;">
-          <label>Jugadores:</label>
-          <div>
+        <!-- jugadores -->
+        <div>
+          <span class="block font-medium mb-1">Jugadores:</span>
+          <div class="grid grid-cols-2 gap-1 max-h-48 overflow-y-auto border p-2 rounded">
             <div th:each="player : ${allPlayers}">
               <input type="checkbox"
                      th:id="'player-' + ${player.id}"
                      th:name="playerIds"
                      th:value="${player.id}"
-                     th:checked="${teamDTO.playerIds != null} 
-                                  ? ${teamDTO.playerIds.contains(player.id)} 
-                                  : false"/>
+                     th:checked="${teamDTO.playerIds != null}
+                                  ? ${teamDTO.playerIds.contains(player.id)}
+                                  : false">
               <label th:for="'player-' + ${player.id}"
-                     th:text="${player.name} + ' (ID: ' + ${player.id} + ')'"></label>
+                     th:text="${player.name} + ' (ID:' + ${player.id} + ')'"></label>
             </div>
           </div>
         </div>
 
-        <div style="margin-top:1.5em;">
-          <button type="submit" 
-                  th:text="${teamDTO.id} != null ? 'Actualizar' : 'Crear'"></button>
-          <a th:href="@{/web/teams}" style="margin-left:1em;">Cancelar</a>
+        <!--  ▸️  Estadísticas SOLO visibles en modo edición  ▸️ -->
+        <div th:if="${teamDTO.id != null}" class="pt-2 border-t">
+          <span class="block font-medium mb-1">Estadísticas:</span>
+
+          <div class="grid grid-cols-2 gap-2">
+            <label>Victorias:
+              <input type="number" min="0" th:field="*{wins}" class="border rounded p-1 w-20">
+            </label>
+
+            <label>Empates:
+              <input type="number" min="0" th:field="*{draws}" class="border rounded p-1 w-20">
+            </label>
+
+            <label>Derrotas:
+              <input type="number" min="0" th:field="*{losses}" class="border rounded p-1 w-20">
+            </label>
+
+            <label>Titulos Logrados:
+              <input type="number" min="0" th:field="*{achievements}" class="border rounded p-1 w-20">
+            </label>
+
+            <label class="col-span-2">N.º Jugadores:
+              <!-- read-only / calculado; no editable -->
+              <input type="number" th:value="${teamDTO.playerCount}"
+                     readonly class="border rounded p-1 w-24 bg-gray-100">
+            </label>
+          </div>
+        </div>
+
+        <!-- botones -->
+        <div class="pt-4">
+          <button type="submit"
+                  class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded">
+            <span th:text="${teamDTO.id} != null ? 'Actualizar' : 'Crear'"></span>
+          </button>
+          <a th:href="@{/web/teams}" class="ml-3 text-blue-600">Cancelar</a>
         </div>
       </form>
     </section>

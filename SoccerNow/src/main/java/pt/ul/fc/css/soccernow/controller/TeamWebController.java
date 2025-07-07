@@ -69,17 +69,14 @@ public class TeamWebController {
             teams = teamService.getAllTeams();
         }
 
+                
         List<TeamDTO> dtos = teams.stream()
-                .map(t -> new TeamDTO(
-                        t.getId(),
-                        t.getName(),
-                        t.getPlayers().stream().map(Player::getId).collect(Collectors.toSet())
-                ))
-                .collect(Collectors.toList());
+            .map(TeamDTO::fromEntity)   // ← ahora podemos usar el factory del DTO
+            .collect(Collectors.toList());
 
         model.addAttribute("teams", dtos);
         model.addAttribute("positions", Player.PreferredPosition.values());
-        return "teams/list";  // templates/teams/list.html
+        return "teams/list";
     }
 
     /**
@@ -121,11 +118,7 @@ public class TeamWebController {
             return "redirect:/web/teams";
         }
         Team t = opt.get();
-        TeamDTO dto = new TeamDTO(
-                t.getId(),
-                t.getName(),
-                t.getPlayers().stream().map(Player::getId).collect(Collectors.toSet())
-        );
+        TeamDTO dto = TeamDTO.fromEntity(t);
         model.addAttribute("teamDTO", dto);
         model.addAttribute("allPlayers", playerService.findAllPlayers());
         return "teams/form";
@@ -194,12 +187,8 @@ public class TeamWebController {
             Model model) {
         List<Team> teams = teamService.filterTeams(name, minPlayers, minWins, minDraws, minLosses, minAchievements, missingPosition);
         List<TeamDTO> dtos = teams.stream()
-                .map(t -> new TeamDTO(
-                        t.getId(),
-                        t.getName(),
-                        t.getPlayers().stream().map(Player::getId).collect(Collectors.toSet())
-                ))
-                .collect(Collectors.toList());
+                          .map(TeamDTO::fromEntity)
+                          .toList();
         model.addAttribute("teams", dtos);
         model.addAttribute("positions", Player.PreferredPosition.values());
         return "teams/list";

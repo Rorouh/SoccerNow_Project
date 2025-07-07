@@ -5,28 +5,35 @@
     <section>
       <h2>Gestión de Equipos</h2>
 
-      <!-- Filtros avanzados -->
-      <form th:action="@{/web/teams}" method="get" style="margin-bottom:20px;">
-        <label>Nombre: 
-          <input type="text" name="name" th:value="${param.name}" />
+      <!--  F I L T R O S   -->
+      <form th:action="@{/web/teams}" method="get"
+            class="team-filters" style="margin-bottom:20px;">
+        <label>Nombre
+          <input type="text" name="name" th:value="${param.name}">
         </label>
-        <label>Mín. Jugadores: 
-          <input type="number" name="minPlayers" min="0" th:value="${param.minPlayers}" />
+        <label>Mín. Jugadores
+          <input type="number" name="minPlayers" min="0"
+                 th:value="${param.minPlayers}">
         </label>
-        <label>Mín. Victorias: 
-          <input type="number" name="minWins" min="0" th:value="${param.minWins}" />
+        <label>Mín. Victorias
+          <input type="number" name="minWins" min="0"
+                 th:value="${param.minWins}">
         </label>
-        <label>Mín. Empates: 
-          <input type="number" name="minDraws" min="0" th:value="${param.minDraws}" />
+        <label>Mín. Empates
+          <input type="number" name="minDraws" min="0"
+                 th:value="${param.minDraws}">
         </label>
-        <label>Mín. Derrotas: 
-          <input type="number" name="minLosses" min="0" th:value="${param.minLosses}" />
+        <label>Mín. Derrotas
+          <input type="number" name="minLosses" min="0"
+                 th:value="${param.minLosses}">
         </label>
-        <label>Mín. Conquistas: 
-          <input type="number" name="minAchievements" min="0" th:value="${param.minAchievements}" />
+        <label>Mín. Conquistas
+          <input type="number" name="minAchievements" min="0"
+                 th:value="${param.minAchievements}">
         </label>
-        <label>Posición Ausente: 
-          <input type="text" name="missingPosition" th:value="${param.missingPosition}" />
+        <label>Posición Ausente
+          <input type="text" name="missingPosition"
+                 th:value="${param.missingPosition}">
         </label>
         <button type="submit">Filtrar</button>
         <a th:href="@{/web/teams}">Limpiar</a>
@@ -44,6 +51,11 @@
           <tr style="background:#ddd;">
             <th>ID</th>
             <th>Nombre</th>
+            <th>#Jug.</th>
+            <th>W</th>
+            <th>D</th>
+            <th>L</th>
+            <th>Logros</th>
             <th>Jugadores (IDs)</th>
             <th>Acciones</th>
           </tr>
@@ -52,6 +64,13 @@
           <tr th:each="t : ${teams}">
             <td th:text="${t.id}"></td>
             <td th:text="${t.name}"></td>
+
+            <td th:text="${t.playerCount}"></td>
+            <td th:text="${t.wins}"></td>
+            <td th:text="${t.draws}"></td>
+            <td th:text="${t.losses}"></td>
+            <td th:text="${t.achievements}"></td>
+
             <td>
               <span th:each="pid : ${t.playerIds}"
                     th:text="${pid} + ' '"></span>
