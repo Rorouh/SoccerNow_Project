@@ -94,66 +94,72 @@ public class JogoService {
     }
 
     @Transactional
-    public Resultado registarResultado(Long jogoId, String placar, Long vencedoraId)
+    public Resultado registrarResultado(Long jogoId,
+                                        int golosCasa,
+                                        int golosFora,
+                                        Long vencedoraId)
             throws NotFoundException, ApplicationException {
+
         Jogo j = jogoRepository.findById(jogoId)
-                .orElseThrow(() -> new NotFoundException("Juego no encontrado: " + jogoId));
-        if (j.getResultado() != null) {
-            throw new ApplicationException("Ya está registrado el resultado.");
+                 .orElseThrow(() -> new NotFoundException("Juego no encontrado: " + jogoId));
+
+        if (j.getResultado() != null)
+            throw new ApplicationException("El resultado ya estaba registrado.");
+
+        // -------- validaciones sencillas ----------
+        if (vencedoraId != null &&
+            !vencedoraId.equals(j.getHomeTeam().getId()) &&
+            !vencedoraId.equals(j.getAwayTeam().getId())) {
+            throw new ApplicationException("El vencedor no participó en este juego.");
         }
-        String[] parts = placar.split("-");
-        if (parts.length != 2) {
-            throw new ApplicationException("Formato inválido, use “golesCasa-golesFuera”.");
+        if (vencedoraId != null) {                 // coherencia marcador-vencedor
+            boolean homeGanó = golosCasa > golosFora;
+            if (homeGanó && !vencedoraId.equals(j.getHomeTeam().getId()) ||
+               !homeGanó &&  vencedoraId.equals(j.getHomeTeam().getId())) {
+                throw new ApplicationException("El marcador no coincide con el vencedor.");
+            }
         }
-        int gCasa = Integer.parseInt(parts[0].trim()), gFuera = Integer.parseInt(parts[1].trim());
+
+        // -------- crear Resultado ----------
         Resultado res = new Resultado();
-        res.setPlacar(placar);
+        res.setGolosCasa(golosCasa);
+        res.setGolosFora(golosFora);
+        res.setPlacar(golosCasa + "-" + golosFora);
         res.setJogo(j);
-
         if (vencedoraId != null) {
-            Team win = teamRepository.findById(vencedoraId)
-                    .orElseThrow(() -> new NotFoundException("Equipo vencedor no existe: " + vencedoraId));
-            if (!Objects.equals(win.getId(), j.getHomeTeam().getId()) &&
-                !Objects.equals(win.getId(), j.getAwayTeam().getId())) {
-                throw new ApplicationException("El vencedor no participó en este juego.");
-            }
-            boolean valid = (win.getId().equals(j.getHomeTeam().getId()) ? gCasa > gFuera : gFuera > gCasa);
-            if (!valid) {
-                throw new ApplicationException("El marcador no concuerda con el equipo ganador.");
-            }
-            res.setEquipaVitoriosa(win);
+            Team v = teamRepository.findById(vencedoraId)
+                       .orElseThrow(() -> new NotFoundException("Equipo vencedor no existe"));
+            res.setEquipaVitoriosa(v);
         }
 
+        // -------- sincronizar con Jogo ----------
+        j.setHomeScore(golosCasa);
+        j.setAwayScore(golosFora);
         j.setResultado(res);
-        jogoRepository.save(j);
-        return resultadoRepository.save(res);
-    }
 
-    @Transactional
-    public Resultado registarResultado(Long jogoId, Resultado r) throws NotFoundException, ApplicationException {
-        return registarResultado(jogoId, r.getPlacar(),
-                                 r.getEquipaVitoriosa() != null ? r.getEquipaVitoriosa().getId() : null);
+        jogoRepository.save(j);           // cascade guarda Resultado
+        return res;
     }
+    
 
     public Optional<Jogo> obterJogo(Long id) {
         return jogoRepository.findById(id);
     }
-
-    /** Cancela un juego pendiente. */
+    /* ------------------------------------------------------------------
+        ELIMINAR PARTIDO (borrado real, no «cancelado»)
+    ------------------------------------------------------------------ */
     @Transactional
-    public void cancelarJogo(Long jogoId) throws NotFoundException, ApplicationException {
-        Jogo j = jogoRepository.findById(jogoId)
-                .orElseThrow(() -> new NotFoundException("Juego no encontrado: " + jogoId));
-        if (j.getResultado() != null) {
-            throw new ApplicationException("No se puede cancelar un juego con resultado.");
-        }
-        if (j.isCancelado()) {
-            throw new ApplicationException("Juego ya está cancelado.");
-        }
-        j.setCancelado(true);
-        jogoRepository.save(j);
+    public void eliminarJogo(Long id) throws NotFoundException, ApplicationException {
+        Jogo j = jogoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Juego no encontrado: " + id));
+
+        if (j.getResultado() != null)
+            throw new ApplicationException("No se puede borrar un juego con resultado registrado.");
+
+        j.getReferees().clear();          // limpia tabla puente jogo_arbitros
+        jogoRepository.delete(j);
     }
-    
+
 
     public JogoService(JogoRepository jogoRepository) {
         this.jogoRepository = jogoRepository;
@@ -224,28 +230,36 @@ public class JogoService {
     }
 
     /**
-     * Filtro avançado de jogos: realizados, aRealizar, minGoals, location, timeSlot
+     * Filtro avanzado de jogos:
+     *   – realizados  (played)   → resultado ≠ null
+     *   – aRealizar  (pending)  → resultado == null y !cancelado
+     *   – minGoals               → suma goles ≥ X
+     *   – location               → contiene ignore-case
+     *   – timeSlot (manhã|tarde|noite)
+     *
+     * Si el usuario marca AMBOS check-box se muestran todos los partidos
+     * (el resto de filtros siguen aplicándose).
      */
     @Transactional(readOnly = true)
-    public List<Jogo> filterJogos(Boolean realizados, Boolean aRealizar, Integer minGoals, String location, String timeSlot) {
-        List<Jogo> all = jogoRepository.findAll();
-        return all.stream()
-            .filter(j -> realizados == null || (realizados && j.getResultado() != null) || (aRealizar != null && aRealizar && j.getResultado() == null))
-            .filter(j -> minGoals == null || (j.getResultado() != null && j.getResultado().getPlacar() != null && somaGols(j.getResultado().getPlacar()) >= minGoals))
-            .filter(j -> location == null || (j.getLocal() != null && j.getLocal().toLowerCase().contains(location.toLowerCase())))
+    public List<Jogo> filterJogos(Boolean realizados, Boolean aRealizar,
+            Integer minGoals, String location, String timeSlot) {
+
+        return jogoRepository.findAll().stream()
+            .filter(j -> realizados == null || (realizados && j.getResultado() != null)
+                        || (aRealizar != null && aRealizar && j.getResultado() == null))
+            .filter(j -> minGoals == null || somaGolsMin(j, minGoals))        //  <<< usa helper
+            .filter(j -> location == null || (j.getLocal() != null
+            && j.getLocal().toLowerCase().contains(location.toLowerCase())))
             .filter(j -> timeSlot == null || pertenceAoTurno(j.getDataHora(), timeSlot))
             .toList();
-    }
+        }
+
 
     // Função auxiliar para somar gols do placar (ex: "3-2" -> 5)
-    private int somaGols(String placar) {
-        if (placar == null || !placar.contains("-")) return 0;
-        try {
-            String[] parts = placar.split("-");
-            return Integer.parseInt(parts[0].trim()) + Integer.parseInt(parts[1].trim());
-        } catch (Exception e) {
-            return 0;
-        }
+    private boolean somaGolsMin(Jogo j, int threshold) {
+        Integer h = j.getHomeScore();
+        Integer a = j.getAwayScore();
+        return h != null && a != null && (h + a) >= threshold;
     }
 
     // Função auxiliar para verificar turno (manhã, tarde, noite)

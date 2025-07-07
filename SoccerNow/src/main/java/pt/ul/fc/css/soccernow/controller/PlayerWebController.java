@@ -74,6 +74,11 @@ public class PlayerWebController {
         .map(PlayerDTO::fromEntity)
         .collect(Collectors.toList());
 
+    model.addAttribute("nameFilter", name == null ? "" : name);
+    model.addAttribute("posFilter", preferredPosition == null ? "" : preferredPosition.name());
+    model.addAttribute("minGoalsFilter",  minGoals == null  ? "" : minGoals);
+    model.addAttribute("minCardsFilter",  minCards == null  ? "" : minCards);
+    model.addAttribute("minGamesFilter",  minGames == null  ? "" : minGames);
     model.addAttribute("players", dtos);
     model.addAttribute("positions", User.PreferredPosition.values());
     return "players/list";

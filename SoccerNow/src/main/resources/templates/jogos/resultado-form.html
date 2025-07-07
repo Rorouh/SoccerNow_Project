@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head('Registrar Resultado')"></head>
+
+<body th:replace="fragments/header :: content">
+  <section>
+    <h2 th:text="'Resultado – Partido ' + ${jogoDTO.id}"></h2>
+
+    <form th:action="@{/web/jogos/resultado/{id}(id=${jogoDTO.id})}" method="post">
+      <div>
+        <label th:text="${jogoDTO.homeTeamName}">Local</label>
+        <input type="number" name="homeScore" min="0" required style="width:60px;">
+      </div>
+
+      <div>
+        <label th:text="${jogoDTO.awayTeamName}">Visitante</label>
+        <input type="number" name="awayScore" min="0" required style="width:60px;">
+      </div>
+
+      <div style="margin-top:10px;">
+        <label>Equipo vencedor (opcional):</label>
+        <select name="winnerId">
+          <option value=""> -- Empate -- </option>
+          <option th:value="${jogoDTO.homeTeamId}" th:text="${jogoDTO.homeTeamName}"></option>
+          <option th:value="${jogoDTO.awayTeamId}" th:text="${jogoDTO.awayTeamName}"></option>
+        </select>
+      </div>
+
+      <button type="submit" style="margin-top:15px;">Guardar Resultado</button>
+      <a th:href="@{/web/jogos}" style="margin-left:10px;">Cancelar</a>
+    </form>
+  </section>
+
+  <div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

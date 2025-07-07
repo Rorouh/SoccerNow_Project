@@ -1,15 +1,51 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
   <head th:replace="fragments/header :: head('Lista de Juegos')"></head>
+
   <body th:replace="fragments/header :: content">
     <section>
       <h2>Gestión de Juegos</h2>
       <a th:href="@{/web/jogos/create}">Crear Nuevo Juego</a>
 
-      <!-- Aquí podrías añadir filtros si los necesitas -->
+      <!-- ───────────── FILTROS ───────────── -->
+      <form th:action="@{/web/jogos}" method="get" style="margin:15px 0;">
+        <label>
+          <input type="checkbox" name="realizados"
+                 th:checked="${paramRealizados}"/> Realizados
+        </label>
+        <label style="margin-left:10px;">
+          <input type="checkbox" name="aRealizar"
+                 th:checked="${paramARealizar}"/> A realizar
+        </label>
 
+        <label style="margin-left:20px;">Mín. Goles:
+          <input type="number" name="minGoals" min="0"
+                 th:value="${paramMinGoals}" style="width:60px;">
+        </label>
+
+        <label style="margin-left:20px;">Localización:
+          <input type="text" name="location" th:value="${paramLocation}">
+        </label>
+
+        <label style="margin-left:20px;">Turno:
+          <select name="timeSlot">
+            <option value=""
+                    th:selected="${paramTimeSlot == null or paramTimeSlot == ''}">
+              -- cualquiera --
+            </option>
+            <option value="mañana" th:selected="${paramTimeSlot == 'mañana'}">Mañana</option>
+            <option value="tarde"  th:selected="${paramTimeSlot == 'tarde'}">Tarde</option>
+            <option value="noche"  th:selected="${paramTimeSlot == 'noche'}">Noche</option>
+          </select>
+        </label>
+
+        <button type="submit" style="margin-left:10px;">Filtrar</button>
+        <a th:href="@{/web/jogos}" style="margin-left:5px;">Limpiar</a>
+      </form>
+
+      <!-- ───────────── LISTADO ───────────── -->
       <table border="1" cellpadding="5" cellspacing="0"
-             style="width:100%; margin-top:15px;">
+             style="width:100%; margin-top:10px;">
         <thead>
           <tr style="background:#ddd;">
             <th>ID</th>
@@ -20,33 +56,52 @@
             <th>Visitante</th>
             <th>Árbitros</th>
             <th>Principal</th>
+            <th>Resultado</th>
             <th>Acciones</th>
           </tr>
         </thead>
+
         <tbody>
           <tr th:each="j : ${jogos}">
             <td th:text="${j.id}"></td>
-            <td th:text="${#dates.format(j.dateTime, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${#temporals.format(j.dateTime, 'yyyy-MM-dd HH:mm')}"></td>
             <td th:text="${j.location}"></td>
             <td th:text="${j.amigavel} ? 'Sí' : 'No'"></td>
             <td th:text="${j.homeTeamName}"></td>
             <td th:text="${j.awayTeamName}"></td>
+
             <td>
               <span th:each="rid : ${j.arbitroIds}"
                     th:text="${rid} + ' '"></span>
             </td>
+
             <td th:text="${j.primaryRefereeId}"></td>
+
+            <!-- Nueva columna Resultado -->
+            <td>
+              <!-- si ya tiene marcador -->
+              <span th:if="${j.homeScore != null}"
+                    th:text="${j.homeScore + ' - ' + j.awayScore}"></span>
+
+              <!-- si todavía no hay resultado -->
+              <a th:if="${j.homeScore == null}"
+                 th:href="@{/web/jogos/resultado/{id}(id=${j.id})}">
+                 Registrar
+              </a>
+            </td>
+
             <td>
               <a th:href="@{/web/jogos/edit/{id}(id=${j.id})}">Editar</a> |
               <a th:href="@{/web/jogos/delete/{id}(id=${j.id})}"
                  th:onclick="|return confirm('¿Eliminar juego ID ' + ${j.id} + '?');|">
-                Eliminar
+                 Eliminar
               </a>
             </td>
           </tr>
         </tbody>
       </table>
     </section>
+
     <div th:replace="fragments/footer :: footer"></div>
   </body>
 </html>

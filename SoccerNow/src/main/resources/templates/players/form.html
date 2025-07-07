@@ -34,9 +34,9 @@
 
         <div>
           <label for="password">Contraseña:</label>
-          <input type="password" id="password" th:field="*{password}" 
-                 th:attr="required=${playerDTO.id == null}"/>
-          <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+          <input type="password" id="password" th:field="*{password}"
+                 th:placeholder="${playerDTO.id == null ? '' : '••••••'}"
+                 th:attr="required=${playerDTO.id == null}" />
         </div>
 
         <div>

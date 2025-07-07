@@ -62,19 +62,24 @@ public class JogoController {
         }
     }
 
-     @PostMapping("/{id}/resultado")
-    public ResponseEntity<?> registarResultado(
+    @PostMapping("/{id}/resultado")
+    public ResponseEntity<?> registrarResultado(
             @PathVariable Long id,
-            @RequestBody Resultado resultado
-    ) {
+            @RequestBody Map<String,Object> body) {
+
         try {
-            Resultado res = jogoService.registarResultado(id, resultado);
+            int  home = (int)  body.get("homeScore");
+            int  away = (int)  body.get("awayScore");
+            Long win  = body.get("winnerId") != null ? Long.valueOf(body.get("winnerId").toString())
+                                                     : null;
+
+            var res = jogoService.registrarResultado(id, home, away, win);
             return ResponseEntity.ok(res);
-        } catch (NotFoundException | ApplicationException ex) {
+
+        } catch (ApplicationException | NotFoundException ex) {
             return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
         }
     }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<JogoDTO> obterJogo(@PathVariable Long id) {
@@ -83,11 +88,11 @@ public class JogoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    /** -------------- NUEVO ENDPOINT: Cancelar Jogo -------------- */
+   /* ---------- cancelar/eliminar ---------- */
     @PutMapping("/{id}/cancelar")
-    public ResponseEntity<?> cancelarJogo(@PathVariable Long id) {
+    public ResponseEntity<?> cancelar(@PathVariable Long id) {
         try {
-            jogoService.cancelarJogo(id);
+            jogoService.eliminarJogo(id);
             return ResponseEntity.noContent().build();
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();

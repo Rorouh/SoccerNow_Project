@@ -4,22 +4,21 @@ package pt.ul.fc.css.soccernow.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import java.util.Set;
+import java.util.HashSet;
 
-
+/**
+ * DTO usado por los formularios y las vistas de Campeonatos.
+ * <p>
+ *  ▸ Campo "participanteIds" → nombre usado en la capa de servicio.  
+ *  ▸ Alias "teamIds"         → nombre que esperan los templates Thymeleaf.
+ * Ambos apuntan al mismo Set para evitar romper código existente.
+ */
 public class CampeonatoDTO {
 
-    // Solo de lectura en respuestas
+    /* ──────────── SOLO LECTURA ──────────── */
     private Long id;
 
-    // Construtor compacto para filtros
-    public CampeonatoDTO(Long id, String nome) {
-        this.id = id;
-        this.nome = nome;
-        this.modalidade = null;
-        this.formato = null;
-        this.participanteIds = null;
-    }
-
+    /* ──────────── CAMPOS OBLIGATORIOS ──────────── */
     @NotBlank(message = "El nombre del campeonato no puede estar vacío")
     private String nome;
 
@@ -30,61 +29,63 @@ public class CampeonatoDTO {
     private String formato;
 
     /**
-     * IDs de los equipos participantes.
-     * En creación/actualización, debe enviarse al menos uno.
+     * IDs de los equipos participantes (nombre interno).
+     * Nunca debe ser null para que los <th:each> funcionen sin errores.
      */
-    @NotEmpty(message = "Debe enviarse al menos un equipo participante")
-    private Set<Long> participanteIds;
+    @NotEmpty(message = "Debe seleccionarse al menos un equipo participante")
+    private Set<Long> participanteIds = new HashSet<>();
 
-    public CampeonatoDTO() { }
+    /* ──────────── CONSTRUCTORES ──────────── */
+    public CampeonatoDTO() {}
 
-    /** Constructor completo (respuestas) */
-    public CampeonatoDTO(Long id, String nome, String modalidade, String formato, Set<Long> participanteIds) {
+    /** Para filtros rápidos (id + nombre). */
+    public CampeonatoDTO(Long id, String nome) {
+        this(id, nome, null, null, new HashSet<>());
+    }
+
+    /** Constructor completo (incluye id). */
+    public CampeonatoDTO(Long id,
+                         String nome,
+                         String modalidade,
+                         String formato,
+                         Set<Long> participanteIds) {
         this.id = id;
         this.nome = nome;
         this.modalidade = modalidade;
         this.formato = formato;
-        this.participanteIds = participanteIds;
+        if (participanteIds != null) this.participanteIds = participanteIds;
     }
 
-    /** Constructor sin id (para creación) */
-    public CampeonatoDTO(String nome, String modalidade, String formato, Set<Long> participanteIds) {
+    /** Para creación (sin id). */
+    public CampeonatoDTO(String nome,
+                         String modalidade,
+                         String formato,
+                         Set<Long> participanteIds) {
         this(null, nome, modalidade, formato, participanteIds);
     }
 
-    // --- Getters y setters ---
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
+    /* ──────────── GETTERS / SETTERS ──────────── */
+    public Long getId()                     { return id; }
+    public void setId(Long id)              { this.id = id; }
 
-    public String getNome() {
-        return nome;
-    }
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+    public String getNome()                 { return nome; }
+    public void setNome(String nome)        { this.nome = nome; }
 
-    public String getModalidade() {
-        return modalidade;
-    }
-    public void setModalidade(String modalidade) {
-        this.modalidade = modalidade;
-    }
+    public String getModalidade()           { return modalidade; }
+    public void setModalidade(String mod)   { this.modalidade = mod; }
 
-    public String getFormato() {
-        return formato;
-    }
-    public void setFormato(String formato) {
-        this.formato = formato;
-    }
+    public String getFormato()              { return formato; }
+    public void setFormato(String formato)  { this.formato = formato; }
 
-    public Set<Long> getParticipanteIds() {
-        return participanteIds;
-    }
-    public void setParticipanteIds(Set<Long> participanteIds) {
-        this.participanteIds = participanteIds;
-    }
+    public Set<Long> getParticipanteIds()               { return participanteIds; }
+    public void setParticipanteIds(Set<Long> ids)       { this.participanteIds = ids; }
+
+    /* ──────────── ALIAS PARA THYMELEAF ──────────── */
+    /** Alias que usan los templates de formularios */
+    public Set<Long> getTeamIds()            { return participanteIds; }
+    public void setTeamIds(Set<Long> ids)    { this.participanteIds = ids; }
+
+    /** Alias que usan los templates de la lista (`c.participantes`) */
+    public Set<Long> getParticipantes()      { return participanteIds; }   
+    public void setParticipantes(Set<Long> p){ this.participanteIds = p; } 
 }
