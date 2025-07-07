@@ -99,28 +99,28 @@ public class JogoService {
                                         int golosFora,
                                         Long vencedoraId)
             throws NotFoundException, ApplicationException {
-
+    
         Jogo j = jogoRepository.findById(jogoId)
                  .orElseThrow(() -> new NotFoundException("Juego no encontrado: " + jogoId));
-
+    
         if (j.getResultado() != null)
             throw new ApplicationException("El resultado ya estaba registrado.");
-
-        // -------- validaciones sencillas ----------
+    
+        /* -------- validaciones sencillas -------- */
         if (vencedoraId != null &&
             !vencedoraId.equals(j.getHomeTeam().getId()) &&
             !vencedoraId.equals(j.getAwayTeam().getId())) {
             throw new ApplicationException("El vencedor no participó en este juego.");
         }
-        if (vencedoraId != null) {                 // coherencia marcador-vencedor
-            boolean homeGanó = golosCasa > golosFora;
-            if (homeGanó && !vencedoraId.equals(j.getHomeTeam().getId()) ||
-               !homeGanó &&  vencedoraId.equals(j.getHomeTeam().getId())) {
+        if (vencedoraId != null) {                       // coherencia marcador-vencedor
+            boolean homeGana = golosCasa > golosFora;
+            if (homeGana && !vencedoraId.equals(j.getHomeTeam().getId()) ||
+               !homeGana &&  vencedoraId.equals(j.getHomeTeam().getId())) {
                 throw new ApplicationException("El marcador no coincide con el vencedor.");
             }
         }
-
-        // -------- crear Resultado ----------
+    
+        /* -------- crear Resultado -------- */
         Resultado res = new Resultado();
         res.setGolosCasa(golosCasa);
         res.setGolosFora(golosFora);
@@ -131,13 +131,29 @@ public class JogoService {
                        .orElseThrow(() -> new NotFoundException("Equipo vencedor no existe"));
             res.setEquipaVitoriosa(v);
         }
-
-        // -------- sincronizar con Jogo ----------
+    
+        /* === NEW ▶ generar una fila Estatisticas (gols=0) para cada jugador
+               – así el método Player#getGames() los contará automáticamente. */
+        if (j.getEstatisticas() == null) {
+            j.setEstatisticas(new java.util.HashSet<>());
+        }
+        java.util.function.Consumer<Player> addStats = p -> {
+            Estatisticas est = new Estatisticas();
+            est.setPlayer(p);
+            est.setJogo(j);
+            est.setGols(0);                // de momento sin desglose de goles
+            j.getEstatisticas().add(est);  // CascadeType.ALL en Jogo → persiste solo
+        };
+        j.getHomeTeam().getPlayers().forEach(addStats);
+        j.getAwayTeam().getPlayers().forEach(addStats);
+        /* === END NEW === */
+    
+        /* -------- sincronizar con Jogo -------- */
         j.setHomeScore(golosCasa);
         j.setAwayScore(golosFora);
         j.setResultado(res);
-
-        jogoRepository.save(j);           // cascade guarda Resultado
+    
+        jogoRepository.save(j);   // Cascade guarda Resultado + Estatisticas
         return res;
     }
     
@@ -229,30 +245,63 @@ public class JogoService {
         return findAllJogos();
     }
 
-    /**
-     * Filtro avanzado de jogos:
-     *   – realizados  (played)   → resultado ≠ null
-     *   – aRealizar  (pending)  → resultado == null y !cancelado
-     *   – minGoals               → suma goles ≥ X
-     *   – location               → contiene ignore-case
-     *   – timeSlot (manhã|tarde|noite)
-     *
-     * Si el usuario marca AMBOS check-box se muestran todos los partidos
-     * (el resto de filtros siguen aplicándose).
-     */
+    /* ********************************************************************
+    *  FILTRO AVANZADO DE JOGOS
+    *    – realizados   → resultado ≠ null
+    *    – aRealizar    → resultado == null  y  cancelado = false
+    *    – minGoals     → suma de goles ≥ X  (solo si existe resultado)
+    *    – location     → contiene texto (ignore-case)
+    *    – timeSlot     → mañana / tarde / noche (según hora del partido)
+    *
+    *  Lógica para los check-box:
+    *    • Si ninguno está marcado → se devuelven TODOS los partidos
+    *    • Si solo «realizados»     → solo con resultado registrado
+    *    • Si solo «a realizar»     → sin resultado y no cancelados
+    *    • Si ambos                → todos (el resto de filtros siguen)
+    *********************************************************************/
     @Transactional(readOnly = true)
-    public List<Jogo> filterJogos(Boolean realizados, Boolean aRealizar,
-            Integer minGoals, String location, String timeSlot) {
+    public List<Jogo> filterJogos(Boolean realizados,
+                                Boolean aRealizar,
+                                Integer minGoals,
+                                String  location,
+                                String  timeSlot) {
+
+        boolean filterPlayed   = Boolean.TRUE.equals(realizados);
+        boolean filterPending  = Boolean.TRUE.equals(aRealizar);
+        boolean anyStatusFilter = filterPlayed || filterPending;   // ninguno marcado → false
+
+        LocalDateTime now = LocalDateTime.now();
 
         return jogoRepository.findAll().stream()
-            .filter(j -> realizados == null || (realizados && j.getResultado() != null)
-                        || (aRealizar != null && aRealizar && j.getResultado() == null))
-            .filter(j -> minGoals == null || somaGolsMin(j, minGoals))        //  <<< usa helper
-            .filter(j -> location == null || (j.getLocal() != null
-            && j.getLocal().toLowerCase().contains(location.toLowerCase())))
-            .filter(j -> timeSlot == null || pertenceAoTurno(j.getDataHora(), timeSlot))
+
+            /* ---------- ESTADO (played / pending) ---------- */
+            .filter(j -> {
+                if (!anyStatusFilter) return true;     // sin check-box → no filtrar
+                boolean played   = j.getResultado() != null;
+                boolean pending  = !played && !j.isCancelado() && j.getDateTime().isAfter(now);
+                return (played  && filterPlayed)  ||
+                    (pending && filterPending);
+            })
+
+            /* ---------- MIN.GOLES (solo si hay resultado) ---------- */
+            .filter(j -> {
+                if (minGoals == null) return true;
+                if (j.getResultado() == null) return false;
+                int total = j.getResultado().getGolosCasa() + j.getResultado().getGolosFora();
+                return total >= minGoals;
+            })
+
+            /* ---------- LOCALIZACIÓN ---------- */
+            .filter(j -> location == null || location.isBlank() ||
+                        (j.getLocal() != null &&
+                        j.getLocal().toLowerCase().contains(location.toLowerCase())))
+
+            /* ---------- TURNO ---------- */
+            .filter(j -> timeSlot == null || timeSlot.isBlank() ||
+                        pertenceAoTurno(j.getDateTime(), timeSlot))
+
             .toList();
-        }
+    }
 
 
     // Função auxiliar para somar gols do placar (ex: "3-2" -> 5)
