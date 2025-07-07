@@ -24,9 +24,15 @@ public class Estatisticas {
     @ManyToOne
     @JoinColumn(name = "jogo_id", nullable = false)
     private Jogo jogo;
-
+    
     public Estatisticas() {}
-
+    /** ➜ NUEVO: constructor utilitario (gols, player, jogo) */
+    public Estatisticas(Integer gols, Player player, Jogo jogo) {
+        this.gols   = gols;
+        this.player = player;
+        this.jogo   = jogo;
+    }
+    
     public Long getId() {
         return id;
     }

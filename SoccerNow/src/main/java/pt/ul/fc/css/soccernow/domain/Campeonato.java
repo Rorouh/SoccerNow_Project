@@ -49,7 +49,11 @@ public class Campeonato {
         this.formato = formato;
         this.participantes = participantes;
     }
-
+    
+    /** ➜ NUEVO: sin lista de equipos (útil en BootstrapData) */
+    public Campeonato(String nome, String modalidade, String formato) {
+        this(nome, modalidade, formato, null);
+    }
     // --- Getters y setters ---
 
     public Long getId() {
