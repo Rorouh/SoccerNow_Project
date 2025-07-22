@@ -1,10 +1,4 @@
-A continuación tienes un **README completo** listo para sustituir al actual.
-Incluye **toda la información** de la Fase 1 *y* de la Fase 2 (arquitectura, endpoints, lógica de negocio, tests, datos de arranque, Docker Compose, JavaFX, etc.).
-Copia el contenido en `README.md` y, si lo deseas, añade después los badges de CI/CD o enlaces a tu repo.
 
----
-
-```markdown
 # ⚽️ SoccerNow — Plataforma de gestión de Futsal
 > Proyecto práctico de CSS - 2024/25 – Universidade de Lisboa
 
