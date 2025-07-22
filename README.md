@@ -1,105 +1,151 @@
-# SoccerNow: Gestão de Jogos de Futsal
+````markdown
+# SoccerNow: Gestión de Partidos de Futsal
 
-# Esse ficheiro deve ser rescrito com base nas informações descritas no enunciado do projeto.
-
----
-Membros:
-
-André Santos - fc57538   -> C2
-Erickson Cacondo - fc53653 -> C3
-Miguel Sanchez - fc64675 -> C1
-
-**Projeto Prático #1:**  
- - O projeto deve ser desenvolvido por grupos de **no máximo três alunos**.  
- - Devem identificar no ficheiro `Readme.md` os integrantes do grupo, o número, e quais são os conjuntos de casos de uso que cada um dos alunos ira resolver.
-
- **Plágio:**  
- - Além de inspeção manual, será utilizado um software de deteção de plágio no código-fonte do projeto.  
- - **Todos** os alunos que submeterem código obtido através de plágio terão os seus projetos anulados.
-
- **Uso de Inteligência Artificial:**  
- - É permitido utilizar ferramentas de IA como ChatGPT, Copilot, DeepSeek e similares.  
- - Contudo, todos os membros do grupo devem ser capazes de **compreender e explicar** o projeto **na sua totalidade** aos docentes quando solicitado.  Se houver código que o grupo não consiga explicar, o projeto será considerado como **plágio**.
-
-**Submissão:**  
- - A data de submissão do projeto é **01/05/2025** às 23:59.  
- - A descrição do processo de submissão encontra-se no enunciado.
+> **Este archivo debe ser reescrito** con base en la información descrita en el enunciado del proyecto.
 
 ---
 
-## Tarefas da Fase 1
+## Miembros
 
-A equipa deverá:
-
-- Fazer *fork* do repositório original: [https://git.alunos.di.fc.ul.pt/css000/soccernow](https://git.alunos.di.fc.ul.pt/css000/soccernow) para a conta de um dos elementos do grupo.
-- Dar acesso a todos os membros do grupo como **Maintainer**.
-- Dar acesso à conta **css000** como **Reporter**.
-- Alterar o `Readme.md` para identificar a equipa e indicar qual conjunto de casos de uso cada membro implementará.
-- Criar uma pasta `docs` contendo um único documento PDF com todos os diagramas do projeto.
-- Desenhar o modelo de domínio, considerando todos os casos de uso, e colocá-lo na pasta `docs`.
-- Desenhar o diagrama de sequência (SSD) para o caso de uso **H**.
-- Esboçar o diagrama de classes que demonstre a divisão em camadas.
-- Anotar as classes relevantes com as anotações JPA para garantir o melhor mapeamento possível.
-- Justificar, no relatório, cada decisão tomada no mapeamento JPA.
-- Incluir no relatório as garantias que o sistema oferece em relação à lógica de negócio.
-- Gerar a base de dados a partir das anotações.
-- Implementar testes que garantam a correção da lógica de negócio.
-- Implementar os endpoints REST necessários (acessíveis via Swagger) para os casos de uso implementados.
+- André Santos – fc57538 → C2  
+- Erickson Cacondo – fc53653 → C3  
+- Miguel Sánchez – fc64675 → C1  
 
 ---
 
-## Como Entregar
+## Proyecto Práctico #1
 
-Para entregar o trabalho, crie uma tag chamada `fase1` e envie-a para o repositório. O repositório deverá conter:
-- O código-fonte do projeto.
-- Os ficheiros necessários para executar o projeto em Docker.
-- Um único documento PDF na pasta `docs` com todos os diagramas.
+- El proyecto debe desarrollarse en grupos de **máximo tres alumnos**.  
+- En el archivo `README.md` deben aparecer los integrantes del grupo, su número y qué conjuntos de casos de uso resolverá cada alumno.
 
-Execute os seguintes comandos:
+### Plagio
+
+- Además de inspección manual, se utilizará un software de detección de plagio en el código fuente del proyecto.  
+- **Todos** los alumnos que entreguen código plagiado tendrán su proyecto anulado.
+
+### Uso de Inteligencia Artificial
+
+- Está permitido usar herramientas de IA como ChatGPT, Copilot, DeepSeek y similares.  
+- Sin embargo, todos los miembros del grupo deben ser capaces de **comprender y explicar** el proyecto **en su totalidad** a los docentes cuando se les solicite. Si existe código que el grupo no pueda explicar, el proyecto se considerará **plagio**.
+
+### Submisión
+
+- La fecha de entrega es **01/05/2025** a las 23:59.  
+- La descripción del proceso de entrega figura en el enunciado del proyecto.
+
+---
+
+## Tareas de la Fase 1
+
+El equipo deberá:
+
+1. Hacer *fork* del repositorio original  
+   `https://git.alunos.di.fc.ul.pt/css000/soccernow`  
+   a la cuenta de uno de los miembros del grupo.  
+2. Dar acceso a todos los miembros como **Maintainer**.  
+3. Dar acceso a la cuenta **css000** como **Reporter**.  
+4. Modificar `README.md` para identificar al equipo e indicar qué conjunto de casos de uso implementará cada miembro.  
+5. Crear una carpeta `docs` que contenga un único PDF con todos los diagramas del proyecto.  
+6. Dibujar el modelo de dominio, considerando todos los casos de uso, y colocarlo en `docs`.  
+7. Diseñar el diagrama de secuencia (SSD) para el caso de uso **H**.  
+8. Esbozar el diagrama de clases que muestre la división en capas.  
+9. Anotar las clases relevantes con las anotaciones JPA para asegurar el mejor mapeo posible.  
+10. Justificar en el informe cada decisión tomada en el mapeo JPA.  
+11. Incluir en el informe las garantías que ofrece el sistema respecto a la lógica de negocio.  
+12. Generar la base de datos a partir de las anotaciones.  
+13. Implementar tests que aseguren la corrección de la lógica de negocio.  
+14. Implementar los endpoints REST necesarios (accesibles vía Swagger) para los casos de uso implementados.
+
+---
+
+## Cómo Entregar
+
+Para entregar el trabajo, crea una etiqueta (tag) llamada `fase1` y envíala al repositorio. Debe incluir:
+
+- El código fuente del proyecto.  
+- Los archivos necesarios para ejecutar el proyecto en Docker.  
+- Un único PDF en la carpeta `docs` con todos los diagramas.
+
+Ejecuta:
 
 ```bash
 git tag fase1
 git push origin fase1
-```
+````
 
-### Atenção:
-Confirme que o projeto está acessível à conta CSS000 na tag fase1. Caso contrário, a entrega receberá nota 0. Certifique-se de que o projeto pode ser executado sem erros de compilação ou outros impedimentos, dentro do ambiente docker.
+### Atención
+
+Confirma que el proyecto es accesible a la cuenta **CSS000** en la etiqueta `fase1`. En caso contrario, la entrega recibirá un **0**. Asegúrate de que el proyecto se ejecuta sin errores de compilación ni otros impedimentos en el entorno Docker.
 
 ---
 
+## FAQ
 
-# FAQ
+### ¿Necesito `sudo` para ejecutar `run.sh`?
 
-## Preciso de `sudo` para correr o `run.sh`
-Tenta correr `sudo usermod -aG docker $USER` seguido de um log-out na máquina.
-Ou tentar [desta forma](https://www.digitalocean.com/community/questions/how-to-fix-docker-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket)
+Prueba con:
 
-## O Docker não instala em ubuntu.
+```bash
+sudo usermod -aG docker $USER
+```
 
-Tentar [desta forma](https://askubuntu.com/a/1411717).
+Luego cierra sesión y vuelve a entrar.
+O consulta [esta solución](https://www.digitalocean.com/community/questions/how-to-fix-docker-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket).
 
-## O `run.sh` não está a correr no meu macos m1.
+---
 
-Tentar correr `docker ps`. Se não funcionar, [tentar isto](https://stackoverflow.com/a/68202428/28516).
-Confirmar também que está instalado o Docker Desktop (`brew install --cask docker`) e não apenas a command-line tool (`brew install docker`). A aplicação Docker deve também estar a correr (icon na menubar).
+### Docker no se instala en Ubuntu
 
+Prueba [esta solución](https://askubuntu.com/a/1411717).
 
-## Estou em windows e o `bash setup.sh` não funciona
+---
 
-Correr numa bash (tanto a Git Bash, MSys2 bash ou WSL em linux) e não na Powershell, nem no CMD.exe.
+### `run.sh` no funciona en macOS M1
 
+Ejecuta:
 
-## Estou em windows, tenho o python instalado mas ao correr o `bash setup.sh` ele não encontra o pip
+```bash
+docker ps
+```
 
-Deve adicionar o pip ao PATH. Procure em `C:\Users\<vosso_user>\AppData\Local\Programs\Python\<versao_do_python>\Scripts`. 
-Atenção pois essa pasta potencialmente estará oculta.
+Si sigue fallando, prueba [esta solución](https://stackoverflow.com/a/68202428/28516).
+También asegúrate de tener Docker Desktop (`brew install --cask docker`) y no sólo la herramienta de línea de comandos (`brew install docker`). La aplicación Docker debe estar corriendo (ícono en la barra de menús).
 
+---
 
-## `docker compose` não funciona
+### En Windows, `bash setup.sh` no funciona
 
-`docker compose` é o comando da última versão de docker. `docker-compose` é a versão antiga. Devem actualizar o docker.
+Ejecuta en una Bash (Git Bash, MSys2 bash o WSL), **no** en PowerShell ni en CMD.exe.
 
-## Ao executar o `bash run.sh` tenho um erro 401 e não consigo descarregar as imagens
+---
 
-Deve no terminal fazer logout do docker `docker logout` e refazer o login `docker login`.
+### En Windows, tengo Python pero `bash setup.sh` no encuentra `pip`
 
+Añade `pip` al `PATH`. Busca en:
+
+```
+C:\Users\<tu_usuario>\AppData\Local\Programs\Python\<versión>\Scripts
+```
+
+(Fíjate en que la carpeta puede estar oculta.)
+
+---
+
+### `docker compose` no funciona
+
+`docker compose` es el comando de la versión más reciente de Docker.
+`docker-compose` corresponde a la versión antigua. Actualiza Docker.
+
+---
+
+### Al ejecutar `bash run.sh` obtengo error 401 al descargar imágenes
+
+En el terminal, haz logout y login de Docker:
+
+```bash
+docker logout
+docker login
+```
+
+```
+```
